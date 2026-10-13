@@ -1,0 +1,151 @@
+{
+ "news_day_share": {
+  "design": {
+   "H2a volume": 0.292,
+   "H2b GDELT": 0.127
+  },
+  "validation": {
+   "H2a volume": 0.295,
+   "H2b GDELT": 0.3
+  },
+  "post-freeze": {
+   "H2a volume": 0.229,
+   "H2b GDELT": 0.168
+  },
+  "H2b design": {
+   "H2a volume": 0.277,
+   "H2b GDELT": 0.278
+  }
+ },
+ "results": {
+  "design": {
+   "unfiltered": {
+    "start": "2010-01-01",
+    "end": "2019-12-31",
+    "sharpe": 0.4,
+    "cagr": 0.0196,
+    "total": 0.2203,
+    "mdd": -0.1316,
+    "in_market": 0.299,
+    "entries": 168
+   },
+   "H2a volume": {
+    "start": "2010-01-01",
+    "end": "2019-12-31",
+    "sharpe": 0.5,
+    "cagr": 0.0194,
+    "total": 0.218,
+    "mdd": -0.0722,
+    "in_market": 0.16,
+    "entries": 84
+   },
+   "H2b GDELT": {
+    "start": "2010-01-01",
+    "end": "2019-12-31",
+    "sharpe": 0.58,
+    "cagr": 0.0266,
+    "total": 0.3084,
+    "mdd": -0.0969,
+    "in_market": 0.266,
+    "entries": 152
+   }
+  },
+  "validation": {
+   "unfiltered": {
+    "start": "2020-01-02",
+    "end": "2026-03-31",
+    "sharpe": -0.58,
+    "cagr": -0.0384,
+    "total": -0.2157,
+    "mdd": -0.2278,
+    "in_market": 0.273,
+    "entries": 86
+   },
+   "H2a volume": {
+    "start": "2020-01-02",
+    "end": "2026-03-31",
+    "sharpe": -0.04,
+    "cagr": -0.0026,
+    "total": -0.0159,
+    "mdd": -0.0787,
+    "in_market": 0.106,
+    "entries": 33
+   },
+   "H2b GDELT": {
+    "start": "2020-01-02",
+    "end": "2026-03-31",
+    "sharpe": -0.13,
+    "cagr": -0.0077,
+    "total": -0.0471,
+    "mdd": -0.104,
+    "in_market": 0.171,
+    "entries": 51
+   }
+  },
+  "post-freeze": {
+   "unfiltered": {
+    "start": "2026-04-01",
+    "end": "2026-10-09",
+    "sharpe": -2.47,
+    "cagr": -0.1049,
+    "total": -0.056,
+    "mdd": -0.0639,
+    "in_market": 0.29,
+    "entries": 6
+   },
+   "H2a volume": {
+    "start": "2026-04-01",
+    "end": "2026-10-09",
+    "sharpe": -1.91,
+    "cagr": -0.0565,
+    "total": -0.0298,
+    "mdd": -0.0384,
+    "in_market": 0.153,
+    "entries": 4
+   },
+   "H2b GDELT": {
+    "start": "2026-04-01",
+    "end": "2026-10-09",
+    "sharpe": -1.36,
+    "cagr": -0.0529,
+    "total": -0.0279,
+    "mdd": -0.0368,
+    "in_market": 0.237,
+    "entries": 5
+   }
+  },
+  "H2b design": {
+   "unfiltered": {
+    "start": "2015-05-13",
+    "end": "2019-12-31",
+    "sharpe": -0.37,
+    "cagr": -0.0195,
+    "total": -0.0882,
+    "mdd": -0.1316,
+    "in_market": 0.268,
+    "entries": 65
+   },
+   "H2a volume": {
+    "start": "2015-05-13",
+    "end": "2019-12-31",
+    "sharpe": 0.21,
+    "cagr": 0.0076,
+    "total": 0.0363,
+    "mdd": -0.0656,
+    "in_market": 0.149,
+    "entries": 34
+   },
+   "H2b GDELT": {
+    "start": "2015-05-13",
+    "end": "2019-12-31",
+    "sharpe": -0.1,
+    "cagr": -0.0048,
+    "total": -0.0224,
+    "mdd": -0.0969,
+    "in_market": 0.196,
+    "entries": 49
+   }
+  }
+ },
+ "h2b_design_start": "2015-05-13"
+}

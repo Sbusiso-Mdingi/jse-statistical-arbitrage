@@ -1,0 +1,153 @@
+{
+ "h1": {
+  "design": {
+   "start": "2017-01-02",
+   "end": "2019-12-31",
+   "sharpe": 0.07,
+   "cagr": 0.0016,
+   "mdd": -0.0578,
+   "in_market": 0.199
+  },
+  "validation": {
+   "start": "2020-01-02",
+   "end": "2026-03-31",
+   "sharpe": 0.06,
+   "cagr": 0.002,
+   "mdd": -0.1511,
+   "in_market": 0.307
+  },
+  "post-freeze": {
+   "start": "2026-04-01",
+   "end": "2026-10-09",
+   "sharpe": -2.31,
+   "cagr": -0.0794,
+   "mdd": -0.0441,
+   "in_market": 0.321
+  }
+ },
+ "decision_points": 592,
+ "features": [
+  "days_held",
+  "signal_now",
+  "signal_entry",
+  "pnl",
+  "today",
+  "rv20",
+  "vix",
+  "news_sbk",
+  "news_bsk",
+  "tone_rel",
+  "vol_sbk",
+  "vol_bsk"
+ ],
+ "h3a": {
+  "reg": 0.01,
+  "design_grid": {
+   "0.01": -0.28,
+   "0.1": -0.61,
+   "1": -0.53
+  },
+  "design": {
+   "start": "2017-01-02",
+   "end": "2019-12-31",
+   "sharpe": -0.28,
+   "cagr": -0.0084,
+   "mdd": -0.0568,
+   "in_market": 0.163,
+   "exit_share": 0.15
+  },
+  "validation": {
+   "start": "2020-01-02",
+   "end": "2026-03-31",
+   "sharpe": 0.08,
+   "cagr": 0.0031,
+   "mdd": -0.1484,
+   "in_market": 0.287,
+   "exit_share": 0.039
+  },
+  "post-freeze": {
+   "start": "2026-04-01",
+   "end": "2026-10-09",
+   "sharpe": -2.14,
+   "cagr": -0.0651,
+   "mdd": -0.0364,
+   "in_market": 0.26,
+   "exit_share": 0.121
+  },
+  "passed": true,
+  "vs_h1_validation": {
+   "bps_per_year": 10.1,
+   "t_stat": 0.24
+  }
+ },
+ "h3a_no_news": {
+  "reg": 0.01,
+  "design": {
+   "start": "2017-01-02",
+   "end": "2019-12-31",
+   "sharpe": -0.0,
+   "cagr": -0.0004,
+   "mdd": -0.0528,
+   "in_market": 0.16,
+   "exit_share": 0.133
+  },
+  "validation": {
+   "start": "2020-01-02",
+   "end": "2026-03-31",
+   "sharpe": 0.12,
+   "cagr": 0.005,
+   "mdd": -0.1402,
+   "in_market": 0.3,
+   "exit_share": 0.011
+  },
+  "post-freeze": {
+   "start": "2026-04-01",
+   "end": "2026-10-09",
+   "sharpe": -1.98,
+   "cagr": -0.0669,
+   "mdd": -0.0373,
+   "in_market": 0.305,
+   "exit_share": 0.03
+  }
+ },
+ "h3b": {
+  "reg": 10,
+  "design_grid": {
+   "1": -0.25,
+   "10": -0.14,
+   "100": -0.15
+  },
+  "design": {
+   "start": "2017-01-02",
+   "end": "2019-12-31",
+   "sharpe": -0.14,
+   "cagr": -0.0043,
+   "mdd": -0.0592,
+   "in_market": 0.135,
+   "exit_share": 0.257
+  },
+  "validation": {
+   "start": "2020-01-02",
+   "end": "2026-03-31",
+   "sharpe": 0.14,
+   "cagr": 0.0062,
+   "mdd": -0.1323,
+   "in_market": 0.269,
+   "exit_share": 0.132
+  },
+  "post-freeze": {
+   "start": "2026-04-01",
+   "end": "2026-10-09",
+   "sharpe": -2.0,
+   "cagr": -0.0672,
+   "mdd": -0.0375,
+   "in_market": 0.298,
+   "exit_share": 0.061
+  },
+  "passed": true,
+  "vs_h1_validation": {
+   "bps_per_year": 39.7,
+   "t_stat": 0.68
+  }
+ }
+}

@@ -1,0 +1,63 @@
+# Refit the bank-basket model every month and redeploy the dashboard.
+#
+# The 5th is late enough that the new month always has a JSE session, which is how
+# research/02_basket.R recognises that the previous month has ended. Prices are downloaded
+# fresh each run; the parity tests must pass before anything is deployed.
+name: Monthly refit
+
+on:
+  schedule:
+    - cron: "0 4 5 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency: refit
+
+jobs:
+  refit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: any::rugarch, any::VineCopula, any::jsonlite, any::quantmod, any::xts
+
+      - name: Download prices
+        run: Rscript research/00_data.R
+
+      - name: Refit the basket model
+        run: Rscript research/02_basket.R
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Parity tests
+        run: |
+          pip install -r service/requirements.txt pytest
+          cd service && python -m pytest -q tests
+
+      - name: Commit the new fits
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/basket.json data/h1_daily.csv
+          git diff --cached --quiet || git commit -m "Monthly refit to $(jq -r '.fits[-1].train_end' data/basket.json)"
+          git push
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy
+        env:
+          AZ_SUBSCRIPTION: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        run: TAG="refit-$(jq -r '.fits[-1].train_end' data/basket.json)-${GITHUB_RUN_NUMBER}" bash deploy/azure.sh

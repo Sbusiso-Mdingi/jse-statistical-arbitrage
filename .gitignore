@@ -1,0 +1,11 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+dashboard/dist/
+.DS_Store
+.Rhistory
+.env
+# Third-party market data (Yahoo Finance, FRED/Cboe) is downloaded, not redistributed.
+data/raw/*.csv
+!data/raw/gdelt_*.csv
