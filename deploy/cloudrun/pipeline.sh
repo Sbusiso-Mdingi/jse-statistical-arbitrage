@@ -7,7 +7,6 @@ set -euo pipefail
 
 git config user.name "cloud-run-refit[bot]"
 git config user.email "cloud-run-refit@users.noreply.github.com"
-git config credential.helper '!f() { echo username=x-access-token; echo "password=${GH_TOKEN}"; }; f'
 
 Rscript research/00_data.R
 Rscript research/02_basket.R

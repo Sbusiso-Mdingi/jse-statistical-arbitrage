@@ -7,7 +7,7 @@ FROM rocker/r-ver:4.4.2
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      git curl jq ca-certificates \
+      git openssh-client curl jq ca-certificates \
       python3 python3-venv python3-pip \
       libxml2-dev libssl-dev libcurl4-openssl-dev \
  && curl -sL https://aka.ms/InstallAzureCLIDeb | bash \

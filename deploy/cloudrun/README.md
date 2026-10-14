@@ -14,15 +14,16 @@ Cloud Scheduler ──monthly──> Cloud Run job
                                ├─ Rscript research/00_data.R  (download prices)
                                ├─ Rscript research/02_basket.R  (refit basket)
                                ├─ pytest parity gate (service/)
-                               ├─ git push fits back to GitHub      (PAT from Secret Manager)
+                               ├─ git push fits back to GitHub      (SSH deploy key from Secret Manager)
                                └─ az login via GCP→Azure federation, then deploy/azure.sh
 ```
 
 - **No Azure secret is stored.** Azure trusts the job's Google identity token
   (workload identity federation) on the existing `gh-jse-pairs-refit` app, which
   already holds Contributor on `rg-mdingi-previews`.
-- **The only secret** is a GitHub fine-grained PAT (`contents: read+write` on
-  this repo) in Secret Manager, used to push results back.
+- **The only secret** is a per-repo SSH deploy key (write access to this repo
+  only) in Secret Manager, mounted at `/secrets/deploy_key` and used to push
+  fits back — no GitHub token anywhere.
 - The heavy R packages (`rugarch`, `VineCopula`, `quantmod`, …) are baked into
   the image; application code comes from the clone, so ordinary code changes
   need no image rebuild. Rebuild only when the R dependency set changes.
@@ -34,9 +35,12 @@ app). Then:
 
 ```bash
 AZ_SUBSCRIPTION=<Sequrin - Development subscription id> \
-GH_TOKEN=<fine-grained PAT> \
   bash deploy/cloudrun/provision.sh
 ```
+
+The script generates the deploy key, registers its public half on this repo
+(needs `gh` authenticated with repo admin), and stores the private half in
+Secret Manager — no token to pass in.
 
 Override `GCP_PROJECT` / `GCP_REGION` if needed (defaults: current gcloud
 project, `europe-west1`). The first build compiles the R packages and takes a
