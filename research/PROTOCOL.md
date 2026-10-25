@@ -56,3 +56,19 @@ Added 13 October 2026, after the H1, H2 and decay results above were known and b
 - Fitting: walk-forward, refitted at each year end from 2016 on all decision points whose outcome is known by then; the first fit uses 13 May 2015 to 2016. Design therefore covers 2017 to 2019. The regularisation strength is chosen once, by the design-period Sharpe, from C in {0.01, 0.1, 1} for H3a and alpha in {1, 10, 100} for H3b.
 - Pass mark, for each of H3a and H3b separately: validation Sharpe after costs above zero and above H1's (0.06). Two tests on the same validation data: a pass by one of them is weaker evidence than it looks, and is reported as such.
 - Reported but not tested: H3a without the news features, to show what GDELT adds; H1 over the same 2017 to 2019 design window, for comparison.
+
+## H4: the classic cointegration trade
+
+Added 25 October 2026, after the H1 to H3 results and the descriptive cointegration tests (`research/04_cointegration.R`) were known, and before any H4 result was computed. Rationale: the group report set the classic approach aside because SBK and NED are not cointegrated over the sample. This measures what the classic trade would have earned anyway, under the same periods and costs, so the copula strategies are compared with the method they replaced.
+
+- Pair: SBK and NED adjusted closes, bad prints removed as elsewhere, in logs.
+- At each close t, an OLS regression of log NED on log SBK over the last L sessions to t gives the intercept, the hedge ratio b and the residual standard deviation; z is today's residual divided by that standard deviation.
+- Open when |z| > e: above e, short NED and long SBK; below -e, the reverse. NED carries weight 1 / (1 + |b|) and SBK |b| / (1 + |b|), with b fixed at entry, so gross exposure is 1 as in H1. Close when z comes back inside x on its own side (z < x for a short spread, z > -x for a long one), when |z| exceeds 4, or after 60 sessions, whichever comes first. A close and a new open can happen on the same day.
+- H4a trades whenever the rule says so. H4b opens only when the Engle-Granger test on the same L sessions rejects no cointegration at 5%: an ADF regression on the residuals with one lagged difference and no constant, against MacKinnon's -3.34. The gate never closes an open position.
+- Grid, on design data only: L in {126, 252, 504}, e in {1.5, 2, 2.5}, x in {0, 0.5}, giving 18 rules each for H4a and H4b. The best of each by design Sharpe after costs is validated once.
+- Costs: 10 bps per unit of notional traded on each leg, paid on entry and exit. A position set at the close of day t earns day t + 1.
+- Pass mark, for each of H4a and H4b: validation Sharpe after costs above zero. Two tests on the same validation data, reported as such. H1's validation Sharpe (0.06) is shown alongside for comparison but is not a pass mark.
+
+## Amendment: Sortino ratios
+
+Added 25 October 2026. Every rule also reports a Sortino ratio: the annualised mean daily net return divided by the annualised downside deviation, the square root of the mean of min(r, 0) squared over all days in the period. Reporting only; no pass mark uses it.
