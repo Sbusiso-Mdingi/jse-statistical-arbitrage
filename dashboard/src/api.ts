@@ -24,6 +24,7 @@ export type Metrics = {
   total_return: number;
   cagr: number;
   sharpe: number;
+  sortino: number;
   volatility: number;
   max_drawdown: number;
   trades: number;
@@ -117,7 +118,7 @@ export type BasketModel = {
   pit: { walkforward: { u: number[]; v: number[] }; live: { u: number[]; v: number[] } };
 };
 
-type Perf = { sharpe: number; cagr: number; mdd: number };
+type Perf = { sharpe: number; sortino: number; cagr: number; mdd: number };
 export type Research = {
   tests: {
     id: string;
@@ -131,7 +132,16 @@ export type Research = {
     design_note?: string;
     edge_vs_h1?: { bps_per_year: number; t_stat: number };
     before_costs?: { design: Perf; validation: Perf };
+    entries?: { design: number; validation: number; post_freeze: number };
   }[];
+  cointegration: {
+    engle_granger: { full_levels: number; full_logs: number; design_logs: number };
+    crit5: number;
+    rolling_share_rejecting: number;
+    gregory_hansen: { level: number; regime: number };
+    breaks: string[];
+    segments: { from: string; to: string; slope: number }[];
+  };
   decay: {
     banks: Record<string, string>;
     window: number;

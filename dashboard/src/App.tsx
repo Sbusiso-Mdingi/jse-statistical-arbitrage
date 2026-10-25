@@ -20,8 +20,8 @@ import { DecayChart, EquityChart, PitScatter, ReversalBars, SignalChart } from "
 import { fmtDate, num, pct, side } from "./format";
 
 const PERIODS: { id: Period; label: string }[] = [
-  { id: "live", label: "Unseen since 1 April 2026" },
   { id: "walkforward", label: "Walk-forward, 2010 to March 2026" },
+  { id: "live", label: "Unseen since 1 April 2026" },
   { id: "all", label: "Full record" },
 ];
 
@@ -107,19 +107,22 @@ function useBacktest<P, B>(period: Period, params: P, load: (period: Period, p: 
 function Performance({ bt, costBps, benchmarkLabel }: { bt: Backtest | BasketBacktest; costBps: number; benchmarkLabel: string }) {
   const m = bt.metrics;
   const shortPeriod = m.years < 1;
+  // Two standard deviations of the total return of a zero-mean strategy with this volatility, over this span.
+  const band = 2 * m.volatility * Math.sqrt(m.years);
   return (
     <>
       <section className="metrics" aria-label="Performance">
         <Metric value={pct(m.total_return)} label="Total return" negative={m.total_return < 0} sub={`${fmtDate(bt.start)} to ${fmtDate(bt.end)}`} />
         <Metric value={pct(m.cagr)} label="Annualised (CAGR)" negative={m.cagr < 0} />
-        <Metric value={num(m.sharpe)} label="Sharpe ratio" negative={m.sharpe < 0} sub="Annualised, no risk-free rate" />
+        <Metric value={num(m.sharpe)} label="Sharpe ratio" negative={m.sharpe < 0} sub={`Sortino ${num(m.sortino)} · annualised, no risk-free rate`} />
         <Metric value={pct(m.max_drawdown)} label="Max drawdown" negative />
         <Metric value={String(m.trades)} label="Trades" sub={m.avg_hold_days != null ? `Average ${m.avg_hold_days.toFixed(1)} days held` : undefined} />
         <Metric value={pct(m.hit_rate, 0)} label="Winning trades" sub={`In the market ${pct(m.time_in_market, 0)} of days`} />
       </section>
       <p className="note">
         {shortPeriod
-          ? `Only ${Math.round(m.years * 12)} months of unseen data so far, so the annualised figures will move as each session is added. `
+          ? `Only ${Math.round(m.years * 12)} months of unseen data so far, so the annualised figures will move as each session is added. ` +
+            `At this volatility, a strategy with no edge at all would end this many months between ${pct(-band)} and ${pct(band)} about 95% of the time. `
           : ""}
         Returns are net of {costBps} bps per leg on every change of position, with each side sized at half of capital.{" "}
         {benchmarkLabel} returned {pct(bt.benchmark.total_return)} over the same dates.
@@ -587,8 +590,54 @@ function ResearchSection() {
   const early = d.reversal_by_year.filter((y) => y.year < 2020);
   const late = d.reversal_by_year.filter((y) => y.year >= 2020);
   const avg = (rows: typeof early) => rows.reduce((s, y) => s + y.bps * y.n, 0) / rows.reduce((s, y) => s + y.n, 0);
+  const c = r.cointegration;
+  const slopes = c.segments.map((s) => s.slope);
   return (
     <>
+      <section className="panel">
+        <div className="panel-head">
+          <h2 className="serif">
+            Cointegration, <em>tested first</em>
+          </h2>
+          <span className="legend">
+            SBK and NED, {c.segments[0]!.from.slice(0, 4)} to March 2026
+          </span>
+        </div>
+        <p className="note">
+          The project began as a classic pairs trade, which needs the two prices to be cointegrated. They are not. The Engle-Granger
+          statistic is {num(c.engle_granger.full_levels)} in price levels and {num(c.engle_granger.full_logs)} in logs, against a 5%
+          critical value of {num(c.crit5)}, and Johansen and Phillips-Ouliaris tests agree at 5%. Two-year windows reject only{" "}
+          {pct(c.rolling_share_rejecting, 0)} of the time, and allowing one break (Gregory-Hansen, {num(c.gregory_hansen.level)} and{" "}
+          {num(c.gregory_hansen.regime)}) does not rescue it.
+        </p>
+        <div style={{ height: 18 }} />
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>From</th>
+                <th>To</th>
+                <th className="num">Hedge ratio, log NED on log SBK</th>
+              </tr>
+            </thead>
+            <tbody>
+              {c.segments.map((s) => (
+                <tr key={s.from}>
+                  <td className="mono">{s.from.slice(0, 7)}</td>
+                  <td className="mono">{s.to.slice(0, 7)}</td>
+                  <td className="num">{num(s.slope)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="note">
+          Bai-Perron finds {c.breaks.length} breaks in the long-run relationship, and the hedge ratio swings between{" "}
+          {num(Math.min(...slopes))} and {num(Math.max(...slopes))}. The two banks still move together, so the project models
+          their dependence day to day instead: ARMA-GARCH filters each return series and a copula captures the joint tails. The
+          classic z-score trade is still tested below, as H4.
+        </p>
+      </section>
       <section className="panel">
         <div className="panel-head">
           <h2 className="serif">
@@ -662,6 +711,8 @@ function ResearchSection() {
                       {t.detail}
                       {t.design_note ? ` ${t.design_note}.` : ""}
                       {t.before_costs ? ` Before costs: ${num(t.before_costs.design.sharpe)} in design, ${num(t.before_costs.validation.sharpe)} in validation.` : ""}
+                      {` Validation Sortino ${num(t.validation.sortino)}.`}
+                      {t.entries ? ` ${t.entries.validation} trades in validation.` : ""}
                       {t.edge_vs_h1
                         ? ` Ahead of H1 in validation by ${num(t.edge_vs_h1.bps_per_year, 0)} bps a year (t = ${num(t.edge_vs_h1.t_stat)}), too small to tell from chance.`
                         : ""}
@@ -672,7 +723,7 @@ function ResearchSection() {
                     {num(t.validation.sharpe)}
                   </td>
                   <td className="num" style={{ color: t.post_freeze.sharpe < 0 ? "var(--negative)" : undefined }}>
-                    {num(t.post_freeze.sharpe)}
+                    {t.entries?.post_freeze === 0 ? "No trades" : num(t.post_freeze.sharpe)}
                   </td>
                   <td>
                     {t.passed == null
@@ -698,8 +749,8 @@ function ResearchSection() {
 }
 
 export function App({ embedded }: { embedded: boolean }) {
-  const [strategy, setStrategy] = useState<Strategy>("pair");
-  const [period, setPeriod] = useState<Period>("live");
+  const [strategy, setStrategy] = useState<Strategy>("basket");
+  const [period, setPeriod] = useState<Period>("walkforward");
   const [status, setStatus] = useState<Model["status"] | null>(null);
   useEffect(() => {
     getModel()
@@ -732,11 +783,11 @@ export function App({ embedded }: { embedded: boolean }) {
       </header>
 
       <div className="strategy-switch segmented" role="radiogroup" aria-label="Strategy">
-        <button aria-pressed={strategy === "pair"} onClick={() => setStrategy("pair")}>
-          Against Nedbank <span>the original report rule</span>
-        </button>
         <button aria-pressed={strategy === "basket"} onClick={() => setStrategy("basket")}>
           Against a bank basket <span>the new rule, refitted monthly</span>
+        </button>
+        <button aria-pressed={strategy === "pair"} onClick={() => setStrategy("pair")}>
+          Against Nedbank <span>the original report rule</span>
         </button>
       </div>
 
