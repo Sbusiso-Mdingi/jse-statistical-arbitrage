@@ -197,7 +197,9 @@ def evaluate(pos, a, b):
     sd = net.std(ddof=1)
     return dict(
         start=dates[int(np.argmax(m))], end=dates[n - 1 - int(np.argmax(m[::-1]))],
-        sharpe=round(net.mean() / sd * math.sqrt(252), 2), cagr=round(eq[-1] ** (252 / len(net)) - 1, 4),
+        sharpe=round(net.mean() / sd * math.sqrt(252), 2),
+        sortino=round(net.mean() / math.sqrt(np.mean(np.minimum(net, 0) ** 2)) * math.sqrt(252), 2),
+        cagr=round(eq[-1] ** (252 / len(net)) - 1, 4),
         mdd=round(float((eq / np.maximum.accumulate(eq) - 1).min()), 4),
         in_market=round(float((p != 0).mean()), 3),
     )

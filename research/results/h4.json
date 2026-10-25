@@ -1,0 +1,3007 @@
+{
+ "rules": [
+  {
+   "test": "H4a",
+   "lookback": 126,
+   "entry": 1.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.2,
+     "sortino": 0.28,
+     "cagr": 0.0141,
+     "total": 0.1541,
+     "mdd": -0.3364,
+     "in_market": 0.551,
+     "entries": 52
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.3,
+     "sortino": 0.44,
+     "cagr": 0.0245,
+     "total": 0.2807,
+     "mdd": -0.3183,
+     "in_market": 0.551,
+     "entries": 52
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.03,
+     "sortino": 0.04,
+     "cagr": -0.0038,
+     "total": -0.0233,
+     "mdd": -0.2719,
+     "in_market": 0.656,
+     "entries": 36
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.13,
+     "sortino": 0.17,
+     "cagr": 0.0078,
+     "total": 0.0495,
+     "mdd": -0.2577,
+     "in_market": 0.656,
+     "entries": 36
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": -1.07,
+     "sortino": -1.48,
+     "cagr": -0.0867,
+     "total": -0.0461,
+     "mdd": -0.0757,
+     "in_market": 0.71,
+     "entries": 1
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": -1.02,
+     "sortino": -1.42,
+     "cagr": -0.0832,
+     "total": -0.0442,
+     "mdd": -0.0738,
+     "in_market": 0.71,
+     "entries": 1
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 126,
+   "entry": 1.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.4,
+     "sortino": 0.6,
+     "cagr": 0.0164,
+     "total": 0.1811,
+     "mdd": -0.0764,
+     "in_market": 0.173,
+     "entries": 22
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.49,
+     "sortino": 0.76,
+     "cagr": 0.0207,
+     "total": 0.2339,
+     "mdd": -0.0745,
+     "in_market": 0.173,
+     "entries": 22
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.45,
+     "sortino": 0.67,
+     "cagr": 0.0227,
+     "total": 0.1493,
+     "mdd": -0.0792,
+     "in_market": 0.099,
+     "entries": 10
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.51,
+     "sortino": 0.76,
+     "cagr": 0.026,
+     "total": 0.1724,
+     "mdd": -0.0792,
+     "in_market": 0.099,
+     "entries": 10
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   },
+   "vs_h1_validation": {
+    "bps_per_year": 202.3,
+    "t_stat": 0.62,
+    "days": 1562
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 126,
+   "entry": 1.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.26,
+     "sortino": 0.37,
+     "cagr": 0.0178,
+     "total": 0.1983,
+     "mdd": -0.2087,
+     "in_market": 0.453,
+     "entries": 64
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.4,
+     "sortino": 0.59,
+     "cagr": 0.0306,
+     "total": 0.3613,
+     "mdd": -0.1885,
+     "in_market": 0.453,
+     "entries": 64
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.17,
+     "sortino": 0.24,
+     "cagr": 0.0135,
+     "total": 0.0869,
+     "mdd": -0.2427,
+     "in_market": 0.533,
+     "entries": 45
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.3,
+     "sortino": 0.41,
+     "cagr": 0.0285,
+     "total": 0.1901,
+     "mdd": -0.2249,
+     "in_market": 0.533,
+     "entries": 45
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": -0.26,
+     "sortino": -0.4,
+     "cagr": -0.022,
+     "total": -0.0115,
+     "mdd": -0.0475,
+     "in_market": 0.679,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": -0.16,
+     "sortino": -0.24,
+     "cagr": -0.0145,
+     "total": -0.0075,
+     "mdd": -0.0456,
+     "in_market": 0.679,
+     "entries": 2
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 126,
+   "entry": 1.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.37,
+     "sortino": 0.56,
+     "cagr": 0.0137,
+     "total": 0.1492,
+     "mdd": -0.073,
+     "in_market": 0.148,
+     "entries": 24
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.48,
+     "sortino": 0.75,
+     "cagr": 0.0184,
+     "total": 0.2055,
+     "mdd": -0.0693,
+     "in_market": 0.148,
+     "entries": 24
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.3,
+     "sortino": 0.42,
+     "cagr": 0.013,
+     "total": 0.0835,
+     "mdd": -0.0792,
+     "in_market": 0.072,
+     "entries": 10
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.36,
+     "sortino": 0.52,
+     "cagr": 0.0163,
+     "total": 0.1053,
+     "mdd": -0.0792,
+     "in_market": 0.072,
+     "entries": 10
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 126,
+   "entry": 2.0,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.28,
+     "sortino": 0.41,
+     "cagr": 0.0198,
+     "total": 0.2226,
+     "mdd": -0.2463,
+     "in_market": 0.44,
+     "entries": 35
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.36,
+     "sortino": 0.54,
+     "cagr": 0.0268,
+     "total": 0.3109,
+     "mdd": -0.2304,
+     "in_market": 0.44,
+     "entries": 35
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.17,
+     "sortino": 0.25,
+     "cagr": 0.0124,
+     "total": 0.0791,
+     "mdd": -0.2442,
+     "in_market": 0.478,
+     "entries": 26
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.26,
+     "sortino": 0.37,
+     "cagr": 0.0209,
+     "total": 0.1367,
+     "mdd": -0.2342,
+     "in_market": 0.478,
+     "entries": 26
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.23,
+     "sortino": 0.4,
+     "cagr": 0.0134,
+     "total": 0.0069,
+     "mdd": -0.0317,
+     "in_market": 0.664,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.32,
+     "sortino": 0.55,
+     "cagr": 0.0193,
+     "total": 0.01,
+     "mdd": -0.0317,
+     "in_market": 0.664,
+     "entries": 2
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 126,
+   "entry": 2.0,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.15,
+     "sortino": 0.23,
+     "cagr": 0.005,
+     "total": 0.0524,
+     "mdd": -0.0617,
+     "in_market": 0.128,
+     "entries": 10
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.2,
+     "sortino": 0.31,
+     "cagr": 0.007,
+     "total": 0.0736,
+     "mdd": -0.0617,
+     "in_market": 0.128,
+     "entries": 10
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.47,
+     "sortino": 0.7,
+     "cagr": 0.0096,
+     "total": 0.0611,
+     "mdd": -0.0324,
+     "in_market": 0.038,
+     "entries": 4
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.53,
+     "sortino": 0.8,
+     "cagr": 0.0109,
+     "total": 0.0696,
+     "mdd": -0.0305,
+     "in_market": 0.038,
+     "entries": 4
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 126,
+   "entry": 2.0,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.4,
+     "sortino": 0.6,
+     "cagr": 0.0256,
+     "total": 0.2956,
+     "mdd": -0.1418,
+     "in_market": 0.342,
+     "entries": 42
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.51,
+     "sortino": 0.78,
+     "cagr": 0.034,
+     "total": 0.4088,
+     "mdd": -0.1391,
+     "in_market": 0.342,
+     "entries": 42
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.1,
+     "sortino": 0.14,
+     "cagr": 0.0048,
+     "total": 0.0299,
+     "mdd": -0.2257,
+     "in_market": 0.366,
+     "entries": 29
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.2,
+     "sortino": 0.29,
+     "cagr": 0.0142,
+     "total": 0.0913,
+     "mdd": -0.2131,
+     "in_market": 0.366,
+     "entries": 29
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.23,
+     "sortino": 0.39,
+     "cagr": 0.0129,
+     "total": 0.0067,
+     "mdd": -0.0317,
+     "in_market": 0.634,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.35,
+     "sortino": 0.59,
+     "cagr": 0.0207,
+     "total": 0.0107,
+     "mdd": -0.0317,
+     "in_market": 0.634,
+     "entries": 2
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 126,
+   "entry": 2.0,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.25,
+     "sortino": 0.38,
+     "cagr": 0.0077,
+     "total": 0.0819,
+     "mdd": -0.0504,
+     "in_market": 0.11,
+     "entries": 12
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.31,
+     "sortino": 0.49,
+     "cagr": 0.0101,
+     "total": 0.1081,
+     "mdd": -0.0504,
+     "in_market": 0.11,
+     "entries": 12
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.3,
+     "sortino": 0.42,
+     "cagr": 0.0051,
+     "total": 0.0321,
+     "mdd": -0.0324,
+     "in_market": 0.02,
+     "entries": 4
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.37,
+     "sortino": 0.53,
+     "cagr": 0.0064,
+     "total": 0.0404,
+     "mdd": -0.0305,
+     "in_market": 0.02,
+     "entries": 4
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 126,
+   "entry": 2.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.46,
+     "sortino": 0.71,
+     "cagr": 0.0269,
+     "total": 0.3123,
+     "mdd": -0.0888,
+     "in_market": 0.299,
+     "entries": 22
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.53,
+     "sortino": 0.81,
+     "cagr": 0.0313,
+     "total": 0.3711,
+     "mdd": -0.0852,
+     "in_market": 0.299,
+     "entries": 22
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.24,
+     "sortino": 0.36,
+     "cagr": 0.0175,
+     "total": 0.1135,
+     "mdd": -0.2414,
+     "in_market": 0.339,
+     "entries": 18
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.31,
+     "sortino": 0.45,
+     "cagr": 0.0234,
+     "total": 0.1543,
+     "mdd": -0.2352,
+     "in_market": 0.339,
+     "entries": 18
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 126,
+   "entry": 2.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.2,
+     "sortino": 0.3,
+     "cagr": 0.0048,
+     "total": 0.0503,
+     "mdd": -0.0504,
+     "in_market": 0.064,
+     "entries": 5
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.24,
+     "sortino": 0.36,
+     "cagr": 0.0058,
+     "total": 0.0608,
+     "mdd": -0.0504,
+     "in_market": 0.064,
+     "entries": 5
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.05,
+     "sortino": 0.07,
+     "cagr": 0.0006,
+     "total": 0.0039,
+     "mdd": -0.0324,
+     "in_market": 0.015,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.1,
+     "sortino": 0.14,
+     "cagr": 0.0013,
+     "total": 0.0079,
+     "mdd": -0.0305,
+     "in_market": 0.015,
+     "entries": 2
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 126,
+   "entry": 2.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.63,
+     "sortino": 1.02,
+     "cagr": 0.0328,
+     "total": 0.3918,
+     "mdd": -0.0601,
+     "in_market": 0.213,
+     "entries": 24
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.72,
+     "sortino": 1.16,
+     "cagr": 0.0376,
+     "total": 0.46,
+     "mdd": -0.0601,
+     "in_market": 0.213,
+     "entries": 24
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.07,
+     "sortino": 0.1,
+     "cagr": 0.0023,
+     "total": 0.0141,
+     "mdd": -0.2439,
+     "in_market": 0.262,
+     "entries": 18
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.14,
+     "sortino": 0.2,
+     "cagr": 0.0081,
+     "total": 0.0513,
+     "mdd": -0.2377,
+     "in_market": 0.262,
+     "entries": 18
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   },
+   "vs_h1_validation": {
+    "bps_per_year": 18.5,
+    "t_stat": 0.05,
+    "days": 1562
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 126,
+   "entry": 2.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.18,
+     "sortino": 0.27,
+     "cagr": 0.0038,
+     "total": 0.0398,
+     "mdd": -0.0504,
+     "in_market": 0.056,
+     "entries": 5
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.22,
+     "sortino": 0.34,
+     "cagr": 0.0048,
+     "total": 0.0502,
+     "mdd": -0.0504,
+     "in_market": 0.056,
+     "entries": 5
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.06,
+     "sortino": -0.07,
+     "cagr": -0.0007,
+     "total": -0.0046,
+     "mdd": -0.0324,
+     "in_market": 0.006,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.0,
+     "sortino": -0.0,
+     "cagr": -0.0001,
+     "total": -0.0006,
+     "mdd": -0.0305,
+     "in_market": 0.006,
+     "entries": 2
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 252,
+   "entry": 1.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.03,
+     "sortino": -0.04,
+     "cagr": -0.0074,
+     "total": -0.0728,
+     "mdd": -0.3062,
+     "in_market": 0.628,
+     "entries": 32
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.04,
+     "sortino": 0.05,
+     "cagr": -0.001,
+     "total": -0.0104,
+     "mdd": -0.2941,
+     "in_market": 0.628,
+     "entries": 32
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.33,
+     "sortino": 0.47,
+     "cagr": 0.0313,
+     "total": 0.2108,
+     "mdd": -0.2922,
+     "in_market": 0.604,
+     "entries": 23
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.4,
+     "sortino": 0.56,
+     "cagr": 0.0391,
+     "total": 0.2688,
+     "mdd": -0.2874,
+     "in_market": 0.604,
+     "entries": 23
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": -0.31,
+     "sortino": -0.44,
+     "cagr": -0.0171,
+     "total": -0.0089,
+     "mdd": -0.0259,
+     "in_market": 0.305,
+     "entries": 1
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": -0.27,
+     "sortino": -0.38,
+     "cagr": -0.0152,
+     "total": -0.0079,
+     "mdd": -0.0259,
+     "in_market": 0.305,
+     "entries": 1
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 252,
+   "entry": 1.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.14,
+     "sortino": 0.2,
+     "cagr": 0.0044,
+     "total": 0.0456,
+     "mdd": -0.0992,
+     "in_market": 0.133,
+     "entries": 12
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.2,
+     "sortino": 0.3,
+     "cagr": 0.0067,
+     "total": 0.0709,
+     "mdd": -0.0955,
+     "in_market": 0.133,
+     "entries": 12
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.31,
+     "sortino": -0.4,
+     "cagr": -0.0135,
+     "total": -0.0806,
+     "mdd": -0.1467,
+     "in_market": 0.108,
+     "entries": 10
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.23,
+     "sortino": -0.3,
+     "cagr": -0.0103,
+     "total": -0.0621,
+     "mdd": -0.1416,
+     "in_market": 0.108,
+     "entries": 10
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 252,
+   "entry": 1.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.09,
+     "sortino": 0.14,
+     "cagr": 0.0045,
+     "total": 0.0472,
+     "mdd": -0.2609,
+     "in_market": 0.544,
+     "entries": 38
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.18,
+     "sortino": 0.25,
+     "cagr": 0.0121,
+     "total": 0.1314,
+     "mdd": -0.2513,
+     "in_market": 0.544,
+     "entries": 38
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.41,
+     "sortino": 0.58,
+     "cagr": 0.0382,
+     "total": 0.2616,
+     "mdd": -0.2548,
+     "in_market": 0.505,
+     "entries": 28
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.49,
+     "sortino": 0.71,
+     "cagr": 0.0478,
+     "total": 0.3353,
+     "mdd": -0.249,
+     "in_market": 0.505,
+     "entries": 28
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": -0.31,
+     "sortino": -0.44,
+     "cagr": -0.0171,
+     "total": -0.0089,
+     "mdd": -0.0259,
+     "in_market": 0.305,
+     "entries": 1
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": -0.27,
+     "sortino": -0.38,
+     "cagr": -0.0152,
+     "total": -0.0079,
+     "mdd": -0.0259,
+     "in_market": 0.305,
+     "entries": 1
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 252,
+   "entry": 1.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.09,
+     "sortino": 0.14,
+     "cagr": 0.0026,
+     "total": 0.0267,
+     "mdd": -0.0937,
+     "in_market": 0.114,
+     "entries": 15
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.18,
+     "sortino": 0.26,
+     "cagr": 0.0055,
+     "total": 0.0579,
+     "mdd": -0.0901,
+     "in_market": 0.114,
+     "entries": 15
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.4,
+     "sortino": -0.49,
+     "cagr": -0.0142,
+     "total": -0.0851,
+     "mdd": -0.1164,
+     "in_market": 0.086,
+     "entries": 11
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.3,
+     "sortino": -0.37,
+     "cagr": -0.0107,
+     "total": -0.0648,
+     "mdd": -0.1102,
+     "in_market": 0.086,
+     "entries": 11
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 252,
+   "entry": 2.0,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.17,
+     "sortino": 0.24,
+     "cagr": 0.011,
+     "total": 0.119,
+     "mdd": -0.2175,
+     "in_market": 0.472,
+     "entries": 25
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.23,
+     "sortino": 0.32,
+     "cagr": 0.016,
+     "total": 0.1762,
+     "mdd": -0.2081,
+     "in_market": 0.472,
+     "entries": 25
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.39,
+     "sortino": 0.57,
+     "cagr": 0.0358,
+     "total": 0.2439,
+     "mdd": -0.2817,
+     "in_market": 0.48,
+     "entries": 16
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.44,
+     "sortino": 0.64,
+     "cagr": 0.0413,
+     "total": 0.2855,
+     "mdd": -0.2782,
+     "in_market": 0.48,
+     "entries": 16
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.27,
+     "sortino": 0.43,
+     "cagr": 0.0117,
+     "total": 0.0061,
+     "mdd": -0.0261,
+     "in_market": 0.298,
+     "entries": 1
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.31,
+     "sortino": 0.5,
+     "cagr": 0.0136,
+     "total": 0.0071,
+     "mdd": -0.0261,
+     "in_market": 0.298,
+     "entries": 1
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 252,
+   "entry": 2.0,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.14,
+     "sortino": 0.2,
+     "cagr": 0.0039,
+     "total": 0.0407,
+     "mdd": -0.097,
+     "in_market": 0.1,
+     "entries": 9
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.19,
+     "sortino": 0.28,
+     "cagr": 0.0057,
+     "total": 0.0596,
+     "mdd": -0.0952,
+     "in_market": 0.1,
+     "entries": 9
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.54,
+     "sortino": -0.66,
+     "cagr": -0.0123,
+     "total": -0.0738,
+     "mdd": -0.091,
+     "in_market": 0.051,
+     "entries": 3
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.5,
+     "sortino": -0.61,
+     "cagr": -0.0113,
+     "total": -0.0682,
+     "mdd": -0.0883,
+     "in_market": 0.051,
+     "entries": 3
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 252,
+   "entry": 2.0,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.09,
+     "sortino": 0.13,
+     "cagr": 0.0039,
+     "total": 0.0411,
+     "mdd": -0.2791,
+     "in_market": 0.404,
+     "entries": 27
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.15,
+     "sortino": 0.22,
+     "cagr": 0.0092,
+     "total": 0.0988,
+     "mdd": -0.2683,
+     "in_market": 0.404,
+     "entries": 27
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.43,
+     "sortino": 0.63,
+     "cagr": 0.0372,
+     "total": 0.2542,
+     "mdd": -0.2493,
+     "in_market": 0.383,
+     "entries": 17
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.49,
+     "sortino": 0.71,
+     "cagr": 0.0431,
+     "total": 0.2987,
+     "mdd": -0.2464,
+     "in_market": 0.383,
+     "entries": 17
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.27,
+     "sortino": 0.43,
+     "cagr": 0.0117,
+     "total": 0.0061,
+     "mdd": -0.0261,
+     "in_market": 0.298,
+     "entries": 1
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.31,
+     "sortino": 0.5,
+     "cagr": 0.0136,
+     "total": 0.0071,
+     "mdd": -0.0261,
+     "in_market": 0.298,
+     "entries": 1
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 252,
+   "entry": 2.0,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.01,
+     "sortino": 0.01,
+     "cagr": -0.0002,
+     "total": -0.0016,
+     "mdd": -0.0915,
+     "in_market": 0.09,
+     "entries": 10
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.07,
+     "sortino": 0.11,
+     "cagr": 0.0018,
+     "total": 0.0185,
+     "mdd": -0.0897,
+     "in_market": 0.09,
+     "entries": 10
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.63,
+     "sortino": -0.74,
+     "cagr": -0.0138,
+     "total": -0.0824,
+     "mdd": -0.091,
+     "in_market": 0.049,
+     "entries": 3
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.59,
+     "sortino": -0.7,
+     "cagr": -0.0128,
+     "total": -0.0768,
+     "mdd": -0.0883,
+     "in_market": 0.049,
+     "entries": 3
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 252,
+   "entry": 2.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.28,
+     "sortino": 0.42,
+     "cagr": 0.0166,
+     "total": 0.1833,
+     "mdd": -0.1504,
+     "in_market": 0.354,
+     "entries": 18
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.34,
+     "sortino": 0.5,
+     "cagr": 0.0202,
+     "total": 0.2267,
+     "mdd": -0.1418,
+     "in_market": 0.354,
+     "entries": 18
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.08,
+     "sortino": -0.11,
+     "cagr": -0.0088,
+     "total": -0.0532,
+     "mdd": -0.227,
+     "in_market": 0.255,
+     "entries": 10
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.04,
+     "sortino": -0.05,
+     "cagr": -0.0056,
+     "total": -0.0341,
+     "mdd": -0.2192,
+     "in_market": 0.255,
+     "entries": 10
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 252,
+   "entry": 2.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.16,
+     "sortino": -0.23,
+     "cagr": -0.0048,
+     "total": -0.0481,
+     "mdd": -0.097,
+     "in_market": 0.063,
+     "entries": 5
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.13,
+     "sortino": -0.18,
+     "cagr": -0.0038,
+     "total": -0.0385,
+     "mdd": -0.0952,
+     "in_market": 0.063,
+     "entries": 5
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.74,
+     "sortino": -0.85,
+     "cagr": -0.0153,
+     "total": -0.0912,
+     "mdd": -0.0971,
+     "in_market": 0.04,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.71,
+     "sortino": -0.82,
+     "cagr": -0.0147,
+     "total": -0.0876,
+     "mdd": -0.0944,
+     "in_market": 0.04,
+     "entries": 2
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 252,
+   "entry": 2.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.27,
+     "sortino": 0.39,
+     "cagr": 0.0148,
+     "total": 0.1621,
+     "mdd": -0.178,
+     "in_market": 0.313,
+     "entries": 19
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.33,
+     "sortino": 0.48,
+     "cagr": 0.0185,
+     "total": 0.207,
+     "mdd": -0.1697,
+     "in_market": 0.313,
+     "entries": 19
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.15,
+     "sortino": -0.2,
+     "cagr": -0.013,
+     "total": -0.0781,
+     "mdd": -0.227,
+     "in_market": 0.245,
+     "entries": 10
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.1,
+     "sortino": -0.14,
+     "cagr": -0.0098,
+     "total": -0.0595,
+     "mdd": -0.2192,
+     "in_market": 0.245,
+     "entries": 10
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 252,
+   "entry": 2.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.13,
+     "sortino": -0.19,
+     "cagr": -0.0039,
+     "total": -0.0395,
+     "mdd": -0.0914,
+     "in_market": 0.059,
+     "entries": 6
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.09,
+     "sortino": -0.13,
+     "cagr": -0.0028,
+     "total": -0.0279,
+     "mdd": -0.0896,
+     "in_market": 0.059,
+     "entries": 6
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.74,
+     "sortino": -0.85,
+     "cagr": -0.0153,
+     "total": -0.0912,
+     "mdd": -0.0971,
+     "in_market": 0.04,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.71,
+     "sortino": -0.82,
+     "cagr": -0.0147,
+     "total": -0.0876,
+     "mdd": -0.0944,
+     "in_market": 0.04,
+     "entries": 2
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 504,
+   "entry": 1.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.1,
+     "sortino": 0.14,
+     "cagr": 0.0046,
+     "total": 0.0484,
+     "mdd": -0.2449,
+     "in_market": 0.47,
+     "entries": 19
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.15,
+     "sortino": 0.21,
+     "cagr": 0.0083,
+     "total": 0.0888,
+     "mdd": -0.2413,
+     "in_market": 0.47,
+     "entries": 19
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.35,
+     "sortino": -0.47,
+     "cagr": -0.0382,
+     "total": -0.2143,
+     "mdd": -0.2555,
+     "in_market": 0.518,
+     "entries": 10
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.31,
+     "sortino": -0.42,
+     "cagr": -0.0348,
+     "total": -0.1971,
+     "mdd": -0.2515,
+     "in_market": 0.518,
+     "entries": 10
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 504,
+   "entry": 1.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.12,
+     "sortino": -0.17,
+     "cagr": -0.0044,
+     "total": -0.0437,
+     "mdd": -0.1213,
+     "in_market": 0.105,
+     "entries": 4
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.1,
+     "sortino": -0.14,
+     "cagr": -0.0036,
+     "total": -0.036,
+     "mdd": -0.1178,
+     "in_market": 0.105,
+     "entries": 4
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.07,
+     "sortino": -0.1,
+     "cagr": -0.0066,
+     "total": -0.0404,
+     "mdd": -0.1697,
+     "in_market": 0.163,
+     "entries": 6
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.04,
+     "sortino": -0.06,
+     "cagr": -0.0047,
+     "total": -0.0289,
+     "mdd": -0.1697,
+     "in_market": 0.163,
+     "entries": 6
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 504,
+   "entry": 1.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.02,
+     "sortino": 0.03,
+     "cagr": -0.001,
+     "total": -0.0099,
+     "mdd": -0.2449,
+     "in_market": 0.418,
+     "entries": 20
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.08,
+     "sortino": 0.11,
+     "cagr": 0.0029,
+     "total": 0.0303,
+     "mdd": -0.2413,
+     "in_market": 0.418,
+     "entries": 20
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.19,
+     "sortino": -0.25,
+     "cagr": -0.0211,
+     "total": -0.124,
+     "mdd": -0.2416,
+     "in_market": 0.477,
+     "entries": 13
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.14,
+     "sortino": -0.18,
+     "cagr": -0.0167,
+     "total": -0.0993,
+     "mdd": -0.2414,
+     "in_market": 0.477,
+     "entries": 13
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 504,
+   "entry": 1.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.15,
+     "sortino": -0.21,
+     "cagr": -0.0047,
+     "total": -0.0472,
+     "mdd": -0.1052,
+     "in_market": 0.086,
+     "entries": 5
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.12,
+     "sortino": -0.16,
+     "cagr": -0.0037,
+     "total": -0.0377,
+     "mdd": -0.1034,
+     "in_market": 0.086,
+     "entries": 5
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.54,
+     "sortino": 0.84,
+     "cagr": 0.0244,
+     "total": 0.161,
+     "mdd": -0.0676,
+     "in_market": 0.114,
+     "entries": 7
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.58,
+     "sortino": 0.92,
+     "cagr": 0.0267,
+     "total": 0.1773,
+     "mdd": -0.066,
+     "in_market": 0.114,
+     "entries": 7
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 504,
+   "entry": 2.0,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.16,
+     "sortino": 0.24,
+     "cagr": 0.0083,
+     "total": 0.0883,
+     "mdd": -0.162,
+     "in_market": 0.326,
+     "entries": 12
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.2,
+     "sortino": 0.29,
+     "cagr": 0.0107,
+     "total": 0.1152,
+     "mdd": -0.1569,
+     "in_market": 0.326,
+     "entries": 12
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.39,
+     "sortino": -0.5,
+     "cagr": -0.0372,
+     "total": -0.2092,
+     "mdd": -0.2539,
+     "in_market": 0.374,
+     "entries": 9
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.35,
+     "sortino": -0.46,
+     "cagr": -0.0342,
+     "total": -0.1943,
+     "mdd": -0.2532,
+     "in_market": 0.374,
+     "entries": 9
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 504,
+   "entry": 2.0,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.21,
+     "sortino": -0.28,
+     "cagr": -0.0064,
+     "total": -0.0641,
+     "mdd": -0.1022,
+     "in_market": 0.046,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.2,
+     "sortino": -0.26,
+     "cagr": -0.0061,
+     "total": -0.0603,
+     "mdd": -0.1022,
+     "in_market": 0.046,
+     "entries": 2
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.0,
+     "sortino": -0.0,
+     "cagr": -0.0016,
+     "total": -0.0099,
+     "mdd": -0.1823,
+     "in_market": 0.064,
+     "entries": 3
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.02,
+     "sortino": 0.02,
+     "cagr": -0.0006,
+     "total": -0.0039,
+     "mdd": -0.1815,
+     "in_market": 0.064,
+     "entries": 3
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 504,
+   "entry": 2.0,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.14,
+     "sortino": 0.2,
+     "cagr": 0.0069,
+     "total": 0.0724,
+     "mdd": -0.1498,
+     "in_market": 0.313,
+     "entries": 12
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.18,
+     "sortino": 0.26,
+     "cagr": 0.0093,
+     "total": 0.0989,
+     "mdd": -0.1446,
+     "in_market": 0.313,
+     "entries": 12
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.14,
+     "sortino": -0.18,
+     "cagr": -0.0143,
+     "total": -0.0854,
+     "mdd": -0.2539,
+     "in_market": 0.293,
+     "entries": 11
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.09,
+     "sortino": -0.12,
+     "cagr": -0.0107,
+     "total": -0.0648,
+     "mdd": -0.2532,
+     "in_market": 0.293,
+     "entries": 11
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 504,
+   "entry": 2.0,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.18,
+     "sortino": -0.24,
+     "cagr": -0.0056,
+     "total": -0.0558,
+     "mdd": -0.1022,
+     "in_market": 0.044,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.17,
+     "sortino": -0.23,
+     "cagr": -0.0052,
+     "total": -0.052,
+     "mdd": -0.1022,
+     "in_market": 0.044,
+     "entries": 2
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.83,
+     "sortino": 1.66,
+     "cagr": 0.0269,
+     "total": 0.1787,
+     "mdd": -0.0242,
+     "in_market": 0.03,
+     "entries": 3
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.86,
+     "sortino": 1.72,
+     "cagr": 0.0279,
+     "total": 0.1858,
+     "mdd": -0.0242,
+     "in_market": 0.03,
+     "entries": 3
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 504,
+   "entry": 2.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.12,
+     "sortino": 0.17,
+     "cagr": 0.0045,
+     "total": 0.0465,
+     "mdd": -0.1054,
+     "in_market": 0.189,
+     "entries": 9
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.16,
+     "sortino": 0.23,
+     "cagr": 0.0062,
+     "total": 0.0655,
+     "mdd": -0.1036,
+     "in_market": 0.189,
+     "entries": 9
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.11,
+     "sortino": -0.15,
+     "cagr": -0.0096,
+     "total": -0.0583,
+     "mdd": -0.1679,
+     "in_market": 0.234,
+     "entries": 7
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.08,
+     "sortino": -0.1,
+     "cagr": -0.0074,
+     "total": -0.0449,
+     "mdd": -0.1669,
+     "in_market": 0.234,
+     "entries": 7
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 504,
+   "entry": 2.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.21,
+     "sortino": -0.28,
+     "cagr": -0.0063,
+     "total": -0.0625,
+     "mdd": -0.0856,
+     "in_market": 0.046,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.19,
+     "sortino": -0.26,
+     "cagr": -0.0059,
+     "total": -0.0588,
+     "mdd": -0.0837,
+     "in_market": 0.046,
+     "entries": 2
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.71,
+     "sortino": 1.62,
+     "cagr": 0.0115,
+     "total": 0.0735,
+     "mdd": -0.012,
+     "in_market": 0.02,
+     "entries": 1
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.73,
+     "sortino": 1.67,
+     "cagr": 0.0118,
+     "total": 0.0757,
+     "mdd": -0.012,
+     "in_market": 0.02,
+     "entries": 1
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4a",
+   "lookback": 504,
+   "entry": 2.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.1,
+     "sortino": 0.14,
+     "cagr": 0.0033,
+     "total": 0.0345,
+     "mdd": -0.1054,
+     "in_market": 0.186,
+     "entries": 9
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.13,
+     "sortino": 0.19,
+     "cagr": 0.0051,
+     "total": 0.0533,
+     "mdd": -0.1036,
+     "in_market": 0.186,
+     "entries": 9
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.15,
+     "sortino": -0.2,
+     "cagr": -0.0114,
+     "total": -0.0688,
+     "mdd": -0.1679,
+     "in_market": 0.204,
+     "entries": 7
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": -0.11,
+     "sortino": -0.15,
+     "cagr": -0.0092,
+     "total": -0.0555,
+     "mdd": -0.1669,
+     "in_market": 0.204,
+     "entries": 7
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  },
+  {
+   "test": "H4b",
+   "lookback": 504,
+   "entry": 2.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.18,
+     "sortino": -0.24,
+     "cagr": -0.0054,
+     "total": -0.0542,
+     "mdd": -0.0856,
+     "in_market": 0.044,
+     "entries": 2
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": -0.17,
+     "sortino": -0.23,
+     "cagr": -0.005,
+     "total": -0.0504,
+     "mdd": -0.0837,
+     "in_market": 0.044,
+     "entries": 2
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.6,
+     "sortino": 1.29,
+     "cagr": 0.0086,
+     "total": 0.0544,
+     "mdd": -0.012,
+     "in_market": 0.016,
+     "entries": 1
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.61,
+     "sortino": 1.34,
+     "cagr": 0.0089,
+     "total": 0.0565,
+     "mdd": -0.012,
+     "in_market": 0.016,
+     "entries": 1
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   }
+  }
+ ],
+ "chosen": {
+  "H4a": {
+   "test": "H4a",
+   "lookback": 126,
+   "entry": 2.5,
+   "exit": 0.5,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.63,
+     "sortino": 1.02,
+     "cagr": 0.0328,
+     "total": 0.3918,
+     "mdd": -0.0601,
+     "in_market": 0.213,
+     "entries": 24
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.72,
+     "sortino": 1.16,
+     "cagr": 0.0376,
+     "total": 0.46,
+     "mdd": -0.0601,
+     "in_market": 0.213,
+     "entries": 24
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.07,
+     "sortino": 0.1,
+     "cagr": 0.0023,
+     "total": 0.0141,
+     "mdd": -0.2439,
+     "in_market": 0.262,
+     "entries": 18
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.14,
+     "sortino": 0.2,
+     "cagr": 0.0081,
+     "total": 0.0513,
+     "mdd": -0.2377,
+     "in_market": 0.262,
+     "entries": 18
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   },
+   "vs_h1_validation": {
+    "bps_per_year": 18.5,
+    "t_stat": 0.05,
+    "days": 1562
+   }
+  },
+  "H4b": {
+   "test": "H4b",
+   "lookback": 126,
+   "entry": 1.5,
+   "exit": 0.0,
+   "design": {
+    "after_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.4,
+     "sortino": 0.6,
+     "cagr": 0.0164,
+     "total": 0.1811,
+     "mdd": -0.0764,
+     "in_market": 0.173,
+     "entries": 22
+    },
+    "before_costs": {
+     "start": "2010-01-01",
+     "end": "2019-12-31",
+     "sharpe": 0.49,
+     "sortino": 0.76,
+     "cagr": 0.0207,
+     "total": 0.2339,
+     "mdd": -0.0745,
+     "in_market": 0.173,
+     "entries": 22
+    }
+   },
+   "validation": {
+    "after_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.45,
+     "sortino": 0.67,
+     "cagr": 0.0227,
+     "total": 0.1493,
+     "mdd": -0.0792,
+     "in_market": 0.099,
+     "entries": 10
+    },
+    "before_costs": {
+     "start": "2020-01-02",
+     "end": "2026-03-31",
+     "sharpe": 0.51,
+     "sortino": 0.76,
+     "cagr": 0.026,
+     "total": 0.1724,
+     "mdd": -0.0792,
+     "in_market": 0.099,
+     "entries": 10
+    }
+   },
+   "post-freeze": {
+    "after_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    },
+    "before_costs": {
+     "start": "2026-04-01",
+     "end": "2026-10-09",
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "cagr": 0.0,
+     "total": 0.0,
+     "mdd": 0.0,
+     "in_market": 0.0,
+     "entries": 0
+    }
+   },
+   "vs_h1_validation": {
+    "bps_per_year": 202.3,
+    "t_stat": 0.62,
+    "days": 1562
+   }
+  }
+ },
+ "gate_open_share": {
+  "126": {
+   "design": 0.173,
+   "validation": 0.141,
+   "post-freeze": 0.0
+  },
+  "252": {
+   "design": 0.12,
+   "validation": 0.149,
+   "post-freeze": 0.0
+  },
+  "504": {
+   "design": 0.155,
+   "validation": 0.182,
+   "post-freeze": 0.0
+  }
+ }
+}

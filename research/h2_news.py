@@ -90,10 +90,12 @@ def evaluate(pos, start, end):
     eq = np.cumprod(1 + net)
     yrs = len(net) / 252
     sd = net.std(ddof=1)
+    down = math.sqrt(np.mean(np.minimum(net, 0) ** 2))
     prev = np.concatenate([[0.0], pos[:-1]])[m]
     return dict(
         start=dates[np.argmax(m)], end=dates[len(m) - 1 - np.argmax(m[::-1])],
         sharpe=round(net.mean() / sd * math.sqrt(252), 2) if sd > 0 else 0.0,
+        sortino=round(net.mean() / down * math.sqrt(252), 2) if down > 0 else 0.0,
         cagr=round(eq[-1] ** (1 / yrs) - 1, 4), total=round(eq[-1] - 1, 4),
         mdd=round(float((eq / np.maximum.accumulate(eq) - 1).min()), 4),
         in_market=round(float((p != 0).mean()), 3), entries=int(((p != 0) & (prev != p)).sum()),
@@ -120,5 +122,5 @@ if __name__ == "__main__":
     for name, res in out["results"].items():
         print(f"\n{name}  news-day share {out['news_day_share'][name]}")
         for k, r in res.items():
-            print(f"  {k:12s} SR {r['sharpe']:5.2f}  CAGR {r['cagr']*100:5.1f}%  MDD {r['mdd']*100:6.1f}%  entries {r['entries']:3d}  in mkt {r['in_market']*100:3.0f}%  {r['start']} to {r['end']}")
+            print(f"  {k:12s} SR {r['sharpe']:5.2f}  Sortino {r['sortino']:5.2f}  CAGR {r['cagr']*100:5.1f}%  MDD {r['mdd']*100:6.1f}%  entries {r['entries']:3d}  in mkt {r['in_market']*100:3.0f}%  {r['start']} to {r['end']}")
     json.dump(out, open("research/results/h2.json", "w"), indent=1)

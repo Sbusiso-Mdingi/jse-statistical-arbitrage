@@ -135,6 +135,7 @@ def metrics(dates: list, daily: np.ndarray, equity: np.ndarray, pos: np.ndarray,
     days = (dates[-1] - dates[0]).days or 1
     total = float(equity[-1] - 1)
     sd = float(np.std(daily, ddof=1))
+    down = math.sqrt(float(np.mean(np.minimum(daily, 0) ** 2)))
     peak = np.maximum.accumulate(np.concatenate([[1.0], equity]))
     dd = np.concatenate([[1.0], equity]) / peak - 1
     closed = [t for t in trades if t["close"] is not None]
@@ -142,6 +143,8 @@ def metrics(dates: list, daily: np.ndarray, equity: np.ndarray, pos: np.ndarray,
         "total_return": total,
         "cagr": float((1 + total) ** (365.25 / days) - 1) if total > -1 else -1.0,
         "sharpe": float(np.mean(daily) / sd * math.sqrt(252)) if sd > 0 else 0.0,
+        # Downside deviation over all days, losses only.
+        "sortino": float(np.mean(daily) / down * math.sqrt(252)) if down > 0 else 0.0,
         "volatility": sd * math.sqrt(252),
         "max_drawdown": float(dd.min()),
         "trades": len(trades),

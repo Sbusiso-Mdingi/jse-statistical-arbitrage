@@ -34,32 +34,39 @@ for t in range(n):
     pos[t] = cur
 
 
+def net_returns(cost=COST):
+    held = np.concatenate([[0.0], pos[:-1]]) * 0.5
+    return held * (rs - rb) - np.abs(np.diff(np.concatenate([[0.0], pos]))) * cost
+
+
 def evaluate(start, end, cost=COST):
     # Net returns on the full record, then sliced, so positions carry across period boundaries.
-    held_all = np.concatenate([[0.0], pos[:-1]]) * 0.5
-    turn_all = np.abs(np.diff(np.concatenate([[0.0], pos])))
-    net_all = held_all * (rs - rb) - turn_all * cost
+    net_all = net_returns(cost)
     m = np.array([start <= d < end for d in dates])
-    net, p, held = net_all[m], pos[m], held_all[m]
+    net, p = net_all[m], pos[m]
     eq = np.cumprod(1 + net)
     yrs = len(net) / 252
     sd = net.std(ddof=1)
     return dict(
         start=dates[int(np.argmax(m))], end=dates[n - 1 - int(np.argmax(m[::-1]))],
-        sharpe=round(net.mean() / sd * math.sqrt(252), 2), cagr=round(eq[-1] ** (1 / yrs) - 1, 4),
+        sharpe=round(net.mean() / sd * math.sqrt(252), 2),
+        sortino=round(net.mean() / math.sqrt(np.mean(np.minimum(net, 0) ** 2)) * math.sqrt(252), 2),
+        cagr=round(eq[-1] ** (1 / yrs) - 1, 4),
         total=round(eq[-1] - 1, 4), mdd=round(float((eq / np.maximum.accumulate(eq) - 1).min()), 4),
         in_market=round(float((p != 0).mean()), 3),
         entries=int(((p != 0) & (np.concatenate([[0.0], pos[:-1]])[m] != p)).sum()),
     )
 
 
-out = {name: {"after_costs": evaluate(s, e), "before_costs": evaluate(s, e, 0.0)} for name, (s, e) in PERIODS.items()}
-# The signal should be uniform if the model is right: share of days beyond the threshold.
-out["signal_share"] = {name: round(float(np.mean([abs(h[i] - 0.5) > Q / 2 for i in range(n) if s <= dates[i] < e])), 3)
-                       for name, (s, e) in PERIODS.items()}
-out["copula_families"] = sorted({r["copula"] for r in rows})
-for name, (s, e) in PERIODS.items():
-    for k, r in out[name].items():
-        print(f"{name:12s} {k:13s} SR {r['sharpe']:5.2f}  CAGR {r['cagr']*100:5.1f}%  MDD {r['mdd']*100:6.1f}%  entries {r['entries']:3d}  {r['start']} to {r['end']}")
-print("signal share", out["signal_share"], "families", out["copula_families"])
-json.dump(out, open("research/results/h1.json", "w"), indent=1)
+
+if __name__ == "__main__":
+    out = {name: {"after_costs": evaluate(s, e), "before_costs": evaluate(s, e, 0.0)} for name, (s, e) in PERIODS.items()}
+    # The signal should be uniform if the model is right: share of days beyond the threshold.
+    out["signal_share"] = {name: round(float(np.mean([abs(h[i] - 0.5) > Q / 2 for i in range(n) if s <= dates[i] < e])), 3)
+                           for name, (s, e) in PERIODS.items()}
+    out["copula_families"] = sorted({r["copula"] for r in rows})
+    for name, (s, e) in PERIODS.items():
+        for k, r in out[name].items():
+            print(f"{name:12s} {k:13s} SR {r['sharpe']:5.2f}  Sortino {r['sortino']:5.2f}  CAGR {r['cagr']*100:5.1f}%  MDD {r['mdd']*100:6.1f}%  entries {r['entries']:3d}  {r['start']} to {r['end']}")
+    print("signal share", out["signal_share"], "families", out["copula_families"])
+    json.dump(out, open("research/results/h1.json", "w"), indent=1)
