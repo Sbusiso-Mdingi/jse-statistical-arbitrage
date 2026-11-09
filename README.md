@@ -45,7 +45,7 @@ Live prices refresh every 30 minutes (`REFRESH_SECONDS`); if Yahoo is unreachabl
 ## Deploying
 
 ```sh
-AZ_SUBSCRIPTION=<subscription id> TAG=v8 deploy/azure.sh
+AZ_SUBSCRIPTION=<subscription id> TAG=v9 deploy/azure.sh
 ```
 
 Resource group `rg-mdingi-previews`: an App Service F1 (free) Linux plan pulling from ACR Basic through a managed identity. Response headers allow framing only from mdingi.co.za and localhost. The pair's final fit is frozen on 31 March 2026 and is not refitted. The service filters each new session forward from that fit, so nothing scheduled is needed; the old monthly Cloud Run refit (`jse-pairs-refit-monthly`) is paused.
