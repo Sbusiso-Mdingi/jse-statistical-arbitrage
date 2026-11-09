@@ -33,6 +33,7 @@ ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:4321",
     "http://localhost:5173",
+    "http://localhost:8080",
 ]
 FRAME_ANCESTORS = "'self' https://mdingi.co.za https://www.mdingi.co.za http://localhost:*"
 
