@@ -1,12 +1,12 @@
 # Monthly refit on Cloud Run
 
-**Paused since 9 November 2026.** The project is now Standard Bank against Nedbank, frozen on 31 March 2026, and the service filters new sessions itself. This job refits the earlier basket stage and redeploys the dashboard, so it stays paused (`gcloud scheduler jobs pause jse-pairs-refit-monthly --location europe-west1`). Do not resume it without rewriting `pipeline.sh` for the pair.
+**Paused since 9 November 2026.** The project is now Standard Bank against Nedbank, frozen on 31 March 2026, and the service filters new sessions itself. This job refits the earlier basket stage and redeploys the dashboard, so it stays paused (`gcloud scheduler jobs pause jse-pairs-refit-monthly --location europe-west1`). `pipeline.sh` now exits at once, so a resumed schedule changes nothing.
 
 The code lives here on GitHub; only the **scheduled compute** runs on Google
 Cloud Run instead of GitHub Actions. Each month a Cloud Run job clones this repo
 fresh, downloads prices, refits the bank-basket model, runs the parity tests,
 pushes the new fits back to GitHub, and redeploys the Azure dashboard — exactly
-what `.github/workflows/monthly-refit.yml` used to do.
+what the GitHub Actions workflow (removed) used to do.
 
 ## How it fits together
 

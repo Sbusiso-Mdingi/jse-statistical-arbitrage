@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
-# The monthly refit, mirroring .github/workflows/monthly-refit.yml, but run as a
-# Cloud Run job instead of GitHub Actions. Runs inside a fresh clone (see
-# bootstrap.sh). The R packages are already in the image; prices are downloaded
-# fresh and the parity tests must pass before anything is pushed or deployed.
+# The monthly refit of the earlier basket stage, run as a Cloud Run job inside a
+# fresh clone (see bootstrap.sh). The R packages are already in the image; prices
+# are downloaded fresh and the parity tests must pass before anything is pushed or
+# deployed.
 set -euo pipefail
+
+# Retired 9 November 2026: the project is Standard Bank against Nedbank, frozen on
+# 31 March 2026, and the service no longer carries the basket. Refitting it here would
+# push basket files and redeploy over the pair. Stop before touching anything.
+echo "pipeline.sh is retired; see deploy/cloudrun/README.md" >&2
+exit 1
 
 git config user.name "cloud-run-refit[bot]"
 git config user.email "cloud-run-refit@users.noreply.github.com"
