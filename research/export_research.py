@@ -1,7 +1,7 @@
 """Collect the decay study and every tested rule into data/research.json for the dashboard.
 
 Run after research/decay.py, research/h1_evaluate.py, research/h2_news.py, research/h3_exit.py,
-research/04_cointegration.R, research/h4_cointegration.py and research/h5_edit.py.
+research/04_cointegration.R, research/h4_cointegration.py, research/h5_edit.py and research/h6_rl_exit.py.
 """
 import json, sys
 from datetime import date
@@ -79,7 +79,12 @@ tests.append({"id": "h5", "name": "Edited copula correlation (H5)", "detail": "H
               "before_costs": {p: pick(h5[n]["before_costs"]) for p, n in (("design", "design"), ("validation", "validation"))},
               "entries": {p: h5[n]["after_costs"]["entries"] for p, n in (("design", "design"), ("validation", "validation"), ("post_freeze", "post-freeze"))},
               "edge_vs_h1": h5["vs_h1_validation"]})
-bars = {"h5": max(0.0, tests[2]["validation"]["sharpe"]), "h4a": 0.0, "h4b": 0.0, "v1": None, "hold5": 0.0, "h1": max(0.0, tests[0]["validation"]["sharpe"]), "h2a": max(0.0, tests[1]["validation"]["sharpe"]), "h2b": max(0.0, tests[1]["validation"]["sharpe"]), "h3a": max(0.0, tests[2]["validation"]["sharpe"]), "h3b": max(0.0, tests[2]["validation"]["sharpe"])}
+h6 = json.load(open("research/results/h6.json"))
+tests.append({"id": "h6", "name": "Network exit trained on every day (H6)", "detail": "H1 entries. Fitted Q-iteration with a small network decides each held day whether to keep holding, trained on virtual five-day episodes starting at every close (17,082 decision points against H3's 592), with the H5 calibrated signal as a state variable.",
+              "pass_mark": "Validation Sharpe above zero and above H1",
+              **{p: pick(h6["h6"][n]) for p, n in (("design", "design"), ("validation", "validation"), ("post_freeze", "post-freeze"))},
+              "design_note": "Design period 2013 to 2019", "edge_vs_h1": h6["h6"]["vs_h1_validation"]})
+bars = {"h6": max(0.0, tests[2]["validation"]["sharpe"]), "h5": max(0.0, tests[2]["validation"]["sharpe"]), "h4a": 0.0, "h4b": 0.0, "v1": None, "hold5": 0.0, "h1": max(0.0, tests[0]["validation"]["sharpe"]), "h2a": max(0.0, tests[1]["validation"]["sharpe"]), "h2b": max(0.0, tests[1]["validation"]["sharpe"]), "h3a": max(0.0, tests[2]["validation"]["sharpe"]), "h3b": max(0.0, tests[2]["validation"]["sharpe"])}
 for t in tests:
     if bars[t["id"]] is not None:
         t["passed"] = t["validation"]["sharpe"] > bars[t["id"]]

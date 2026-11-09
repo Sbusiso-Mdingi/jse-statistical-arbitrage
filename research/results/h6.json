@@ -1,0 +1,130 @@
+{
+ "h1": {
+  "design": {
+   "start": "2013-01-01",
+   "end": "2019-12-31",
+   "sharpe": 0.26,
+   "sortino": 0.39,
+   "cagr": 0.0109,
+   "mdd": -0.0787,
+   "in_market": 0.281
+  },
+  "validation": {
+   "start": "2020-01-02",
+   "end": "2026-03-31",
+   "sharpe": 0.06,
+   "sortino": 0.1,
+   "cagr": 0.002,
+   "mdd": -0.1511,
+   "in_market": 0.307
+  },
+  "post-freeze": {
+   "start": "2026-04-01",
+   "end": "2026-10-09",
+   "sharpe": -2.31,
+   "sortino": -2.9,
+   "cagr": -0.0794,
+   "mdd": -0.0441,
+   "in_market": 0.321
+  }
+ },
+ "decision_points": 17082,
+ "real_decision_points": 976,
+ "features": [
+  "days_held",
+  "signal_now",
+  "signal_entry",
+  "edit_now",
+  "edit_entry",
+  "pnl",
+  "today",
+  "rv20",
+  "vix"
+ ],
+ "h6": {
+  "reg": 0.01,
+  "design_grid": {
+   "0.001": 0.21,
+   "0.01": 0.23,
+   "0.1": 0.2
+  },
+  "design": {
+   "start": "2013-01-01",
+   "end": "2019-12-31",
+   "sharpe": 0.23,
+   "sortino": 0.36,
+   "cagr": 0.0082,
+   "mdd": -0.0671,
+   "in_market": 0.172,
+   "exit_share": 0.432
+  },
+  "validation": {
+   "start": "2020-01-02",
+   "end": "2026-03-31",
+   "sharpe": 0.21,
+   "sortino": 0.35,
+   "cagr": 0.0099,
+   "mdd": -0.1052,
+   "in_market": 0.239,
+   "exit_share": 0.19
+  },
+  "post-freeze": {
+   "start": "2026-04-01",
+   "end": "2026-10-09",
+   "sharpe": -1.08,
+   "sortino": -1.46,
+   "cagr": -0.033,
+   "mdd": -0.0268,
+   "in_market": 0.237,
+   "exit_share": 0.182
+  },
+  "passed": true,
+  "vs_h1_validation": {
+   "bps_per_year": 75.6,
+   "t_stat": 0.95
+  },
+  "vs_h1_design": {
+   "bps_per_year": -29.5,
+   "t_stat": -0.33
+  }
+ },
+ "h6_no_edit": {
+  "reg": 0.01,
+  "design": {
+   "start": "2013-01-01",
+   "end": "2019-12-31",
+   "sharpe": 0.0,
+   "sortino": 0.01,
+   "cagr": -0.0005,
+   "mdd": -0.0973,
+   "in_market": 0.157,
+   "exit_share": 0.437
+  },
+  "validation": {
+   "start": "2020-01-02",
+   "end": "2026-03-31",
+   "sharpe": 0.19,
+   "sortino": 0.31,
+   "cagr": 0.009,
+   "mdd": -0.1345,
+   "in_market": 0.249,
+   "exit_share": 0.162
+  },
+  "post-freeze": {
+   "start": "2026-04-01",
+   "end": "2026-10-09",
+   "sharpe": -2.04,
+   "sortino": -2.57,
+   "cagr": -0.0682,
+   "mdd": -0.038,
+   "in_market": 0.298,
+   "exit_share": 0.061
+  },
+  "vs_h1_validation": {
+   "bps_per_year": 68.0,
+   "t_stat": 1.1
+  }
+ },
+ "h3b_validation_sharpe": 0.14,
+ "runtime_s": 186
+}

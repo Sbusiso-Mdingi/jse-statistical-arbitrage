@@ -1,6 +1,6 @@
 # Results
 
-Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day, after its protocol entry; H4 on 25 October and H5 on 9 November, each after its protocol entry). All figures are annualised, after 10 bps per leg unless stated, from `data/research.json`. Post-freeze runs from 1 April 2026 and is reported only: to 9 October for v1, H1, H3 and H5, and to 23 October for the five-day hold, H2 and H4, which read the price cache directly.
+Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day, after its protocol entry; H4 on 25 October, H5 and H6 on 9 November, each after its protocol entry). All figures are annualised, after 10 bps per leg unless stated, from `data/research.json`. Post-freeze runs from 1 April 2026 and is reported only: to 9 October for v1, H1, H3, H5 and H6, and to 23 October for the five-day hold, H2 and H4, which read the price cache directly.
 
 ## Every rule tested
 
@@ -16,6 +16,7 @@ Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day
 | H4a, classic z-score trade (NED/SBK) | 0.63 | 0.07 | 0.10 | 0.2% | −24.4% | no trades | > 0 | Passed, within noise |
 | H4b, classic trade, cointegrated windows only | 0.40 | 0.45 | 0.67 | 2.3% | −7.9% | no trades | > 0 | Passed, within noise |
 | H5, copula correlation edited to track recent dependence | 0.15 | −0.23 | −0.35 | −1.8% | −20.7% | −1.59 | > 0 and > 0.06 | Failed |
+| H6, network exit trained on every day | 0.23 | 0.21 | 0.35 | 1.0% | −10.5% | −1.08 | > 0 and > 0.06 | Passed, within noise |
 
 Sortino ratios (added by amendment 5) use the downside deviation over all days. H1 over the full walk-forward: Sortino 0.11.
 
@@ -49,6 +50,12 @@ The edit replaces the correlation in each fit with the value implied by Kendall'
 
 In validation it fails. The mechanism is still there, and the edit still corrects it: the edited correlation runs 0.79 to 0.91 against the fitted 0.76 to 0.78, h is closer to uniform (KS p from 0.000 to 0.010), and the rule fires on 12.4% of days. Before costs the Sharpe is 0.48, positive but below H1's 0.64. After costs it is −0.23 against H1's 0.06, 191 bps a year behind with t = −1.17, with 151 entries against 104 and a −20.7% drawdown. Post-freeze it is −1.59 against H1's −2.31, on ten trades. Read as: the fitted correlation was wrong, and correcting it made the model honest and the strategy poorer. The extra signals the corrected model admits are moderate divergences that revert by less than a round trip costs, so the under-dispersed h was working as an accidental higher threshold. This is consistent with the MIT result's own caveat: a direct edit can remove an identifiable flaw, but it cannot put in an edge that is not there. The live service keeps the fitted correlation.
 
+## H6: a learned exit trained on every day
+
+H3's exit models had 592 decision points, because only days inside a real trade counted. H6 flips the training set: every close is a virtual entry in the direction of that day's signal, held five sessions, so the value of holding one more day is observed on every day. That gives 17,082 decision points from 2010, of which 976 are real H1 decision points. News features are dropped, a two-layer network (16 and 16 units) replaces ridge regression inside the same fitted Q-iteration, and the H5 calibrated signal joins the fitted one as a state variable. Refitted each year end from 2012; design is 2013 to 2019, where plain H1 had a Sharpe of 0.26. The L2 penalty 0.01 was chosen on design from {0.001, 0.01, 0.1} (0.21, 0.23, 0.20).
+
+H6 clears the pre-registered mark: validation Sharpe 0.21 after costs (Sortino 0.35, CAGR 1.0%, max drawdown −10.5%) against H1's 0.06 and H3b's 0.14, exiting at 19% of real decision points and in the market 24% of days against H1's 31%. Post-freeze it is −1.08 against H1's −2.31. It is 76 bps a year ahead of H1 on paired validation days with t = 0.95, and it was 30 bps a year behind H1 in design (t = −0.33), so read it as within noise, and as the sixth hypothesis family scored on the same validation data. The ablation is the interesting part: without the two H5 features the same model scores 0.19 in validation but 0.00 in design. The calibrated signal that failed as a trading rule in H5 is the state variable that made the exit policy coherent across both periods. The policy's exits are not costless in the H1 sense once a position is re-opened by a later signal, and that cost is charged.
+
 ## Decay study
 
 Mean one-year lag-1 autocorrelation of the daily return spread across the 15 pairs of SBK, NED, FSR, ABG, CPI and INL: about −0.16 in 2011, close to zero from 2020 (−0.01 at the start of 2026). The SBK/NED next-day return after an extreme copula signal averaged about 16 bps from 2010 to 2019 and about −6 bps since 2020. This is the most likely reason every reversal rule weakens after 2019.
@@ -66,6 +73,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 6. **H5.** Added to the protocol on 9 November 2026 after the design-period inspection and before the validation run. The inspection used three design-period return evaluations, all logged; the ARMA edit it rejected is reported above rather than dropped.
 
+7. **H6.** Added to the protocol on 9 November 2026 after the H5 result and before any H6 result. The first run crashed while writing its daily CSV, after the results JSON was saved; the line was fixed and the deterministic run repeated, producing a byte-identical JSON. No paired comparison with H3b is given because H3's daily positions were not stored.
+
 ## Run order
 
 ```sh
@@ -80,5 +89,6 @@ service/.venv/bin/python research/h4_cointegration.py
 service/.venv/bin/python research/h5_weights.py    # parity check of the edit harness against data/h1_daily.csv
 service/.venv/bin/python research/h5_inspect.py && service/.venv/bin/python research/h5_inspect2.py && service/.venv/bin/python research/h5_inspect3.py   # design only
 service/.venv/bin/python research/h5_edit.py      # the one validation run; writes research/results/h5.json
+service/.venv/bin/python research/h6_rl_exit.py   # about 3 minutes; reads h5_daily.csv, writes research/results/h6.json
 service/.venv/bin/python research/export_research.py
 ```
