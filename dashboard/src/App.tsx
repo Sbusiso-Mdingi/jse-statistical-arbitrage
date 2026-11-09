@@ -89,6 +89,9 @@ function EdgePanel({ r, tier }: { r: Research; tier: CostTier }) {
         {num(early.se, 0)}); a round trip costs {num(cost, 0)} bps under the cost schedule chosen below. Since 2021 it has been worth {num(late.bps, 0)} bps (
         {late.n} signals). {covid ? `The one year that paid, 2020, averaged ${num(covid.bps, 0)} bps on ${covid.n} signals.` : ""} The next
         session alone went from {num(early.next_bps, 0)} bps to {num(late.next_bps, 0)}.
+        {r.redteam
+          ? ` These figures assume a fill at the close that produced the signal. Filled at the next close, the 2010 to 2019 figure is ${num(r.redteam.lag_next_close_2010_2019_bps, 0)} bps. Against 10,000 random entry sets the 2010 to 2019 figure sits at the ${num(r.redteam.placebo_percentile_2010_2019, 1)}th percentile, and the 2021 onward figure at the ${num(r.redteam.placebo_percentile_2021_2026, 0)}th.`
+          : ""}
       </p>
     </section>
   );

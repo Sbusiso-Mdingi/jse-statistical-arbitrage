@@ -1,0 +1,26 @@
+32
+/opt/jse/jse-pkg/research/redteam.py:92: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+  t = dt.datetime.utcfromtimestamp(int(r["time"])); b[t.date()][t.hour] = float(r["close"])
+tier             round trip   design SR   validation SR   full SR   full CAGR
+protocol           20.0 bps     0.06        0.15         0.10      0.4%
+institutional      58.6 bps    -1.41       -1.16        -1.30     -6.7%
+retail             94.5 bps    -2.62       -2.33        -2.49    -12.7%
+institutional round trip across assumptions: [52.6, 58.6, 68.6]
+components: {'brokerage_incl_vat': 23.0, 'stt': 25.0, 'spread': 10.0, 'strate_levy': 0.6, 'borrow_per_5_days': 0.99}
+
+hold until the signal is back inside the 50th percentile (reported): avg hold 2.0 days, 314 trades, in market 15%
+  protocol         design SR  -0.55  validation SR  -0.93  full SR  -0.72
+  institutional    design SR  -2.99  validation SR  -2.79  full SR  -2.85
+  retail           design SR  -4.48  validation SR  -4.20  full SR  -4.32
+lag: {"2010_2019": {"n": 213, "bps": 5.6, "se": 7.1}, "2020_2026": {"n": 161, "bps": 17.4, "se": 11.3}, "2021_2026": {"n": 135, "bps": 0.6, "se": 9.8}} | pair next-open {'n': 224, 'bps': 11.0, 'se': 7.8}
+cleaning: {'sbk': (['2025-04-25'], ['2025-04-25'], 0), 'fsr': ([], [], 0), 'abg': ([], [], 0), 'ned': ([], [], 0), 'cpi': (['2020-03-20'], [], 1)}
+leave-one-year-out: without 2020 -> {'all': 13.5, '2010_2019': 21.0, '2020_2026': 1.6} | without 2015 -> {'all': 16.0, '2010_2019': 14.0, '2020_2026': 18.4}
+placebo: {'2010_2019': {'actual_bps': 21.0, 'placebo_mean': 0.0, 'placebo_sd': 6.6, 'percentile': 99.9}, '2020_2026': {'actual_bps': 18.4, 'placebo_mean': -0.0, 'placebo_sd': 8.7, 'percentile': 98.1}, '2021_2026': {'actual_bps': 1.6, 'placebo_mean': 0.1, 'placebo_sd': 8.6, 'percentile': 57.2}} | direction only: {'2010_2019': {'percentile': 99.6}, '2021_2026': {'percentile': 57.5}}
+basket rebalancing: {'institutional': {'mean_daily_turnover_pct': 0.72, 'rebalancing_cost_per_round_trip_bps': 0.6, 'rebalancing_cost_per_year_bps': 10.3}, 'retail': {'mean_daily_turnover_pct': 0.72, 'rebalancing_cost_per_round_trip_bps': 1.0, 'rebalancing_cost_per_year_bps': 16.6}}
+overlay: {'2010_2019': {'n': 213, 'bps': 21.0, 'ci95': [8.2, 34.8], 'share_positive': 0.568, 'sign_test_p': 0.0548}, '2020_2026': {'n': 161, 'bps': 18.4, 'ci95': [-9.9, 44.4], 'share_positive': 0.559, 'sign_test_p': 0.1558}, '2021_2026': {'n': 135, 'bps': 1.6, 'ci95': [-22.7, 21.8], 'share_positive': 0.511, 'sign_test_p': 0.8634}}
+combination: {'pair': {'design': {'gain_per_day_x1000': 0.49, 'dm_t': 0.61, 'n': 2581}, 'validation': {'gain_per_day_x1000': 1.36, 'dm_t': 1.25, 'n': 1562}}, 'basket': {'design': {'gain_per_day_x1000': -0.29, 'dm_t': -0.36, 'n': 2581}, 'validation': {'gain_per_day_x1000': 0.51, 'dm_t': 0.32, 'n': 1562}}}
+done in 2s
+
+real	0m2.689s
+user	0m23.367s
+sys	0m0.971s

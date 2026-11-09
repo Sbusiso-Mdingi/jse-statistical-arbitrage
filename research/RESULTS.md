@@ -108,6 +108,20 @@ The rule sizes the legs 1:1 by rand. H10 asked whether the instrument's own vola
 
 Returns, reported: gross return per signal from 2010 to 2019 is 21.0 bps at 1:1, 20.2 inverse-volatility and 19.7 minimum-variance; since 2021, 1.6, 6.2 and 0.1, all within a standard error of about 9 of each other. Validation Sharpe at institutional costs: -1.16, -1.04 and -1.12. As expected beforehand, sizing moves the risk of a trade and not its edge, and no sizing carries a signal over the cost of a round trip. The 1:1 sizing stays.
 
+## Red team
+
+Seven attacks declared in the protocol with their expectations, run once on an Azure VM (`research/redteam.py`, results in `research/results/redteam.json`).
+
+1. **Execution lag.** This is the one that lands. Filled at the close that produced the signal, a signal was worth 21.0 bps from 2010 to 2019. Filled at the next close, 5.6 bps (standard error 7.1); two closes late, 11.5. The edge sits in the first held day, and the first held day is the one a real order cannot have. On the pair, where the hourly bars give a next-morning price, close-to-close was 26.9 bps and filled at the next 10:00 bar 11.0. The rule's design Sharpe at the protocol's costs goes from 0.06 to -0.49 with one close of lag. Expectation was a third to a half; it was three quarters.
+2. **Causal cleaning.** A rule that flags any one-day move beyond 40% at the close, without seeing the next day, flags the same Standard Bank print (2025-04-25) and one more: Capitec on 2020-03-20, a real fall in the COVID crash that the current rule correctly keeps. No other day differs. As expected.
+3. **Leave-one-year-out.** Without 2020 the 2010 to 2026 average per signal falls from 19.9 to 13.5 bps. Without 2015, the best design year, the 2010 to 2019 figure is 14.0 bps. As expected: the pre-2020 edge is not one year, the post-2020 edge is.
+4. **Placebo.** Against 10,000 random entry sets with the same count of signals in each year and the same hold, the actual 2010 to 2019 figure sits at the 99.9th percentile (placebo mean 0.0, sd 6.6); 2020 onward at the 98.1th, carried by 2020; 2021 onward at the 57.2th, which is nothing. Random direction on the signal's own days gives the same picture. As expected.
+5. **Full basket costs.** Daily rebalancing of the four-share leg turns over 0.72% of the basket a day and costs 0.6 bps a round trip at the institutional schedule, 10.3 bps a year. Smaller than expected; it does not change the cost picture.
+6. **The overlay.** For someone who must trade these banks anyway, the signal's 2010 to 2019 value was 21.0 bps a signal with a block-bootstrap 95% interval of 8.2 to 34.8 and 57% of signals positive (sign test p = 0.0548). Since 2021 the interval is -22.7 to 21.8. And the lag attack applies here too: the overlay is only worth having if the trade can be done at the close.
+7. **Copula combination.** The equal-weight mixture of the score-driven and Markov-switching copula densities gains 0.51 thousandths of a log point a day over the score-driven copula on the basket in validation (t = 0.32) and 1.36 on the pair (t = 1.25). Under the 2 expected; no ensemble is warranted.
+
+Verdict. The instrument survives every attack on its honesty: the signal is real before 2020 against placebo, no single year carries it, the cleaning is not the story and the basket costs are not the story. It does not survive the attack on its practicability. A fill one session after the close removes about three quarters of a 21 bps edge that was already below the 25 bps of securities transfer tax on a round trip. As a trading strategy it cannot stand on its own; as a measurement of a reversal that existed, was never tradeable after costs, and has since gone, it stands.
+
 ## Decay study
 
 Mean one-year lag-1 autocorrelation of the daily return spread across the 15 pairs of SBK, NED, FSR, ABG, CPI and INL: about −0.16 in 2011, close to zero from 2020 (−0.01 at the start of 2026). The SBK/NED next-day return after an extreme copula signal averaged about 16 bps from 2010 to 2019 and about −6 bps since 2020. This is the most likely reason every reversal rule weakens after 2019.
@@ -137,6 +151,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 12. **H10.** Registered before any figure. The gross-constrained minimum-variance variant was added after the registered test failed and is labelled post hoc; it changes nothing.
 
+13. **Red team.** Seven attacks declared with expectations on 9 November 2026 before any figure, run once on an Azure VM, reported in full. The expectation for the execution lag understated it.
+
 ## Run order
 
 ```sh
@@ -161,5 +177,6 @@ COPULAS_CSV=research/results/copulas_basket.csv service/.venv/bin/python researc
 service/.venv/bin/python research/models/export_gas.py     # writes data/basket_gas.json for the service; then research/edge.py and export_research.py again
 service/.venv/bin/python research/costs.py                 # the JSE cost schedule; writes research/results/costs.json
 service/.venv/bin/python research/h10_sizing.py            # leg sizing test; writes research/results/h10.json
+service/.venv/bin/python research/redteam.py all           # the red team; writes research/results/redteam.json (run on Azure, 3 seconds of compute)
 service/.venv/bin/python research/export_research.py
 ```

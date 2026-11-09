@@ -169,6 +169,7 @@ export type Research = {
     components_institutional: Record<string, number>;
     hold_until_normal: { avg_days_held: number; trades: number; tiers: Record<CostTier, { full: Perf3 }> };
   };
+  redteam?: { lag_next_close_2010_2019_bps: number; lag_next_close_2021_2026_bps: number; placebo_percentile_2010_2019: number; placebo_percentile_2021_2026: number };
   instrument?: {
     copula: string;
     validation_gain_per_day: number;
