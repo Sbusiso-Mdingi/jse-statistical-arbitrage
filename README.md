@@ -27,7 +27,7 @@ The protocol's cost is brokerage only. What a round trip actually costs on the J
 
 Holding half Standard Bank and half the basket returned 10.5% a year over the walk-forward. The live record since April 2026 is served by `/api/summary` and changes daily; with months of data it sits inside the range a strategy with no edge would land in.
 
-Nine other trading rules went through the same pre-registration gate: two news filters, the classic z-score trade with and without a cointegration gate, two learned exits, a direct edit to the fitted copula correlation, an exit network trained on every day, and an intraday rule on hourly bars. Four failed and five passed by margins within noise. None earned a place in the write-up; all are in `research/RESULTS.md`, with every amendment to `research/PROTOCOL.md` dated.
+Nine other trading rules went through the same pre-registration gate: two news filters, the classic z-score trade with and without a cointegration gate, two learned exits, a direct edit to the fitted copula correlation, an exit network trained on every day, and an intraday rule on hourly bars. Four failed and five passed by margins within noise. A tenth test asked whether the instrument's own volatilities and correlation should set what each leg gets instead of 1:1; sizing the legs to minimise the position's variance made it larger, and 1:1 stays. None earned a place in the write-up; all are in `research/RESULTS.md`, with every amendment to `research/PROTOCOL.md` dated.
 
 ## Layout
 

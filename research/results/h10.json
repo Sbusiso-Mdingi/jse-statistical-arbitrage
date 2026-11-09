@@ -1,0 +1,214 @@
+{
+ "sizings": {
+  "one_to_one": {
+   "periods": {
+    "design": {
+     "daily_vol_bps": 31.7,
+     "vol_on_held_days_bps": 50.0,
+     "beta_to_banks": 0.011,
+     "sharpe": {
+      "protocol": 0.06,
+      "institutional": -1.41,
+      "retail": -2.62
+     }
+    },
+    "validation": {
+     "daily_vol_bps": 39.54,
+     "vol_on_held_days_bps": 62.67,
+     "beta_to_banks": 0.024,
+     "sharpe": {
+      "protocol": 0.15,
+      "institutional": -1.16,
+      "retail": -2.33
+     }
+    },
+    "post-freeze": {
+     "daily_vol_bps": 28.2,
+     "vol_on_held_days_bps": 42.36,
+     "beta_to_banks": 0.031,
+     "sharpe": {
+      "protocol": -1.42,
+      "institutional": -3.44,
+      "retail": -4.86
+     }
+    }
+   },
+   "per_signal": {
+    "2010_2019": {
+     "n": 213,
+     "bps": 21.0,
+     "se": 7.5
+    },
+    "2021_2026": {
+     "n": 135,
+     "bps": 1.6,
+     "se": 9.2
+    }
+   },
+   "mean_sbk_weight": 0.5
+  },
+  "inverse_vol": {
+   "periods": {
+    "design": {
+     "daily_vol_bps": 30.85,
+     "vol_on_held_days_bps": 49.13,
+     "beta_to_banks": 0.024,
+     "sharpe": {
+      "protocol": 0.0,
+      "institutional": -1.52,
+      "retail": -2.78
+     }
+    },
+    "validation": {
+     "daily_vol_bps": 40.07,
+     "vol_on_held_days_bps": 63.77,
+     "beta_to_banks": 0.036,
+     "sharpe": {
+      "protocol": 0.26,
+      "institutional": -1.04,
+      "retail": -2.21
+     }
+    },
+    "post-freeze": {
+     "daily_vol_bps": 27.98,
+     "vol_on_held_days_bps": 41.27,
+     "beta_to_banks": 0.047,
+     "sharpe": {
+      "protocol": -1.18,
+      "institutional": -3.22,
+      "retail": -4.66
+     }
+    }
+   },
+   "per_signal": {
+    "2010_2019": {
+     "n": 213,
+     "bps": 20.2,
+     "se": 7.5
+    },
+    "2021_2026": {
+     "n": 135,
+     "bps": 6.2,
+     "se": 8.9
+    }
+   },
+   "mean_sbk_weight": 0.452
+  },
+  "min_variance": {
+   "periods": {
+    "design": {
+     "daily_vol_bps": 32.98,
+     "vol_on_held_days_bps": 51.92,
+     "beta_to_banks": 0.009,
+     "sharpe": {
+      "protocol": -0.01,
+      "institutional": -1.42,
+      "retail": -2.58
+     }
+    },
+    "validation": {
+     "daily_vol_bps": 41.74,
+     "vol_on_held_days_bps": 66.06,
+     "beta_to_banks": 0.041,
+     "sharpe": {
+      "protocol": 0.12,
+      "institutional": -1.12,
+      "retail": -2.21
+     }
+    },
+    "post-freeze": {
+     "daily_vol_bps": 28.18,
+     "vol_on_held_days_bps": 42.44,
+     "beta_to_banks": 0.039,
+     "sharpe": {
+      "protocol": -1.4,
+      "institutional": -3.44,
+      "retail": -4.89
+     }
+    }
+   },
+   "per_signal": {
+    "2010_2019": {
+     "n": 213,
+     "bps": 19.7,
+     "se": 7.8
+    },
+    "2021_2026": {
+     "n": 135,
+     "bps": 0.1,
+     "se": 9.6
+    }
+   },
+   "mean_sbk_weight": 0.516
+  },
+  "min_variance_gross": {
+   "periods": {
+    "design": {
+     "daily_vol_bps": 31.02,
+     "vol_on_held_days_bps": 49.49,
+     "beta_to_banks": 0.026,
+     "sharpe": {
+      "protocol": -0.0,
+      "institutional": -1.51,
+      "retail": -2.77
+     }
+    },
+    "validation": {
+     "daily_vol_bps": 40.22,
+     "vol_on_held_days_bps": 64.02,
+     "beta_to_banks": 0.037,
+     "sharpe": {
+      "protocol": 0.26,
+      "institutional": -1.03,
+      "retail": -2.19
+     }
+    },
+    "post-freeze": {
+     "daily_vol_bps": 28.11,
+     "vol_on_held_days_bps": 41.38,
+     "beta_to_banks": 0.05,
+     "sharpe": {
+      "protocol": -1.15,
+      "institutional": -3.18,
+      "retail": -4.62
+     }
+    }
+   },
+   "per_signal": {
+    "2010_2019": {
+     "n": 213,
+     "bps": 20.2,
+     "se": 7.5
+    },
+    "2021_2026": {
+     "n": 135,
+     "bps": 6.6,
+     "se": 8.9
+    }
+   },
+   "mean_sbk_weight": 0.445
+  }
+ },
+ "test": {
+  "dm_t": -2.24,
+  "variance_ratio": 1.115,
+  "passed": false
+ },
+ "reported_inverse_vol": {
+  "dm_t": -0.74,
+  "variance_ratio": 1.027
+ },
+ "post_hoc_min_variance_gross": {
+  "note": "not pre-registered; the registered ratio minimises variance per unit of SBK, this one per unit of gross exposure",
+  "validation": {
+   "dm_t": -0.87,
+   "variance_ratio": 1.035
+  }
+ },
+ "design": {
+  "min_variance": {
+   "dm_t": -4.28,
+   "variance_ratio": 1.082
+  }
+ }
+}

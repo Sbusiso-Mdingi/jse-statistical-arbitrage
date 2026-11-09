@@ -102,6 +102,12 @@ The rule on the score-driven instrument, reported. The original report's exit, c
 
 Sources: SARS for the STT rate; EasyEquities for the 0.25% retail commission; Standard Bank's AutoShare Invest for a 0.15% brokerage reference. Strate and the levy are taken from broker fee schedules as about a basis point per execution at retail size and less at institutional size. The half-spread and borrow fee could not be sourced for these two shares and are stated assumptions.
 
+## H10: what each leg gets
+
+The rule sizes the legs 1:1 by rand. H10 asked whether the instrument's own volatilities and correlation give a better sizing, judged on what sizing is for: the realised variance of the position. It fails. The registered minimum-variance hedge (basket to Standard Bank in the ratio ρσ_SBK/σ_basket, scaled to gross one) puts slightly more into Standard Bank (mean weight 0.516) and raises the position's validation variance by 11.5% (Diebold-Mariano t = -2.24, the wrong way at 5%); on design it raised it by 8.2% (t = -4.28). Inverse-volatility sizing (reported) changes the variance by +2.7% (t = -0.74). A post-hoc variant, not registered, that minimises variance subject to gross exposure one rather than per unit of Standard Bank, changes it by +3.5% (t = -0.87). The 1:1 position already has a beta of 0.024 to the equal-weight bank return in validation; there is nothing left for a hedge ratio to remove.
+
+Returns, reported: gross return per signal from 2010 to 2019 is 21.0 bps at 1:1, 20.2 inverse-volatility and 19.7 minimum-variance; since 2021, 1.6, 6.2 and 0.1, all within a standard error of about 9 of each other. Validation Sharpe at institutional costs: -1.16, -1.04 and -1.12. As expected beforehand, sizing moves the risk of a trade and not its edge, and no sizing carries a signal over the cost of a round trip. The 1:1 sizing stays.
+
 ## Decay study
 
 Mean one-year lag-1 autocorrelation of the daily return spread across the 15 pairs of SBK, NED, FSR, ABG, CPI and INL: about −0.16 in 2011, close to zero from 2020 (−0.01 at the start of 2026). The SBK/NED next-day return after an extreme copula signal averaged about 16 bps from 2010 to 2019 and about −6 bps since 2020. This is the most likely reason every reversal rule weakens after 2019.
@@ -129,6 +135,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 11. **Cost schedule.** Added 9 November 2026 as reporting only. No verdict uses it; the pre-registered marks stay at 10 bps a leg.
 
+12. **H10.** Registered before any figure. The gross-constrained minimum-variance variant was added after the registered test failed and is labelled post hoc; it changes nothing.
+
 ## Run order
 
 ```sh
@@ -152,5 +160,6 @@ service/.venv/bin/python research/models/h9_basket_gas.py   # about 10 minutes o
 COPULAS_CSV=research/results/copulas_basket.csv service/.venv/bin/python research/models/compare.py 2020-01-01 2026-04-01 validation research/results/copulas_basket_validation.json
 service/.venv/bin/python research/models/export_gas.py     # writes data/basket_gas.json for the service; then research/edge.py and export_research.py again
 service/.venv/bin/python research/costs.py                 # the JSE cost schedule; writes research/results/costs.json
+service/.venv/bin/python research/h10_sizing.py            # leg sizing test; writes research/results/h10.json
 service/.venv/bin/python research/export_research.py
 ```
