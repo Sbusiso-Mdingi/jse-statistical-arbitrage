@@ -151,3 +151,17 @@ Added 9 November 2026, before any H10 figure was computed. The rule sizes the tw
 Pass mark: the minimum-variance hedge gives a lower realised variance of the position's daily gross return than 1:1 in validation (2020 to March 2026), by a Diebold-Mariano test on the daily squared-return differences (Newey-West, five lags) at 5%. This is a hedge-quality test, not a return test; the validation years are spent for return tests.
 
 Reported, not tested: the inverse-volatility sizing; the position's beta to the equal-weight bank return under each sizing; gross return per signal over the five-day hold and the rule's Sharpe under each sizing at the three cost schedules, by period. Expectation stated now: sizing changes the risk of a trade, not its edge, and cannot carry a 21 bps signal over a 59 bps round trip. If H10 passes, the minimum-variance hedge becomes the instrument's sizing in the service and the headline chart, as the copula did after H9.
+
+## Red team (reporting only, run once each)
+
+Added 9 November 2026, before any of these figures was computed. A battery of attacks on the instrument's one result, each run once on an Azure VM and reported whatever it shows. Nothing is selected on them. Expectations are written here first.
+
+1. Execution lag. The record assumes a fill at the close that produced the signal. Re-measure with the position taken at the next close (both instruments) and, for the pair, at the next 10:00 bar from the hourly data. Expected: the gross edge per signal falls by a third to a half, since the design-period edge is front-loaded on the first held day.
+2. Causal cleaning. The bad-print rule drops a day if it reverses the next day, which the service cannot know at the close. Replace it with a rule that treats any one-day move beyond 40% as a bad print at once and carries the previous price. Expected: only the April 2025 print is affected and no figure moves.
+3. Leave-one-year-out and leave-2020-out averages of the gross return per signal. Expected: the 2010 to 2019 figure survives at about 15 bps without its best year; the 2020 onward figure does not survive without 2020.
+4. Placebo. 10,000 random entry sets with the same number of signals in each year and the same five-day hold; the percentile of the actual gross return per signal in that distribution, by period. Expected: above the 95th percentile before 2020, inside the distribution after.
+5. Full basket costs. The basket leg is four shares rebalanced daily; charge that turnover at the institutional schedule, STT on the purchases. Expected: another 5 to 10 bps a round trip.
+6. The overlay. For someone who must trade these banks anyway, the signal's value is the gross edge with no incremental cost: block-bootstrap confidence intervals by period and a sign test. Expected: positive and significant before 2020, not after.
+7. Copula combination. The equal-weight mixture of the score-driven and Markov-switching copula densities, scored by out-of-sample log density against the score-driven copula alone, pair and basket. Expected: a gain of under 2 thousandths of a log point a day.
+
+Untestable here and stated: Yahoo Finance adjusted closes are revised after the fact for dividends, so the series the model saw in any earlier year is not the one downloaded now. Point-in-time prices would be needed to measure it.
