@@ -1,0 +1,70 @@
+{
+ "static_t": {
+  "design": {
+   "n": 199,
+   "bps": 28.4,
+   "se": 8.8
+  },
+  "validation": {
+   "n": 109,
+   "bps": -26.8,
+   "se": 20.5
+  },
+  "post-freeze": {
+   "n": 9,
+   "bps": -57.6,
+   "se": 33.3
+  }
+ },
+ "gas_t": {
+  "design": {
+   "n": 225,
+   "bps": 22.8,
+   "se": 8.2
+  },
+  "validation": {
+   "n": 133,
+   "bps": -19.6,
+   "se": 17.2
+  },
+  "post-freeze": {
+   "n": 8,
+   "bps": -16.9,
+   "se": 60.5
+  }
+ },
+ "ms_t": {
+  "design": {
+   "n": 224,
+   "bps": 25.4,
+   "se": 8.2
+  },
+  "validation": {
+   "n": 131,
+   "bps": -14.6,
+   "se": 17.6
+  },
+  "post-freeze": {
+   "n": 8,
+   "bps": -16.9,
+   "se": 60.5
+  }
+ },
+ "rolling_t_252": {
+  "design": {
+   "n": 254,
+   "bps": 28.0,
+   "se": 7.7
+  },
+  "validation": {
+   "n": 160,
+   "bps": -19.6,
+   "se": 15.5
+  },
+  "post-freeze": {
+   "n": 8,
+   "bps": -47.5,
+   "se": 35.9
+  }
+ }
+}

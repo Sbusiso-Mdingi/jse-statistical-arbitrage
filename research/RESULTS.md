@@ -63,6 +63,23 @@ The 60-minute bars (TradingView, February 2009 to 2 June 2026, eight bars a day,
 
 H7 trades it: open at 12:00 against a two-hour divergence beyond a trailing 250-day percentile, close at 17:00, half of capital a leg, 10 bps a leg. Design chose the 95th percentile from {90, 95, 97.5} (after-cost Sharpe −0.37, −0.31, −0.31; before costs 1.54, 0.89, 0.56). The chosen rule fails validation: Sharpe −0.60 after costs, 0.33 before, −0.13 at 5 bps a leg, 93 trades with a 31% hit rate and a gross of 7 bps a trade against 15 bps in design. The other two grid points score −1.26 and −0.04 in validation. Against H1 on common validation days it is 240 bps a year behind (t = −0.95). Post-freeze is one trade. Read as: the intraday reversal is real and statistically strong before costs, it has shrunk by half since 2020 like everything else here, and at any plausible cost it is not tradeable from hourly bars. Part of the measured move is bid-ask bounce on bar closes, which reverses mechanically and cannot be earned; that was flagged before the run and is not estimated.
 
+## Model comparison on the pair, and H8: a score-driven copula
+
+With the validation years spent for trading rules, the pair's models were compared on a different target: the one-step-ahead log predictive density, which factors into two margin scores and a copula score. Yearly refits as in the pair's walk-forward; design 2010 to 2019; Diebold-Mariano tests on daily score differences with Newey-West (five lags). Scripts in `research/models/` and `research/08_margins_r.R`.
+
+**Margins.** Nothing beats the walk-forward's BIC-chosen ARMA-GARCH. Per day, relative to it, on design: Beta-t-EGARCH −2.8 × 10⁻³ (SBK) and +2.9 × 10⁻³ (NED); Realized GARCH on the hourly-bar realised variance (from 2012) −4.4 and +4.2; two-regime Markov-switching GJR-GARCH −4.5 and −2.8. Every |t| is below 1.6. The margins were never the problem.
+
+**Dependence.** Every time-varying copula beats the static Student t on design, by 14.8 × 10⁻³ a day for a rolling 252-day refit (t = 3.0), 17.1 for a two-state Markov-switching t copula (t = 6.1) and 17.3 for a score-driven (GAS) t copula (t = 6.5). The Markov-switching fit is the regime story: two correlation states near 0.62 and 0.83, with staying probabilities above 0.98 in recent fits, so regimes last for hundreds of days. The GAS copula, best by a hair on design, was registered as H8.
+
+| Copula, pair | Design log score vs static (×10⁻³/day) | Validation (×10⁻³/day) | Validation DM t | h KS p, validation | Signals fire |
+| --- | --- | --- | --- | --- | --- |
+| Static Student t (baseline) | 0 | 0 | | 0.025 | 7.0% |
+| Rolling 252-day Student t | +14.8 | +10.6 | 1.43 | 0.494 | 10.2% |
+| GAS Student t (H8) | +17.3 | +19.7 | **3.43** | 0.313 | 8.5% |
+| Markov-switching Student t | +17.1 | +20.9 | 3.74 | 0.462 | 8.4% |
+
+H8 passes its pre-registered mark. Post-freeze (131 days) shows no difference between any of them, as expected on that little data. The reported trading measurement, the gross five-day return per signal on the pair before costs: 28 bps on design and −27 in validation under the static copula; 23 and −20 under the GAS copula (standard errors 8 and 17). A better-calibrated instrument reads the same thing the basket instrument reads: the reversal between the two banks has been absent since 2020.
+
 ## Decay study
 
 Mean one-year lag-1 autocorrelation of the daily return spread across the 15 pairs of SBK, NED, FSR, ABG, CPI and INL: about −0.16 in 2011, close to zero from 2020 (−0.01 at the start of 2026). The SBK/NED next-day return after an extreme copula signal averaged about 16 bps from 2010 to 2019 and about −6 bps since 2020. This is the most likely reason every reversal rule weakens after 2019.
@@ -84,6 +101,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 8. **Hourly study and H7.** The hourly study was added as descriptive on 9 November 2026 and H7 registered after it, before any H7 return was computed. The first H7 run crashed on an indexing error before any figure was computed or logged; the line was fixed and the script run once.
 
+9. **Model comparison and H8.** Candidates declared on 9 November 2026 before any score; H8 registered after the design comparison and before any validation score. The validation scores of the other two copulas were produced by the same script run and are reported, not tested. The first copula run was started with a training-length bug that made every PIT undefined; it was stopped before producing output, fixed, and rerun.
+
 ## Run order
 
 ```sh
@@ -101,5 +120,7 @@ service/.venv/bin/python research/h5_edit.py      # the one validation run; writ
 service/.venv/bin/python research/h6_rl_exit.py   # about 3 minutes; reads h5_daily.csv, writes research/results/h6.json
 service/.venv/bin/python research/hourly_study.py  # descriptive; needs data/raw/sbk_60m.csv and ned_60m.csv (TradingView export, not in the repo)
 service/.venv/bin/python research/h7_intraday.py   # design grid, then the one validation run; writes research/results/h7.json
+service/.venv/bin/python research/models/pairdata.py && service/.venv/bin/python research/models/margins_py.py && Rscript research/08_margins_r.R   # margin models
+service/.venv/bin/python research/models/copulas_py.py && service/.venv/bin/python research/models/compare.py 2020-01-01 2026-04-01 validation research/results/copulas_validation.json && service/.venv/bin/python research/models/h8_edge.py
 service/.venv/bin/python research/export_research.py
 ```
