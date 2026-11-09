@@ -20,6 +20,7 @@ from fastapi.staticfiles import StaticFiles
 from . import data as market
 from . import pair as pr
 from . import rule
+from . import shadow
 from .model import MarginalState, conditional_probabilities, filter_marginal
 
 log = logging.getLogger("pairs")
@@ -43,6 +44,7 @@ PAIR = pr.Pair(walkforward, final, json.loads((DATA / "pair_gas.json").read_text
 FREEZE = date.fromisoformat(walkforward["freeze"])
 VOL_WINDOW = walkforward["vol_window"]
 FINAL_ID = final["id"]
+SHADOW = json.loads((DATA / "pair_shadow.json").read_text())
 
 
 def _state(key: str) -> MarginalState:
@@ -74,6 +76,7 @@ def live_rows(rows: list[dict]) -> dict:
         "spread_vol": vol,
         "sigma_sbk": fs["sigma"],
         "sigma_ned": fn["sigma"],
+        "vix": vix,
     }
 
 
@@ -166,6 +169,30 @@ def api_pair_backtest(
 def api_pair_model():
     live = PAIR.live(cache.get().rows)
     return JSONResponse(_clean({"status": _status(), **pr.model_summary(PAIR, live)}))
+
+
+@app.get("/api/shadow")
+def api_shadow():
+    """H13 (research/PROTOCOL.md): two volatility variants scored only on sessions from 10 November 2026."""
+    rows = cache.get().rows
+    pair = PAIR.rows(PAIR.live(rows))
+    hist = walkforward["history"]
+    a_h = shadow.own_vol_live(SHADOW["own_vol"], (np.array(hist["r_sbk"]), np.array(hist["r_ned"])),
+                              {"u": rows["u"], "v": rows["v"], "r_sbk_log": rows["r_sbk"], "r_ned_log": rows["r_ned"]})
+    rs, rn = np.expm1(rows["r_sbk"]), np.expm1(rows["r_ned"])
+    gate = np.concatenate([np.zeros(len(hist["date"]), bool), rows["vix"] > SHADOW["vix_gate"]["level"]])
+    rt = shadow.ROUND_TRIPS
+    return JSONResponse(_clean({
+        "protocol": "research/PROTOCOL.md, H13",
+        "score_from": shadow.SCORE_FROM,
+        "frozen_on": SHADOW["frozen_on"],
+        "verdict_at": "225 signals or 31 December 2030; net per signal at the futures round trip above zero, one-sided t > 1.65",
+        "round_trips_bps": rt,
+        "as_of": rows["date"][-1],
+        "own_vol_copula": shadow.score(rows["date"], a_h, rs, rn, None, rt),
+        "vix_gate": {"level": SHADOW["vix_gate"]["level"], **shadow.score(pair["date"], pair["h"], pair["r_sbk"], pair["r_ned"], gate, rt)},
+        "h8_reference": shadow.score(pair["date"], pair["h"], pair["r_sbk"], pair["r_ned"], None, rt),
+    }))
 
 
 @app.get("/api/research")

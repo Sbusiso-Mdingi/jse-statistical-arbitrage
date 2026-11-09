@@ -67,3 +67,18 @@ def test_rule_and_costs_match_research():
             x = daily[m]
             sharpe = x.mean() / x.std(ddof=1) * np.sqrt(252)
             assert abs(sharpe - ref[tier][name]["sharpe"]) < 0.015, (tier, name, sharpe, ref[tier][name]["sharpe"])
+
+
+def test_shadow_own_vol_matches_research():
+    """H13 variant A: the service's live filter reproduces research/models/export_shadow.py after the freeze."""
+    from app import shadow
+    from app.main import SHADOW, live_rows, snapshot_rows, walkforward
+
+    rows = live_rows(snapshot_rows())
+    hist = walkforward["history"]
+    h = shadow.own_vol_live(SHADOW["own_vol"], (np.array(hist["r_sbk"]), np.array(hist["r_ned"])),
+                            {"u": rows["u"], "v": rows["v"], "r_sbk_log": rows["r_sbk"], "r_ned_log": rows["r_ned"]})
+    ref = dict(zip(SHADOW["reference"]["date"], SHADOW["reference"]["h"]))
+    common = [(i, ref[d.isoformat()]) for i, d in enumerate(rows["date"]) if d.isoformat() in ref]
+    assert len(common) > 50
+    assert max(abs(h[i] - r) for i, r in common) < 1e-6
