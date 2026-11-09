@@ -222,7 +222,7 @@ function EverythingElse({ r }: { r: Research }) {
     <section className="panel">
       <details>
         <summary className="serif" style={{ cursor: "pointer", fontSize: 20 }}>
-          Everything else tried, <em>{tried.length} rules in one line each</em>
+          Everything else tried, <em>{tried.length} rules and baselines, one line each</em>
         </summary>
         <p className="note">
           Each was fixed on 2010 to 2019, written into the protocol with its pass mark, and validated once on 2020 to March 2026.
