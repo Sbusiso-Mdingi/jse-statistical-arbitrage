@@ -94,3 +94,7 @@ Added 9 November 2026, after the H5 result was known and before any H6 result wa
 - Fitting: walk-forward, refitted at each year end from 2012 on all episodes whose outcomes are known by then; the first fit uses 2010 to 2012. Design is therefore 2013 to 2019. The L2 penalty is chosen once from {0.001, 0.01, 0.1} by the design-period Sharpe after costs.
 - Pass mark: validation Sharpe after costs above zero and above H1's (0.06). Paired t-statistics against H1 and against H3b (0.14) on validation days are reported. This is the sixth hypothesis family scored on the same validation data.
 - Reported but not tested: the same model without the two H5 features, to show what the edit adds; H1 and H3b over 2013 to 2019 for comparison; the share of decision points where the policy exits.
+
+## Hourly study (descriptive)
+
+Added 9 November 2026. 60-minute bars for SBK and NED from February 2009 to 2 June 2026 (a TradingView export kept in `data/raw/*_60m.csv`, not redistributed, and not refreshable, so nothing built on it can run live). `research/hourly_study.py` reports, on design data only: the realised intraday correlation by month against the yearly copula correlation; its persistence and distribution; and what the SBK minus NED spread does over the rest of the day and the next day after a large move in the first one to four hours. Descriptive, like the decay study; nothing is selected from it until a hypothesis is written below.

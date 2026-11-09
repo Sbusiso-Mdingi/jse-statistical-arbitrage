@@ -9,3 +9,5 @@ dashboard/dist/
 # Third-party market data (Yahoo Finance, FRED/Cboe) is downloaded, not redistributed.
 data/raw/*.csv
 !data/raw/gdelt_*.csv
+# Reference copies of earlier work; the group report is in research/reference/ locally.
+research/reference/
