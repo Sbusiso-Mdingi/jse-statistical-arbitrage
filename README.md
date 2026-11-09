@@ -33,7 +33,7 @@ The validation years are spent: every trading rule tried on the pair, from the g
 ## Running locally
 
 ```sh
-Rscript research/00_data.R && Rscript research/02_basket.R   # only to refit, about 15 minutes
+Rscript research/00_data.R && Rscript research/01_walkforward.R   # only to refit the pair
 cd dashboard && bun install && bun run build
 cd ../service && python -m venv .venv && .venv/bin/pip install -r requirements.txt pytest
 .venv/bin/python -m pytest -q tests
