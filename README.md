@@ -1,38 +1,32 @@
-# Standard Bank against its peers: one signal, one result
+# Standard Bank against Nedbank: one signal, one result
 
-A copula-GARCH signal on Standard Bank against an equal-weight basket of FirstRand, Absa, Nedbank and Capitec, built to answer one question: is there still a reversal between South African banks worth trading after costs? The signal is a measuring instrument. It is calibrated out of sample, it is refitted every month on data before the month it trades, and it has been scored live on sessions no model has seen since 1 April 2026.
+A copula-GARCH signal on Standard Bank against Nedbank, built to answer one question: is there still a reversal between the two banks worth trading after costs? The signal is a measuring instrument. It is calibrated out of sample, each year's model is fitted only on data before that year, and since 1 April 2026 it has been scored live on sessions no model has seen.
 
-The answer it gives: a signal was worth about 21 bps before costs from 2010 to 2019 and about 2 bps since 2021, if filled at the very close that produced it; filled at the next close, about 6 bps. A round trip costs 20 bps in brokerage alone and about 59 on the JSE once securities transfer tax, VAT, spread and borrow are counted. The edge was never larger than the cost of acting on it, could not have been captured at the price assumed, and has since gone. A pre-declared red team of seven attacks (`research/RESULTS.md`) confirms the signal is real before 2020 against placebo and not carried by any one year. Used as a timing overlay by someone who must trade these banks anyway, filled at a price a real order can have, it is worth at most about 3 bps a trade, and no interval excludes zero.
+The answer it gives: a signal was worth about 23 bps before costs from 2010 to 2019, if filled at the very close that produced it, and about 11 bps filled at the next close. Since 2021 it has been worth about −7 bps. A round trip costs 20 bps in brokerage alone and about 59 on the JSE once securities transfer tax, VAT, spread and borrow are counted. The edge was real before 2020, at the 99.9th percentile of 10,000 random entry sets, but it was never larger than the cost of acting on it, and it has since gone.
 
 Live record: https://mdingi-jse-pairs.azurewebsites.net (embedded at mdingi.co.za/work/jse-statistical-arbitrage).
 
 ## The instrument
 
-Daily adjusted closes since 2005. For Standard Bank and for the basket, an ARMA-GARCH specification is chosen by BIC from 36 candidates each December (GARCH, GJR or EGARCH; normal or Student t; with or without lagged VIX); parameters and the copula are re-estimated at every month end and filter only the following month. The copula is Student t with a score-driven correlation (ρ_t = tanh f_t, f updated by the scaled score each day), chosen over a fixed correlation by a pre-registered forecast test: 26 thousandths of a log point a day better on 2020 to March 2026, Diebold-Mariano t = 4.0, and a signal that is calibrated out of sample where the fixed one was not. Four margin models and four dependence models were compared the same way (`research/RESULTS.md`); no margin model beat the BIC-chosen ARMA-GARCH. The signal is h = P(basket ≤ today | Standard Bank = today). The rule, fixed on 2010 to 2019 and validated once on 2020 to March 2026: open when h passes 0.05 or 0.95, long Standard Bank and short the basket when the basket has moved up more than Standard Bank implies, hold five sessions, half of capital a side, 10 bps per leg on every change of position.
+Daily adjusted closes since 2005. For each bank an ARMA-GARCH specification is chosen by BIC from 36 candidates each December (GARCH, GJR or EGARCH; normal or Student t; with or without lagged VIX), fitted on data to that year end and used only for the following year. The final fit was frozen on 31 March 2026. The copula is Student t with a score-driven correlation (ρ_t = tanh f_t, f updated by the scaled score each day). It was chosen over a fixed correlation by a pre-registered forecast test: 20 thousandths of a log point a day better on 2020 to March 2026, Diebold-Mariano t = 3.4, and a signal calibrated out of sample where the fixed one was not. Four margin models and four dependence models were compared the same way (`research/RESULTS.md`); no margin model beat the BIC-chosen ARMA-GARCH. The signal is h = P(Nedbank ≤ today | Standard Bank = today). The measurement opens when h passes 0.05 or 0.95, goes long Standard Bank and short Nedbank when Nedbank has moved up more than Standard Bank implies, and holds five sessions with half of capital a side. It is a fixed hold; holding until the signal returns to normal was measured too and does worse after costs.
 
 Standard Bank and Nedbank are not cointegrated (Engle-Granger −2.61 in logs against −3.34; six Bai-Perron breaks), which is why the project models dependence day to day instead of a long-run spread.
 
 ## Results
 
-| | Before costs | After costs |
-| --- | --- | --- |
-| Sharpe, design 2010 to 2019 | 0.76 | 0.06 |
-| Sharpe, validation 2020 to March 2026 | 0.77 | 0.15 |
-| Gross per signal, 2010 to 2019 | 21 bps (SE 8) | |
-| Gross per signal, 2021 onward | 2 bps (SE 9) | |
+| Sharpe, five-day hold | Before costs | 10 bps a leg | JSE, institutional |
+| --- | --- | --- | --- |
+| Design, 2010 to 2019 | 0.82 | 0.18 | −1.16 |
+| Validation, 2020 to March 2026 | −0.21 | −0.69 | −1.68 |
 
-Those are the rule's figures on the score-driven instrument at the protocol's flat 10 bps a leg, a measurement. The rule itself was validated once, on the fixed-correlation copula: Sharpe 0.64 before costs and 0.06 after in validation, passing its pre-registered mark as narrowly as a pass can be.
+At institutional costs the walk-forward returns −8.1% a year; holding half of each bank returned 6.4%. The red team (`research/RESULTS.md`) finds the pre-2020 edge real against placebo and not carried by any one year. A fill one session late halves it. Sizing the legs from the instrument's own volatilities and correlation makes the position more variable, so 1:1 stays. Used as a timing overlay by someone who must trade these banks anyway, it is worth at most about 3 bps a trade at a price a real order can have.
 
-The protocol's cost is brokerage only. What a round trip actually costs on the JSE, with securities transfer tax of 0.25% on the two purchases, VAT on brokerage, a half-spread, Strate and borrow on the short leg, is about 58.6 bps of capital at institutional brokerage and 94.5 at retail rates (`research/costs.py`). At those costs the rule returns -6.7% and -12.7% a year over the walk-forward. STT alone is more than a signal was ever worth.
-
-Holding half Standard Bank and half the basket returned 10.5% a year over the walk-forward. The live record since April 2026 is served by `/api/summary` and changes daily; with months of data it sits inside the range a strategy with no edge would land in.
-
-Nine other trading rules went through the same pre-registration gate: two news filters, the classic z-score trade with and without a cointegration gate, two learned exits, a direct edit to the fitted copula correlation, an exit network trained on every day, and an intraday rule on hourly bars. Four failed and five passed by margins within noise. A tenth test asked whether the instrument's own volatilities and correlation should set what each leg gets instead of 1:1; sizing the legs to minimise the position's variance made it larger, and 1:1 stays. None earned a place in the write-up; all are in `research/RESULTS.md`, with every amendment to `research/PROTOCOL.md` dated.
+The validation years are spent: every trading rule tried on the pair, from the group report's rule to news filters, the classic z-score trade and an intraday rule on hourly bars, went through the same pre-registration gate, and none passed by more than noise. An earlier stage of the project measured Standard Bank against a basket of four banks. It told the same story and is kept in `research/RESULTS.md` as the record, with every amendment to `research/PROTOCOL.md` dated.
 
 ## Layout
 
-- `research/` R pipeline (`00_data.R`, `clean.R`, `lib.R`, `02_basket.R`) and Python evaluation. `h1_evaluate.py` scores the rule, `edge.py` measures the gross edge per signal by year, `export_research.py` collects everything into `data/research.json`. `models/` holds the margin and dependence model comparison; `models/export_gas.py` writes `data/basket_gas.json`, the score-driven copula the service runs. The other scripts are the tests in `RESULTS.md`; `h5_weights.py` re-filters any month from the stored coefficients and matches the R record to 1e-9.
-- `service/` FastAPI app. `app/model.py` reimplements the rugarch filters and copula h-functions in NumPy; `app/basket.py` runs the rule and filters new sessions through the score-driven copula; `tests/test_parity.py` checks both against R.
+- `research/` R pipeline (`00_data.R`, `clean.R`, `lib.R`, `02_basket.R`) and Python evaluation. `h1_evaluate.py` scores the rule, `pair.py` measures the instrument (edge per signal by year, costs, red team, sizing), `export_research.py` collects everything into `data/research.json`. `models/` holds the margin and dependence model comparison; `models/export_pair_gas.py` writes `data/pair_gas.json`, the score-driven copula the service runs. `01_walkforward.R` fits the pair; `02_basket.R` and the scripts named for the basket are the earlier stage. The other scripts are the tests in `RESULTS.md`; `h5_weights.py` re-filters any month from the stored coefficients and matches the R record to 1e-9.
+- `service/` FastAPI app. `app/model.py` reimplements the rugarch filters and copula h-functions in NumPy; `app/pair.py` filters new sessions through the score-driven copula and `app/basket.py` holds the rule and the JSE cost schedule; `tests/test_parity.py` checks both against R.
 - `dashboard/` React and Vite front end, themed to match mdingi.co.za and designed to be embedded.
 - `deploy/azure.sh` builds the image in Azure Container Registry and deploys it to App Service; `deploy/cloudrun/` runs the monthly refit.
 
@@ -51,10 +45,10 @@ Live prices refresh every 30 minutes (`REFRESH_SECONDS`); if Yahoo is unreachabl
 ## Deploying
 
 ```sh
-AZ_SUBSCRIPTION=<subscription id> TAG=v4 deploy/azure.sh
+AZ_SUBSCRIPTION=<subscription id> TAG=v7 deploy/azure.sh
 ```
 
-Resource group `rg-mdingi-previews`: an App Service F1 (free) Linux plan pulling from ACR Basic through a managed identity. Response headers allow framing only from mdingi.co.za and localhost. The monthly refit on Cloud Run downloads fresh prices, refits the basket model and redeploys on the 5th of every month.
+Resource group `rg-mdingi-previews`: an App Service F1 (free) Linux plan pulling from ACR Basic through a managed identity. Response headers allow framing only from mdingi.co.za and localhost. The pair's final fit is frozen on 31 March 2026 and is not refitted; the monthly Cloud Run job refits only the earlier basket model.
 
 ## Data
 

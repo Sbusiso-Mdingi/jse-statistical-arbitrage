@@ -2,6 +2,50 @@
 
 Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day, after its protocol entry; H4 on 25 October, H5, H6 and H7 on 9 November, each after its protocol entry). All figures are annualised, after 10 bps per leg unless stated, from `data/research.json`. Post-freeze runs from 1 April 2026 and is reported only: to 9 October for v1, H1, H3, H5 and H6, to 23 October for the five-day hold, H2 and H4, which read the price cache directly, and to 2 June for H7, where the hourly data ends.
 
+## Standard Bank against Nedbank: the instrument from 9 November
+
+The project is about Standard Bank and Nedbank, and from 9 November 2026 so is the write-up (PROTOCOL.md, "Re-centring"). The instrument is the pair's yearly walk-forward margins, frozen on 31 March 2026, with the score-driven Student t copula that passed H8. Everything here was computed once by `research/pair.py` into `research/results/pair.json`, after the protocol entry. It is reporting only; nothing is a pass mark. The basket sections below stay as the record.
+
+**What a signal was worth.** Over a five-day hold, half of capital a side, before costs:
+
+| | Signals | Gross per signal | Standard error | Next session alone |
+| --- | --- | --- | --- | --- |
+| 2010 to 2019 | 225 | 22.8 bps | 8.2 | 14.9 bps |
+| 2020 to 2026 | 141 | -19.4 | 16.5 | -3.2 |
+| 2021 to 2026 | 122 | -6.5 | 15.6 | 3.2 |
+
+On the fixed copula the same figures are 28.4 and -11.7 bps. A round trip costs 20 bps at the protocol's brokerage, 58.6 at the institutional JSE schedule and 94.5 at retail. The edge before 2020 was about a third of the real cost. Since then it has been below zero, and 2020 was the worst year, −102.8 bps a signal on 19 signals: the pair's reversal broke in the crash, where the basket's paid.
+
+**The rule at each cost.** Sharpe ratios, five-day hold:
+
+| | Before costs | 10 bps a leg | Institutional | Retail |
+| --- | --- | --- | --- | --- |
+| Design, 2010 to 2019 | 0.82 | 0.18 | -1.16 | -2.32 |
+| Validation, 2020 to March 2026 | -0.21 | -0.69 | -1.68 | -2.55 |
+| Post-freeze, to 2026-10-09 | -0.5 | -0.96 | -1.88 | -2.65 |
+
+At institutional costs the walk-forward returns -8.1% a year; holding half of each bank returned 6.4%. Holding until the signal is back inside its 50th percentile, instead of five days, averages 2.0 days over 303 trades. It is better before costs in design (Sharpe 1.14) and worse after them everywhere (institutional walk-forward Sharpe -2.32).
+
+**Red team on the pair.**
+
+1. **Execution lag.** Filled at the next close, the 2010 to 2019 figure falls from 22.8 to 10.6 bps, and two closes late to 7.8. At the next morning's 10:00 bar it is 11.0 (restated from the red team). Expectation was more than half; it was a little over half.
+2. **Causal cleaning.** The causal rule flags the same Standard Bank print (2025-04-25) the current rule removes, and nothing on Nedbank. As expected.
+3. **Leave-one-year-out.** Without 2015, the best design year, the 2010 to 2019 figure is 20.0 bps. Without 2020, the 2020 onward figure is -6.5 bps. As expected.
+4. **Placebo.** Against 10,000 random entry sets with the same signals per year, 2010 to 2019 sits at the 99.9th percentile (placebo sd 7.3 bps), 2020 onward at the 8.4th and 2021 onward at the 30.0th. As expected: real before 2020, nothing since.
+5. **Overlay.** Restated from the overlay section: timed at the next morning's price, at most about 3 bps a trade, with no interval excluding zero.
+
+**Leg sizing.** On validation, against 1:1:
+
+| Sizing | Mean Standard Bank weight | Position variance against 1:1 | DM t |
+| --- | --- | --- | --- |
+| Inverse volatility | 0.505 | 1.041 | -1.22 |
+| Minimum variance per unit of Standard Bank | 0.589 | 1.177 | -2.12 |
+| Minimum variance per unit of gross | 0.506 | 1.058 | -1.51 |
+
+Every alternative makes the position more variable, not less, because the two banks' volatilities are close. 1:1 stays, as expected.
+
+Verdict. On Standard Bank against Nedbank the instrument measures the same story as on the basket, more sharply. A reversal worth about 23 bps a signal existed before 2020 and was real against placebo. It was always below the 59 bps an institutional round trip costs, half of it disappears with a realistic fill, and since 2020 it has been negative.
+
 ## Every rule tested
 
 | Rule | Design Sharpe | Validation Sharpe | Validation Sortino | Validation CAGR | Validation max drawdown | Post-freeze Sharpe | Pass mark | Verdict |
@@ -170,12 +214,16 @@ Every one of these was made before the affected verdict was known, or changed no
 
 14. **Overlay.** Registered 9 November 2026 before any figure. The first run measured improvement in simple price ratios, and its placebo showed 2 to 7 bps with no information: Jensen's inequality, not timing. Amended to log prices and block bootstraps before any figure was reported; the first-run output is not used anywhere. Ran in seconds on the Mac, so no VM was used.
 
+15. **Re-centring on the pair.** Registered 9 November 2026 before any new pair figure, listing the pair figures already seen. `research/pair.py` was run once, then rerun with two descriptive additions (the next-session figure by year and the fixed copula's edge) and the cost output reshaped; every other figure was byte-identical between the two runs. Ran in seconds on the Mac.
+
 ## Run order
 
 ```sh
 Rscript research/02_basket.R                 # about 15 minutes; writes data/basket.json and data/h1_daily.csv
 service/.venv/bin/python research/decay.py
 service/.venv/bin/python research/overlay.py
+service/.venv/bin/python research/models/export_pair_gas.py
+service/.venv/bin/python research/pair.py
 service/.venv/bin/python research/h1_evaluate.py
 service/.venv/bin/python research/h2_news.py # reads data/raw/gdelt_banks.csv, the output of research/sql/gdelt_banks.sql on BigQuery
 service/.venv/bin/python research/fetch_volume.py   # basket volumes for H3
