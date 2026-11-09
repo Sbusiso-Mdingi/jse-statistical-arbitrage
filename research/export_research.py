@@ -1,7 +1,7 @@
 """Collect the decay study and every tested rule into data/research.json for the dashboard.
 
 Run after research/decay.py, research/h1_evaluate.py, research/h2_news.py, research/h3_exit.py,
-research/04_cointegration.R, research/h4_cointegration.py, research/h5_edit.py and research/h6_rl_exit.py.
+research/04_cointegration.R, research/h4_cointegration.py, research/h5_edit.py, research/h6_rl_exit.py and research/h7_intraday.py.
 """
 import json, sys
 from datetime import date
@@ -84,7 +84,14 @@ tests.append({"id": "h6", "name": "Network exit trained on every day (H6)", "det
               "pass_mark": "Validation Sharpe above zero and above H1",
               **{p: pick(h6["h6"][n]) for p, n in (("design", "design"), ("validation", "validation"), ("post_freeze", "post-freeze"))},
               "design_note": "Design period 2013 to 2019", "edge_vs_h1": h6["h6"]["vs_h1_validation"]})
-bars = {"h6": max(0.0, tests[2]["validation"]["sharpe"]), "h5": max(0.0, tests[2]["validation"]["sharpe"]), "h4a": 0.0, "h4b": 0.0, "v1": None, "hold5": 0.0, "h1": max(0.0, tests[0]["validation"]["sharpe"]), "h2a": max(0.0, tests[1]["validation"]["sharpe"]), "h2b": max(0.0, tests[1]["validation"]["sharpe"]), "h3a": max(0.0, tests[2]["validation"]["sharpe"]), "h3b": max(0.0, tests[2]["validation"]["sharpe"])}
+h7 = json.load(open("research/results/h7.json"))
+tests.append({"id": "h7", "name": "Intraday reversal on hourly bars (H7)", "detail": f"SBK against NED on 60-minute bars. Opens at 12:00 when the two-hour divergence passes a trailing {int(h7['chosen_q'])}th percentile (chosen on design from 90, 95 and 97.5), closes at 17:00. Hourly data ends 2 June 2026, so it cannot run live.",
+              "pass_mark": "Validation Sharpe above zero",
+              **{p: pick(h7[n]["after_costs"]) for p, n in (("design", "design"), ("validation", "validation"), ("post_freeze", "post-freeze"))},
+              "before_costs": {p: pick(h7[n]["before_costs"]) for p, n in (("design", "design"), ("validation", "validation"))},
+              "entries": {p: h7[n]["after_costs"]["entries"] for p, n in (("design", "design"), ("validation", "validation"), ("post_freeze", "post-freeze"))},
+              "edge_vs_h1": {k: h7["vs_h1_validation"][k] for k in ("bps_per_year", "t_stat")}})
+bars = {"h7": 0.0, "h6": max(0.0, tests[2]["validation"]["sharpe"]), "h5": max(0.0, tests[2]["validation"]["sharpe"]), "h4a": 0.0, "h4b": 0.0, "v1": None, "hold5": 0.0, "h1": max(0.0, tests[0]["validation"]["sharpe"]), "h2a": max(0.0, tests[1]["validation"]["sharpe"]), "h2b": max(0.0, tests[1]["validation"]["sharpe"]), "h3a": max(0.0, tests[2]["validation"]["sharpe"]), "h3b": max(0.0, tests[2]["validation"]["sharpe"])}
 for t in tests:
     if bars[t["id"]] is not None:
         t["passed"] = t["validation"]["sharpe"] > bars[t["id"]]

@@ -1,0 +1,110 @@
+[
+ {
+  "n": 1,
+  "when": "2026-11-09",
+  "q": 90,
+  "periods": [
+   "design"
+  ],
+  "note": "design grid",
+  "result": {
+   "design": {
+    "sharpe": -0.37,
+    "before": 1.54,
+    "entries": 247
+   }
+  }
+ },
+ {
+  "n": 2,
+  "when": "2026-11-09",
+  "q": 95,
+  "periods": [
+   "design"
+  ],
+  "note": "design grid",
+  "result": {
+   "design": {
+    "sharpe": -0.31,
+    "before": 0.89,
+    "entries": 123
+   }
+  }
+ },
+ {
+  "n": 3,
+  "when": "2026-11-09",
+  "q": 97.5,
+  "periods": [
+   "design"
+  ],
+  "note": "design grid",
+  "result": {
+   "design": {
+    "sharpe": -0.31,
+    "before": 0.56,
+    "entries": 78
+   }
+  }
+ },
+ {
+  "n": 4,
+  "when": "2026-11-09",
+  "q": 95.0,
+  "periods": [
+   "design",
+   "validation",
+   "post-freeze"
+  ],
+  "note": "the one validation run of the chosen rule",
+  "result": {
+   "design": {
+    "sharpe": -0.31,
+    "before": 0.89,
+    "entries": 123
+   },
+   "validation": {
+    "sharpe": -0.6,
+    "before": 0.33,
+    "entries": 93
+   },
+   "post-freeze": {
+    "sharpe": -2.51,
+    "before": 2.51,
+    "entries": 1
+   }
+  }
+ },
+ {
+  "n": 5,
+  "when": "2026-11-09",
+  "q": 90,
+  "periods": [
+   "validation"
+  ],
+  "note": "reported, not tested: other grid point in validation",
+  "result": {
+   "validation": {
+    "sharpe": -1.26,
+    "before": 0.25,
+    "entries": 166
+   }
+  }
+ },
+ {
+  "n": 6,
+  "when": "2026-11-09",
+  "q": 97.5,
+  "periods": [
+   "validation"
+  ],
+  "note": "reported, not tested: other grid point in validation",
+  "result": {
+   "validation": {
+    "sharpe": -0.04,
+    "before": 0.5,
+    "entries": 46
+   }
+  }
+ }
+]

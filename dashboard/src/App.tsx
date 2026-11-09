@@ -723,7 +723,7 @@ function ResearchSection() {
                     {num(t.validation.sharpe)}
                   </td>
                   <td className="num" style={{ color: t.post_freeze.sharpe < 0 ? "var(--negative)" : undefined }}>
-                    {t.entries?.post_freeze === 0 ? "No trades" : num(t.post_freeze.sharpe)}
+                    {t.entries?.post_freeze === 0 ? "No trades" : t.entries && t.entries.post_freeze < 5 ? `${t.entries.post_freeze} trade${t.entries.post_freeze === 1 ? "" : "s"}` : num(t.post_freeze.sharpe)}
                   </td>
                   <td>
                     {t.passed == null

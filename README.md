@@ -33,11 +33,13 @@ Walk-forward is 2010 to March 2026, after costs. H1 before costs: 3.5% a year, S
 
 **H6, a learned exit trained on every day.** H3's exit models saw only the ~600 days inside real trades. H6 treats every close as a virtual five-day trade in the direction of its signal, so a small network inside the same fitted Q-iteration learns from 17,082 decision points, with the H5 calibrated signal as a state variable. It passed its pre-registered mark (validation Sharpe 0.21 against H1's 0.06 and H3b's 0.14, drawdown −10.5% against −15.1%), 76 bps a year ahead with t = 0.95, so within noise; without the H5 features it scores 0.19 in validation and 0.00 in design.
 
+**Hourly study and H7.** 60-minute SBK and NED bars (a TradingView export to 2 June 2026, kept locally and not redistributed) show that dependence drifts rather than switches (monthly realised correlation 0.3 to 0.8, autocorrelation 0.65, one hump) and that the reversal moved inside the day: a top-decile two-hour divergence after 10:00 reversed by about 31 bps by the close on design data (t = −4.6). Traded as H7 (open at 12:00, close at 17:00, threshold chosen on design), it fails validation: Sharpe 0.33 before costs and −0.60 after, with the gross edge per trade down from 15 bps in design to 7 bps against a 20 bps round trip.
+
 The live record since 1 April 2026 is served by `/api/summary` and changes daily. Slippage, borrow fees and securities transfer tax are not modelled.
 
 ## Layout
 
-- `research/` R pipeline (`00_data.R`, `clean.R`, `lib.R`, `01_walkforward.R` for v1, `02_basket.R` for H1) and Python evaluation (`decay.py`, `h1_evaluate.py`, `h2_news.py`, `fetch_volume.py`, `h3_exit.py`, `h4_cointegration.py`, `export_research.py`) and the parameter-edit harness (`h5_weights.py`, `h5_inspect*.py`, `h5_edit.py`) and the all-days exit network (`h6_rl_exit.py`). `sql/` holds the BigQuery queries behind `data/raw/gdelt_banks.csv` and `data/raw/gdelt_basket.csv`.
+- `research/` R pipeline (`00_data.R`, `clean.R`, `lib.R`, `01_walkforward.R` for v1, `02_basket.R` for H1) and Python evaluation (`decay.py`, `h1_evaluate.py`, `h2_news.py`, `fetch_volume.py`, `h3_exit.py`, `h4_cointegration.py`, `export_research.py`) and the parameter-edit harness (`h5_weights.py`, `h5_inspect*.py`, `h5_edit.py`) the all-days exit network (`h6_rl_exit.py`) and the hourly study and intraday rule (`hourly_study.py`, `h7_intraday.py`). `sql/` holds the BigQuery queries behind `data/raw/gdelt_banks.csv` and `data/raw/gdelt_basket.csv`.
 - `service/` FastAPI app. `app/model.py` reimplements the rugarch filters and copula h-functions in NumPy; `app/basket.py` runs H1; `tests/test_parity.py` checks both against R.
 - `dashboard/` React and Vite front end, themed to match mdingi.co.za and designed to be embedded.
 - `deploy/azure.sh` builds the image in Azure Container Registry and deploys it to App Service.
@@ -64,6 +66,6 @@ Resource group `rg-mdingi-previews`: an App Service F1 (free) Linux plan pulling
 
 ## Data
 
-Prices and volumes come from Yahoo Finance and VIX from FRED; neither is redistributed here. `Rscript research/00_data.R` and `research/fetch_volume.py` download them into `data/raw/`. The GDELT article counts in `data/raw/gdelt_*.csv` are open data, from the queries in `research/sql/`.
+Prices and volumes come from Yahoo Finance and VIX from FRED; neither is redistributed here. The 60-minute bars behind the hourly study and H7 are a TradingView export (`data/raw/sbk_60m.csv`, `ned_60m.csv`), also not redistributed. `Rscript research/00_data.R` and `research/fetch_volume.py` download them into `data/raw/`. The GDELT article counts in `data/raw/gdelt_*.csv` are open data, from the queries in `research/sql/`.
 
 Research output, not investment advice.

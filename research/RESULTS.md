@@ -1,6 +1,6 @@
 # Results
 
-Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day, after its protocol entry; H4 on 25 October, H5 and H6 on 9 November, each after its protocol entry). All figures are annualised, after 10 bps per leg unless stated, from `data/research.json`. Post-freeze runs from 1 April 2026 and is reported only: to 9 October for v1, H1, H3, H5 and H6, and to 23 October for the five-day hold, H2 and H4, which read the price cache directly.
+Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day, after its protocol entry; H4 on 25 October, H5, H6 and H7 on 9 November, each after its protocol entry). All figures are annualised, after 10 bps per leg unless stated, from `data/research.json`. Post-freeze runs from 1 April 2026 and is reported only: to 9 October for v1, H1, H3, H5 and H6, to 23 October for the five-day hold, H2 and H4, which read the price cache directly, and to 2 June for H7, where the hourly data ends.
 
 ## Every rule tested
 
@@ -17,6 +17,7 @@ Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day
 | H4b, classic trade, cointegrated windows only | 0.40 | 0.45 | 0.67 | 2.3% | −7.9% | no trades | > 0 | Passed, within noise |
 | H5, copula correlation edited to track recent dependence | 0.15 | −0.23 | −0.35 | −1.8% | −20.7% | −1.59 | > 0 and > 0.06 | Failed |
 | H6, network exit trained on every day | 0.23 | 0.21 | 0.35 | 1.0% | −10.5% | −1.08 | > 0 and > 0.06 | Passed, within noise |
+| H7, intraday reversal on hourly bars (SBK/NED) | −0.31 | −0.60 | −0.80 | −2.0% | −16.9% | 1 trade | > 0 | Failed |
 
 Sortino ratios (added by amendment 5) use the downside deviation over all days. H1 over the full walk-forward: Sortino 0.11.
 
@@ -56,6 +57,12 @@ H3's exit models had 592 decision points, because only days inside a real trade 
 
 H6 clears the pre-registered mark: validation Sharpe 0.21 after costs (Sortino 0.35, CAGR 1.0%, max drawdown −10.5%) against H1's 0.06 and H3b's 0.14, exiting at 19% of real decision points and in the market 24% of days against H1's 31%. Post-freeze it is −1.08 against H1's −2.31. It is 76 bps a year ahead of H1 on paired validation days with t = 0.95, and it was 30 bps a year behind H1 in design (t = −0.33), so read it as within noise, and as the sixth hypothesis family scored on the same validation data. The ablation is the interesting part: without the two H5 features the same model scores 0.19 in validation but 0.00 in design. The calibrated signal that failed as a trading rule in H5 is the state variable that made the exit policy coherent across both periods. The policy's exits are not costless in the H1 sense once a position is re-opened by a later signal, and that cost is charged.
 
+## Hourly study and H7: the reversal moved inside the day, and costs ate it
+
+The 60-minute bars (TradingView, February 2009 to 2 June 2026, eight bars a day, not redistributed and not refreshable) answer two questions the daily data cannot. First, dependence drifts rather than switches: the realised intraday correlation between SBK and NED by month runs from about 0.3 to 0.8 with a month-to-month autocorrelation of 0.65 and a one-humped distribution, and its yearly mean climbs from 0.48 in 2010 to 0.68 in 2019, the same rise H5 found in the copula's residuals. A two-state regime model is the wrong shape for this; a time-varying correlation is the right one. Half of the daily spread variance (47%) is overnight, so a close-to-close copula averages two different processes. Second, the reversal the daily rules were built on is alive inside the day: on design data, when the spread's move over the two hours after 10:00 is in its top decile it reverses by about 31 bps by the close (t = −4.6), and the effect grew from −20 bps in 2010 to 2014 to −44 bps in 2015 to 2019 while the daily reversal faded.
+
+H7 trades it: open at 12:00 against a two-hour divergence beyond a trailing 250-day percentile, close at 17:00, half of capital a leg, 10 bps a leg. Design chose the 95th percentile from {90, 95, 97.5} (after-cost Sharpe −0.37, −0.31, −0.31; before costs 1.54, 0.89, 0.56). The chosen rule fails validation: Sharpe −0.60 after costs, 0.33 before, −0.13 at 5 bps a leg, 93 trades with a 31% hit rate and a gross of 7 bps a trade against 15 bps in design. The other two grid points score −1.26 and −0.04 in validation. Against H1 on common validation days it is 240 bps a year behind (t = −0.95). Post-freeze is one trade. Read as: the intraday reversal is real and statistically strong before costs, it has shrunk by half since 2020 like everything else here, and at any plausible cost it is not tradeable from hourly bars. Part of the measured move is bid-ask bounce on bar closes, which reverses mechanically and cannot be earned; that was flagged before the run and is not estimated.
+
 ## Decay study
 
 Mean one-year lag-1 autocorrelation of the daily return spread across the 15 pairs of SBK, NED, FSR, ABG, CPI and INL: about −0.16 in 2011, close to zero from 2020 (−0.01 at the start of 2026). The SBK/NED next-day return after an extreme copula signal averaged about 16 bps from 2010 to 2019 and about −6 bps since 2020. This is the most likely reason every reversal rule weakens after 2019.
@@ -75,6 +82,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 7. **H6.** Added to the protocol on 9 November 2026 after the H5 result and before any H6 result. The first run crashed while writing its daily CSV, after the results JSON was saved; the line was fixed and the deterministic run repeated, producing a byte-identical JSON. No paired comparison with H3b is given because H3's daily positions were not stored.
 
+8. **Hourly study and H7.** The hourly study was added as descriptive on 9 November 2026 and H7 registered after it, before any H7 return was computed. The first H7 run crashed on an indexing error before any figure was computed or logged; the line was fixed and the script run once.
+
 ## Run order
 
 ```sh
@@ -90,5 +99,7 @@ service/.venv/bin/python research/h5_weights.py    # parity check of the edit ha
 service/.venv/bin/python research/h5_inspect.py && service/.venv/bin/python research/h5_inspect2.py && service/.venv/bin/python research/h5_inspect3.py   # design only
 service/.venv/bin/python research/h5_edit.py      # the one validation run; writes research/results/h5.json
 service/.venv/bin/python research/h6_rl_exit.py   # about 3 minutes; reads h5_daily.csv, writes research/results/h6.json
+service/.venv/bin/python research/hourly_study.py  # descriptive; needs data/raw/sbk_60m.csv and ned_60m.csv (TradingView export, not in the repo)
+service/.venv/bin/python research/h7_intraday.py   # design grid, then the one validation run; writes research/results/h7.json
 service/.venv/bin/python research/export_research.py
 ```
