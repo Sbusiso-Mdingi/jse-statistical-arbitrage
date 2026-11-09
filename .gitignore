@@ -11,3 +11,5 @@ data/raw/*.csv
 !data/raw/gdelt_*.csv
 # Reference copies of earlier work; the group report is in research/reference/ locally.
 research/reference/
+# Derived from the TradingView bars; not redistributed.
+data/rv_daily.csv

@@ -322,7 +322,7 @@ export function EdgeBars({ rows, cost, label }: { rows: { year: number; n: numbe
         </g>
       ))}
       <path d={`M${pad.l} ${y(cost)}H${W - pad.r}`} stroke="var(--negative)" strokeDasharray="4 4" />
-      <text x={pad.l + 6} y={y(cost) - 5} textAnchor="start" fill="var(--negative)">
+      <text x={W - pad.r} y={y(cost) - 5} textAnchor="end" fill="var(--negative)">
         cost of a round trip, {cost} bps
       </text>
       {rows.map((r, i) => {
