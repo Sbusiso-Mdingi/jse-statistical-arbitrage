@@ -1,0 +1,50 @@
+[
+ {
+  "n": 1,
+  "when": "2026-11-09",
+  "label": "H1 as fitted",
+  "periods": [
+   "design"
+  ],
+  "note": "baseline, reproduces h1.json",
+  "result": {
+   "design": {
+    "sharpe": 0.08,
+    "before_costs_sharpe": 0.74,
+    "entries": 158
+   }
+  }
+ },
+ {
+  "n": 2,
+  "when": "2026-11-09",
+  "label": "SBK ar1 = ma1 = 0",
+  "periods": [
+   "design"
+  ],
+  "note": "remove the near-cancelling ARMA(1,1) direction from the SBK margin",
+  "result": {
+   "design": {
+    "sharpe": 0.0,
+    "before_costs_sharpe": 0.68,
+    "entries": 163
+   }
+  }
+ },
+ {
+  "n": 3,
+  "when": "2026-11-09",
+  "label": "copula par tracks 252-day tau",
+  "periods": [
+   "design"
+  ],
+  "note": "chosen by calibration of h on design; first and only design-period look at this edit's returns",
+  "result": {
+   "design": {
+    "sharpe": 0.15,
+    "before_costs_sharpe": 0.9,
+    "entries": 196
+   }
+  }
+ }
+]
