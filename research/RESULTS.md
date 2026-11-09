@@ -269,6 +269,20 @@ The idea that the two banks' tails should widen with market volatility is absorb
 
 The registered expectation was wrong in direction. VIX and the control lower the design score; they do not raise it. The pair's own gauge scores DM t = 2.12 on validation, but the rule chose on design and it lost there (t = −2.78), so it is not adopted. Choosing it now would be choosing on validation. The page and the service are unchanged.
 
+## Closing auction: can the signal's own close be caught? (reporting only)
+
+`research/closing_auction.py`, `research/results/closing_auction.json`. The signal is recomputed from each bank's 16:00 price (the 16:00 return correlates 0.95 with the day's close-to-close return) and filled at the official close. The close-signal h is reproduced to 5 × 10⁻⁹.
+
+| Design, 2010 to 2019 | Signals | Gross a signal (bps) | Net, cash institutional | Net, futures institutional |
+| --- | --- | --- | --- | --- |
+| Close signal, filled at that close (not tradeable) | 223 | 24.3 (se 8.1) | −35.3 | −9.5 |
+| 16:00 signal, filled at the close | 176 | 11.7 (se 9.4) | −47.9 | −22.1 |
+| Close signals not visible at 16:00 | 102 | 35.8 (se 10.9) | −23.8 | +2.0 |
+
+Only 121 of the 223 close signals show at 16:00 on the same side. The ones that don't are the best: they form in the last 50 minutes and the auction, and the reversal that pays comes from that late move. A tradeable version keeps about half the edge, 11.7 bps before costs, at the low end of the registered expectation (half to all). It falls further below both round trips than the headline figure did.
+
+On validation the 16:00 signal earns −38.8 bps (se 21.8) against −18.7 for the close signal. The bars end on 2 June 2026, and no signal fell in the covered sessions after the freeze. The headline 23 bps is the instrument's measurement; a trader acting before the close would have had about 12.
+
 ## Run order
 
 ```sh
@@ -292,6 +306,7 @@ service/.venv/bin/python research/h7_intraday.py   # design grid, then the one v
 service/.venv/bin/python research/h11_ned_repair.py design   # under a minute; writes research/results/h11.json
 service/.venv/bin/python research/derivative_costs.py        # seconds; writes research/results/derivative_costs.json
 service/.venv/bin/python research/models/h12_gauge.py         # about three minutes on eight cores; writes research/results/h12.json
+service/.venv/bin/python research/closing_auction.py         # under a minute; needs the local hourly bars; writes research/results/closing_auction.json
 service/.venv/bin/python research/models/pairdata.py && service/.venv/bin/python research/models/margins_py.py && Rscript research/08_margins_r.R   # margin models
 service/.venv/bin/python research/models/copulas_py.py && service/.venv/bin/python research/models/compare.py 2020-01-01 2026-04-01 validation research/results/copulas_validation.json && service/.venv/bin/python research/models/h8_edge.py
 service/.venv/bin/python research/models/h9_basket_gas.py   # about 10 minutes on 8 cores
