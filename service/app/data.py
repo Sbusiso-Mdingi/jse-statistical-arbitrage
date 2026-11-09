@@ -74,15 +74,14 @@ def drop_bad_prints(series: dict[date, float], jump: float = 0.4) -> dict[date, 
         days = [d for d in days if d not in set(bad)]
 
 
-BASKET = {"fsr": "FSR.JO", "abg": "ABG.JO", "ned": "NED.JO", "cpi": "CPI.JO"}
+PAIR = {"sbk": "SBK.JO", "ned": "NED.JO"}
 
 
-def fetch_live(freeze: date, basket_start: date) -> dict:
-    """Prices from shortly before the pair's freeze date and the basket's latest fit
-    to the latest completed session."""
-    start = min(freeze, basket_start) - timedelta(days=10)
+def fetch_live(freeze: date) -> dict:
+    """Standard Bank and Nedbank prices from shortly before the freeze to the latest completed session."""
+    start = freeze - timedelta(days=10)
     with httpx.Client(headers=HEADERS, timeout=20, follow_redirects=True) as client:
-        px = {k: drop_bad_prints(yahoo_daily(client, s, start)) for k, s in {"sbk": "SBK.JO", **BASKET}.items()}
+        px = {k: drop_bad_prints(yahoo_daily(client, s, start)) for k, s in PAIR.items()}
         try:
             vix = fred_vix(start - timedelta(days=10))
         except httpx.HTTPError:
@@ -94,31 +93,19 @@ def fetch_live(freeze: date, basket_start: date) -> dict:
         known = [v for v in vix_days if v < day]
         return vix[known[-1]] if known else None
 
-    def rows_from(anchor: date, names: list[str], make) -> list[dict]:
-        days = sorted(set.intersection(*(set(px[k]) for k in names)))
-        if anchor not in days:
-            raise RuntimeError(f"Prices for {anchor} missing from the live feed")
-        days = [d for d in days if d >= anchor]
-        out = []
-        for prev, day in zip(days, days[1:]):
-            vx = known_vix(day)
-            if vx is not None:
-                out.append({"date": day, "vix": vx, **make(prev, day)})
-        return out
-
-    pair = rows_from(freeze, ["sbk", "ned"], lambda a, b: {
-        "r_sbk": math.log(px["sbk"][b] / px["sbk"][a]),
-        "r_ned": math.log(px["ned"][b] / px["ned"][a]),
-    })
-    basket = rows_from(basket_start, ["sbk", *BASKET], lambda a, b: {
-        "r_sbk": math.log(px["sbk"][b] / px["sbk"][a]),
-        # Equal-weight basket rebalanced daily, as a log return for the volatility model.
-        "r_bsk": math.log1p(sum(px[k][b] / px[k][a] - 1 for k in BASKET) / len(BASKET)),
-    })
-    last = max(r["date"] for r in pair)
-    return {
-        "rows": pair,
-        "basket_rows": basket,
-        "prices": {k: s[last] for k, s in px.items() if last in s},
-        "as_of": last,
-    }
+    days = sorted(set(px["sbk"]) & set(px["ned"]))
+    if freeze not in days:
+        raise RuntimeError(f"Prices for {freeze} missing from the live feed")
+    days = [d for d in days if d >= freeze]
+    rows = []
+    for prev, day in zip(days, days[1:]):
+        vx = known_vix(day)
+        if vx is not None:
+            rows.append({
+                "date": day,
+                "vix": vx,
+                "r_sbk": math.log(px["sbk"][day] / px["sbk"][prev]),
+                "r_ned": math.log(px["ned"][day] / px["ned"][prev]),
+            })
+    last = max(r["date"] for r in rows)
+    return {"rows": rows, "prices": {k: s[last] for k, s in px.items() if last in s}, "as_of": last}

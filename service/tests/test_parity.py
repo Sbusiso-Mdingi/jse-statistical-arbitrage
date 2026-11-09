@@ -31,35 +31,6 @@ def test_marginals_and_copula_match_r():
     np.testing.assert_allclose(h_sn, p["h_sn"], atol=1e-7)
 
 
-def test_basket_live_filter_matches_r():
-    from app.basket import Basket
-
-    b = Basket(json.loads((ROOT / "data" / "basket.json").read_text()))
-    par = b.latest["parity"]
-    rows = b.live_rows(b.snapshot_rows())
-    np.testing.assert_allclose(rows["u"], par["u"], atol=1e-8)
-    np.testing.assert_allclose(rows["v"], par["v"], atol=1e-8)
-    np.testing.assert_allclose(rows["h"], par["h"], atol=1e-7)
-
-
-def test_gas_copula_matches_research():
-    """The service's score-driven copula, run forward from the exported state, reproduces the research h."""
-    import csv, json
-    from pathlib import Path
-    import numpy as np
-    from app import basket as bk
-    root = Path(__file__).resolve().parents[2]
-    gas_path = root / "data" / "basket_gas.json"
-    if not gas_path.exists():
-        return
-    b = bk.Basket(json.loads((root / "data" / "basket.json").read_text()), json.loads(gas_path.read_text()))
-    live = b.live_rows(b.snapshot_rows())
-    research = {r["date"]: float(r["h"]) for r in csv.DictReader(open(root / "research" / "results" / "copulas_basket.csv")) if r["model"] == "gas_t"}
-    pairs = [(h, research[d.isoformat()]) for d, h in zip(live["date"], live["h"]) if d.isoformat() in research]
-    assert len(pairs) >= 5
-    assert max(abs(a - b_) for a, b_ in pairs) < 1e-6
-
-
 def test_pair_gas_matches_research():
     """The service's pair h on post-freeze sessions must equal the research GAS filter (copulas_py.csv)."""
     import csv
@@ -74,3 +45,25 @@ def test_pair_gas_matches_research():
     np.testing.assert_allclose(a[:, 0], a[:, 1], atol=1e-7)
     hist = PAIR.history
     assert hist["date"][-1].isoformat() == final["train_end"]
+
+
+def test_rule_and_costs_match_research():
+    """The service's rule and JSE cost schedule reproduce research/pair.py's Sharpe ratios by period and tier."""
+    from datetime import date
+
+    from app import rule
+    from app.main import PAIR, live_rows, snapshot_rows
+
+    rows = PAIR.rows(PAIR.live(live_rows(snapshot_rows())))
+    ref = json.loads((ROOT / "research" / "results" / "pair.json").read_text())["costs"]["tiers"]
+    periods = {"design": (date(2010, 1, 1), date(2020, 1, 1)), "validation": (date(2020, 1, 1), date(2026, 4, 1))}
+    for tier in ("protocol", "institutional", "retail"):
+        out = rule.run(rows, rule.Params(costs=tier), "all")
+        eq = np.asarray(out["series"]["equity"], dtype=float)
+        daily = np.concatenate([[eq[0] - 1.0], eq[1:] / eq[:-1] - 1.0])
+        dates = out["series"]["date"]
+        for name, (a, b) in periods.items():
+            m = np.array([a <= d < b for d in dates])
+            x = daily[m]
+            sharpe = x.mean() / x.std(ddof=1) * np.sqrt(252)
+            assert abs(sharpe - ref[tier][name]["sharpe"]) < 0.015, (tier, name, sharpe, ref[tier][name]["sharpe"])

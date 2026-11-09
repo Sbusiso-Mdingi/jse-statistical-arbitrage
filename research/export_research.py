@@ -8,8 +8,13 @@ from datetime import date
 import numpy as np
 
 sys.path.insert(0, "service")
-from app.main import HISTORY, cache, folds  # noqa: E402
+from app.main import cache, walkforward  # noqa: E402
 from app.strategy import Params, backtest, metrics  # noqa: E402
+
+folds = {f["id"]: f for f in walkforward["folds"]}
+_h = walkforward["history"]
+HISTORY = {"date": [date.fromisoformat(d) for d in _h["date"]], "fold": np.array(_h["fold"], dtype=int),
+           **{k: np.array(_h[k], dtype=float) for k in ("r_sbk", "r_ned", "u", "v", "h_ns", "h_sn", "spread_vol")}}
 
 PERIODS = {"design": ("2010-01-01", "2020-01-01"), "validation": ("2020-01-01", "2026-04-01"), "post_freeze": ("2026-04-01", "2100-01-01")}
 
@@ -105,7 +110,9 @@ cointegration = {
     "breaks": c["bai_perron"]["breaks"],
     "segments": [{"from": s["from"], "to": s["to"], "slope": round(s["slope"], 2)} for s in c["bai_perron"]["segments"]],
 }
-# The instrument is SBK against NED on the score-driven copula (PROTOCOL.md, "Re-centring"); the basket is kept as a record.
+# The instrument is SBK against NED on the score-driven copula (PROTOCOL.md, "Re-centring"). The basket stage stays in
+# RESULTS.md and research/results/ as the record and is not exported; only the rules tested on the pair are.
+PAIR_TESTS = ("v1", "hold5", "h2a", "h2b", "h4a", "h4b", "h7")
 pj = json.load(open("research/results/pair.json"))
 cv = json.load(open("research/results/copulas_validation.json"))
 ct = pj["costs"]["tiers"]
@@ -121,11 +128,10 @@ redteam = {"lag_next_close_2010_2019_bps": pj["lag"]["lag_1_closes"]["2010_2019"
            "placebo_percentile_2021_2026": pj["placebo"]["2021_2026"]["percentile"],
            "loo_best_year": pj["loo"]["best_design_year"], "loo_without_best_2010_2019_bps": pj["loo"]["without"][str(pj["loo"]["best_design_year"])]["2010_2019"]}
 ov = json.load(open("research/results/overlay.json"))["pair_next_morning"]["W10"]
-out = {"periods": PERIODS, "tests": tests, "decay": json.load(open("data/decay.json")), "cointegration": cointegration,
+out = {"periods": PERIODS, "tests": [t for t in tests if t["id"] in PAIR_TESTS], "decay": json.load(open("data/decay.json")), "cointegration": cointegration,
        "edge": pj["edge"], "edge_static": pj["edge_static"], "instrument": instrument, "costs": costs, "redteam": redteam,
        "sizing": {k: {"mean_sbk_weight": v["mean_sbk_weight"], **v["periods"]["validation"]} for k, v in pj["sizing"].items()},
-       "overlay": {k: ov[k] for k in ("2010_2019", "2021_2026")},
-       "basket": {"edge": json.load(open("research/results/edge.json"))}}
+       "overlay": {k: ov[k] for k in ("2010_2019", "2021_2026")}}
 json.dump(out, open("data/research.json", "w"), separators=(",", ":"))
 for t in tests:
     print(f"{t['name']:30s} design {t['design']['sharpe']:5.2f}  validation {t['validation']['sharpe']:5.2f}  post {t['post_freeze']['sharpe']:5.2f}  passed {t.get('passed')}")

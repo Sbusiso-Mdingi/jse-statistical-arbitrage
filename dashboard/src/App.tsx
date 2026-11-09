@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import {
-  BASKET_DEFAULTS,
+  RULE_DEFAULTS,
   getPairBacktest,
   getPairModel,
   getResearch,
-  type BasketBacktest,
+  type PairBacktest,
   type PairModel,
-  type BasketParams,
+  type RuleParams,
   type CostTier,
   type Period,
   type Research,
@@ -43,8 +43,8 @@ function Metric({ value, label, sub, negative }: { value: string; label: string;
   );
 }
 
-function useBacktest(period: Period, params: BasketParams) {
-  const [bt, setBt] = useState<BasketBacktest | null>(null);
+function useBacktest(period: Period, params: RuleParams) {
+  const [bt, setBt] = useState<PairBacktest | null>(null);
   const [error, setError] = useState<string | null>(null);
   const debounced = useDebounced(params, 200);
   useEffect(() => {
@@ -95,7 +95,7 @@ function EdgePanel({ r, tier }: { r: Research; tier: CostTier }) {
   );
 }
 
-function LiveRecord({ bt, tier, roundTrip, period }: { bt: BasketBacktest; tier: CostTier; roundTrip: number; period: Period }) {
+function LiveRecord({ bt, tier, roundTrip, period }: { bt: PairBacktest; tier: CostTier; roundTrip: number; period: Period }) {
   const m = bt.metrics;
   const short = m.years < 1;
   // Two standard deviations of the total return of a zero-mean strategy with this volatility, over this span.
@@ -236,7 +236,7 @@ function Instrument({ model, research }: { model: PairModel; research: Research 
 export function App({ embedded }: { embedded: boolean }) {
   const [period, setPeriod] = useState<Period>("live");
   const [tier, setTier] = useState<CostTier>("protocol");
-  const params: BasketParams = { ...BASKET_DEFAULTS, costs: tier };
+  const params: RuleParams = { ...RULE_DEFAULTS, costs: tier };
   const { bt, error } = useBacktest(period, params);
   const [model, setModel] = useState<PairModel | null>(null);
   const [research, setResearch] = useState<Research | null>(null);

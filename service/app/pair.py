@@ -2,7 +2,7 @@
 
 Margins are the walk-forward's yearly ARMA-GARCH fits, frozen on 31 March 2026. Every walk-forward day's h comes
 from research/models/copulas_py.py; sessions after the freeze are filtered forward from the copula's state at the
-freeze with the final fold's parameters (data/pair_gas.json). The rule and costs are the basket module's: open when
+freeze with the final fold's parameters (data/pair_gas.json). The rule and costs are in app.rule: open when
 |h - 0.5| passes the level, long SBK / short NED when h > 0.5, hold five sessions, half of capital a side.
 """
 
@@ -12,7 +12,6 @@ from datetime import date
 
 import numpy as np
 
-from .basket import LIVE_FROM
 from .model import gas_filter
 
 
@@ -33,7 +32,7 @@ class Pair:
             "v": np.array(h["v"], dtype=float),
             "h": np.array([gh[d] for d in h["date"]]),
             "r_sbk": np.expm1(np.array(h["r_sbk"], dtype=float)),
-            "r_bsk": np.expm1(np.array(h["r_ned"], dtype=float)),  # the second leg; named as in the basket module
+            "r_ned": np.expm1(np.array(h["r_ned"], dtype=float)),
         }
         self.live_rho: float | None = None
 
@@ -48,7 +47,7 @@ class Pair:
             "v": np.asarray(rows["v"]),
             "h": h,
             "r_sbk": np.expm1(rows["r_sbk"]),
-            "r_bsk": np.expm1(rows["r_ned"]),
+            "r_ned": np.expm1(rows["r_ned"]),
         }
 
     def rows(self, live: dict) -> dict:

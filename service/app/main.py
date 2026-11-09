@@ -1,4 +1,4 @@
-"""HTTP service for the JSE bank copula-GARCH pairs dashboard."""
+"""HTTP service for the Standard Bank against Nedbank copula-GARCH dashboard."""
 
 from __future__ import annotations
 
@@ -17,11 +17,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import basket as bk
 from . import data as market
 from . import pair as pr
+from . import rule
 from .model import MarginalState, conditional_probabilities, filter_marginal
-from .strategy import Params, backtest, metrics, window
 
 log = logging.getLogger("pairs")
 ROOT = Path(os.environ.get("APP_ROOT", Path(__file__).resolve().parents[2]))
@@ -40,31 +39,10 @@ FRAME_ANCESTORS = "'self' https://mdingi.co.za https://www.mdingi.co.za http://l
 
 walkforward = json.loads((DATA / "walkforward.json").read_text())
 final = json.loads((DATA / "model_final.json").read_text())
-_GAS = DATA / "basket_gas.json"
-BASKET = bk.Basket(json.loads((DATA / "basket.json").read_text()), json.loads(_GAS.read_text()) if _GAS.exists() else None)
 PAIR = pr.Pair(walkforward, final, json.loads((DATA / "pair_gas.json").read_text()))
 FREEZE = date.fromisoformat(walkforward["freeze"])
 VOL_WINDOW = walkforward["vol_window"]
-folds = {f["id"]: f for f in walkforward["folds"]}
 FINAL_ID = final["id"]
-
-
-def _history() -> dict:
-    h = walkforward["history"]
-    return {
-        "date": [date.fromisoformat(d) for d in h["date"]],
-        "fold": np.array(h["fold"], dtype=int),
-        "r_sbk": np.array(h["r_sbk"], dtype=float),
-        "r_ned": np.array(h["r_ned"], dtype=float),
-        "u": np.array(h["u"], dtype=float),
-        "v": np.array(h["v"], dtype=float),
-        "h_ns": np.array(h["h_ns"], dtype=float),
-        "h_sn": np.array(h["h_sn"], dtype=float),
-        "spread_vol": np.array(h["spread_vol"], dtype=float),
-    }
-
-
-HISTORY = _history()
 
 
 def _state(key: str) -> MarginalState:
@@ -111,7 +89,6 @@ class LiveCache:
     def __init__(self) -> None:
         self.lock = threading.Lock()
         self.rows = live_rows(snapshot_rows())
-        self.basket_rows = BASKET.live_rows(BASKET.snapshot_rows())
         self.source = "snapshot"
         self.prices: dict | None = None
         self.fetched_at: float = 0.0
@@ -120,10 +97,9 @@ class LiveCache:
     def get(self) -> "LiveCache":
         if time.time() - self.fetched_at > REFRESH_SECONDS and self.lock.acquire(blocking=False):
             try:
-                live = market.fetch_live(FREEZE, BASKET.train_end)
-                if live["rows"] and live["basket_rows"]:
+                live = market.fetch_live(FREEZE)
+                if live["rows"]:
                     self.rows = live_rows(live["rows"])
-                    self.basket_rows = BASKET.live_rows(live["basket_rows"])
                     self.prices = live["prices"]
                     self.source = "live"
                     self.error = None
@@ -152,15 +128,6 @@ async def security_headers(request, call_next):
     return response
 
 
-def _rows(period: str) -> dict:
-    live = cache.get().rows
-    if period == "live":
-        return live
-    if period == "walkforward":
-        return HISTORY
-    return {k: (HISTORY[k] + live[k] if k == "date" else np.concatenate([HISTORY[k], live[k]])) for k in HISTORY}
-
-
 def _clean(x):
     if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
         return None
@@ -179,84 +146,8 @@ def _clean(x):
     return x
 
 
-def _keep(dates: list, period: str) -> np.ndarray:
-    if period == "all":
-        return np.ones(len(dates), bool)
-    return np.array([(d > FREEZE) == (period == "live") for d in dates])
-
-
-def run(period: str, p: Params) -> dict:
-    rows = _rows("all")
-    full = backtest(rows, folds, p)
-    w = window(rows["date"], _keep(rows["date"], period), full["position"], full["daily"], full["bench_daily"])
-    sl, dates, pos = w["slice"], w["dates"], w["position"]
-    fold_ids = rows["fold"][sl]
-    open_level = [
-        folds[int(f)]["q_signal"][p.entry - 50] if p.rule == "probability" else p.threshold for f in fold_ids
-    ]
-    close_level = [
-        folds[int(f)]["q_signal"][p.exit - 50] if p.rule == "probability" else 0.0 for f in fold_ids
-    ]
-    trades = [
-        {
-            "open": rows["date"][t["open"]],
-            "close": rows["date"][t["close"]] if t["close"] is not None else None,
-            "side": "Long SBK / short NED" if t["side"] > 0 else "Short SBK / long NED",
-            "return": t["ret"],
-        }
-        for t in w["trades"]
-    ]
-    return {
-        "period": period,
-        "params": p.__dict__,
-        "start": dates[0],
-        "end": dates[-1],
-        "metrics": metrics(dates, w["daily"], w["equity"], pos, w["trades"]),
-        "benchmark": metrics(dates, w["bench_daily"], w["benchmark"], np.ones(len(pos)), []),
-        "latest": {
-            "date": dates[-1],
-            "position": float(pos[-1]),
-            "h_ns": float(rows["h_ns"][sl][-1]),
-            "h_sn": float(rows["h_sn"][sl][-1]),
-        },
-        "series": {
-            "date": dates,
-            "equity": w["equity"],
-            "benchmark": w["benchmark"],
-            "position": pos,
-            "h_ns": rows["h_ns"][sl],
-            "h_sn": rows["h_sn"][sl],
-            "open_level": open_level,
-            "close_level": close_level,
-        },
-        "trades": trades,
-    }
-
-
-def _params(rule, entry, exit, vol_filter, vol_pct, threshold, cost_bps) -> Params:
-    return Params(rule, entry, exit, vol_filter, vol_pct, threshold, cost_bps).clamp()
-
-
-@app.get("/api/backtest")
-def api_backtest(
-    period: str = Query("live", pattern="^(live|walkforward|all)$"),
-    rule: str = "probability",
-    entry: int = 90,
-    exit: int = 50,
-    vol_filter: bool = True,
-    vol_pct: int = 80,
-    threshold: float = 0.6,
-    cost_bps: float = 10.0,
-):
-    return JSONResponse(_clean(run(period, _params(rule, entry, exit, vol_filter, vol_pct, threshold, cost_bps))))
-
-
-def _basket_run(period: str, p: bk.BasketParams) -> dict:
-    return bk.run(BASKET.rows("all", cache.get().basket_rows), p, period)
-
-
-def _pair_run(period: str, p: bk.BasketParams) -> dict:
-    return bk.run(PAIR.rows(PAIR.live(cache.get().rows)), p, period, other="NED", strategy="pair")
+def _pair_run(period: str, p: rule.Params) -> dict:
+    return rule.run(PAIR.rows(PAIR.live(cache.get().rows)), p, period)
 
 
 @app.get("/api/pair/backtest")
@@ -268,29 +159,13 @@ def api_pair_backtest(
     costs: str = "protocol",
 ):
     """The instrument: SBK against NED on the score-driven copula, five-day hold."""
-    return JSONResponse(_clean(_pair_run(period, bk.BasketParams(entry, hold, cost_bps, costs).clamp())))
+    return JSONResponse(_clean(_pair_run(period, rule.Params(entry, hold, cost_bps, costs).clamp())))
 
 
 @app.get("/api/pair/model")
 def api_pair_model():
     live = PAIR.live(cache.get().rows)
     return JSONResponse(_clean({"status": _status(), **pr.model_summary(PAIR, live)}))
-
-
-@app.get("/api/basket/backtest")
-def api_basket_backtest(
-    period: str = Query("live", pattern="^(live|walkforward|all)$"),
-    entry: int = 90,
-    hold: int = 5,
-    cost_bps: float = 10.0,
-    costs: str = "protocol",
-):
-    return JSONResponse(_clean(_basket_run(period, bk.BasketParams(entry, hold, cost_bps, costs).clamp())))
-
-
-@app.get("/api/basket/model")
-def api_basket_model():
-    return JSONResponse(_clean({"status": _status(), **bk.model_summary(BASKET, cache.get().basket_rows)}))
 
 
 @app.get("/api/research")
@@ -305,9 +180,9 @@ def api_summary():
     def block(r):
         return {"start": r["start"], "end": r["end"], **r["metrics"]}
 
-    bp = bk.BasketParams()
+    bp = rule.Params()
     live = _pair_run("live", bp)
-    inst = bk.BasketParams(costs="institutional")
+    inst = rule.Params(costs="institutional")
     return JSONResponse(
         _clean(
             {
@@ -333,38 +208,6 @@ def _status() -> dict:
         "error": c.error,
         "prices": c.prices,
     }
-
-
-@app.get("/api/model")
-def api_model():
-    c = cache.get()
-    def spec(s):
-        return {k: s[k] for k in ("model", "arma", "dist", "vix", "coef", "bic")}
-    return JSONResponse(
-        _clean(
-            {
-                "status": _status(),
-                "folds": [
-                    {
-                        "id": f["id"],
-                        "train_end": f["train_end"],
-                        "trade_start": f["trade_start"],
-                        "trade_end": f["trade_end"] if not f["final"] else c.rows["date"][-1],
-                        "final": f["final"],
-                        "sbk": spec(f["sbk"]),
-                        "ned": spec(f["ned"]),
-                        "copula": f["copula"],
-                        "pit_ks": f["pit_ks"],
-                    }
-                    for f in walkforward["folds"]
-                ],
-                "pit": {
-                    "walkforward": {"u": HISTORY["u"], "v": HISTORY["v"]},
-                    "live": {"u": c.rows["u"], "v": c.rows["v"], "date": c.rows["date"]},
-                },
-            }
-        )
-    )
 
 
 @app.get("/healthz")
