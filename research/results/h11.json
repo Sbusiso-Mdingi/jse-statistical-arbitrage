@@ -1,0 +1,641 @@
+{
+ "design": {
+  "parity_max_abs_diff": 9.132955502977325e-11,
+  "diagnosis": {
+   "2010": {
+    "ks_p": 0.0223,
+    "mean_z": -0.014,
+    "var_z": 0.631,
+    "share_outside_2": 0.0192,
+    "share_below_0.5": 0.533,
+    "n": 261
+   },
+   "2011": {
+    "ks_p": 0.5259,
+    "mean_z": 0.001,
+    "var_z": 0.914,
+    "share_outside_2": 0.0346,
+    "share_below_0.5": 0.5,
+    "n": 260
+   },
+   "2012": {
+    "ks_p": 0.0175,
+    "mean_z": 0.066,
+    "var_z": 0.888,
+    "share_outside_2": 0.0345,
+    "share_below_0.5": 0.475,
+    "n": 261
+   },
+   "2013": {
+    "ks_p": 0.1893,
+    "mean_z": 0.009,
+    "var_z": 0.869,
+    "share_outside_2": 0.0268,
+    "share_below_0.5": 0.475,
+    "n": 261
+   },
+   "2014": {
+    "ks_p": 0.5999,
+    "mean_z": 0.006,
+    "var_z": 0.964,
+    "share_outside_2": 0.0536,
+    "share_below_0.5": 0.521,
+    "n": 261
+   },
+   "2015": {
+    "ks_p": 0.0081,
+    "mean_z": -0.127,
+    "var_z": 0.923,
+    "share_outside_2": 0.0307,
+    "share_below_0.5": 0.598,
+    "n": 261
+   },
+   "2016": {
+    "ks_p": 0.8164,
+    "mean_z": 0.04,
+    "var_z": 1.077,
+    "share_outside_2": 0.0421,
+    "share_below_0.5": 0.483,
+    "n": 261
+   },
+   "2017": {
+    "ks_p": 0.5247,
+    "mean_z": 0.006,
+    "var_z": 0.95,
+    "share_outside_2": 0.0391,
+    "share_below_0.5": 0.477,
+    "n": 256
+   },
+   "2018": {
+    "ks_p": 0.2272,
+    "mean_z": -0.011,
+    "var_z": 1.094,
+    "share_outside_2": 0.052,
+    "share_below_0.5": 0.476,
+    "n": 250
+   },
+   "2019": {
+    "ks_p": 0.0229,
+    "mean_z": -0.115,
+    "var_z": 0.982,
+    "share_outside_2": 0.0402,
+    "share_below_0.5": 0.57,
+    "n": 249
+   }
+  },
+  "edits": {
+   "none": {
+    "design_years_failing": [
+     "2010",
+     "2012",
+     "2015",
+     "2019"
+    ],
+    "design_ks_by_year": {
+     "2010": 0.0223,
+     "2011": 0.5259,
+     "2012": 0.0175,
+     "2013": 0.1893,
+     "2014": 0.5999,
+     "2015": 0.0081,
+     "2016": 0.8164,
+     "2017": 0.5247,
+     "2018": 0.2272,
+     "2019": 0.0229
+    },
+    "design_mean_logf": 2.74614
+   },
+   "scale": {
+    "design_years_failing": [
+     "2010",
+     "2012",
+     "2015",
+     "2019"
+    ],
+    "design_ks_by_year": {
+     "2010": 0.0236,
+     "2011": 0.5382,
+     "2012": 0.0176,
+     "2013": 0.1895,
+     "2014": 0.601,
+     "2015": 0.0081,
+     "2016": 0.8258,
+     "2017": 0.5195,
+     "2018": 0.2344,
+     "2019": 0.0224
+    },
+    "design_mean_logf": 2.74631,
+    "design_gain_per_day_x1000": 0.172,
+    "design_dm_t": 3.74
+   },
+   "shape": {
+    "design_years_failing": [
+     "2010",
+     "2012",
+     "2015",
+     "2019"
+    ],
+    "design_ks_by_year": {
+     "2010": 0.0318,
+     "2011": 0.6163,
+     "2012": 0.018,
+     "2013": 0.1929,
+     "2014": 0.61,
+     "2015": 0.0081,
+     "2016": 0.8378,
+     "2017": 0.4841,
+     "2018": 0.2648,
+     "2019": 0.017
+    },
+    "design_mean_logf": 2.7467,
+    "design_gain_per_day_x1000": 0.564,
+    "design_dm_t": 1.43
+   },
+   "location": {
+    "design_years_failing": [
+     "2010",
+     "2012",
+     "2015",
+     "2019"
+    ],
+    "design_ks_by_year": {
+     "2010": 0.0223,
+     "2011": 0.5259,
+     "2012": 0.0175,
+     "2013": 0.1893,
+     "2014": 0.6088,
+     "2015": 0.0059,
+     "2016": 0.7331,
+     "2017": 0.7991,
+     "2018": 0.3457,
+     "2019": 0.0272
+    },
+    "design_mean_logf": 2.74543,
+    "design_gain_per_day_x1000": -0.708,
+    "design_dm_t": -0.53
+   }
+  },
+  "edit_meta": {
+   "none": [
+    {
+     "fold": 1,
+     "trade_year": "2010",
+     "model": "sGARCH ARMA(0,0) std"
+    },
+    {
+     "fold": 2,
+     "trade_year": "2011",
+     "model": "eGARCH ARMA(0,0) std"
+    },
+    {
+     "fold": 3,
+     "trade_year": "2012",
+     "model": "eGARCH ARMA(0,0) std"
+    },
+    {
+     "fold": 4,
+     "trade_year": "2013",
+     "model": "gjrGARCH ARMA(0,0) std"
+    },
+    {
+     "fold": 5,
+     "trade_year": "2014",
+     "model": "gjrGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 6,
+     "trade_year": "2015",
+     "model": "gjrGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 7,
+     "trade_year": "2016",
+     "model": "gjrGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 8,
+     "trade_year": "2017",
+     "model": "gjrGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 9,
+     "trade_year": "2018",
+     "model": "sGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 10,
+     "trade_year": "2019",
+     "model": "sGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 11,
+     "trade_year": "2020",
+     "model": "sGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 12,
+     "trade_year": "2021",
+     "model": "gjrGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 13,
+     "trade_year": "2022",
+     "model": "gjrGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 14,
+     "trade_year": "2023",
+     "model": "gjrGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 15,
+     "trade_year": "2024",
+     "model": "gjrGARCH ARMA(0,0) std"
+    },
+    {
+     "fold": 16,
+     "trade_year": "2025",
+     "model": "gjrGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 17,
+     "trade_year": "2026",
+     "model": "eGARCH ARMA(1,1) std"
+    },
+    {
+     "fold": 18,
+     "trade_year": "2026",
+     "model": "sGARCH ARMA(1,1) std"
+    }
+   ],
+   "scale": [
+    {
+     "fold": 1,
+     "trade_year": "2010",
+     "model": "sGARCH ARMA(0,0) std",
+     "variance_ratio": 0.9946
+    },
+    {
+     "fold": 2,
+     "trade_year": "2011",
+     "model": "eGARCH ARMA(0,0) std",
+     "variance_ratio": 0.9944
+    },
+    {
+     "fold": 3,
+     "trade_year": "2012",
+     "model": "eGARCH ARMA(0,0) std",
+     "variance_ratio": 0.9969
+    },
+    {
+     "fold": 4,
+     "trade_year": "2013",
+     "model": "gjrGARCH ARMA(0,0) std",
+     "variance_ratio": 0.9976
+    },
+    {
+     "fold": 5,
+     "trade_year": "2014",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "variance_ratio": 0.9989
+    },
+    {
+     "fold": 6,
+     "trade_year": "2015",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "variance_ratio": 0.9986
+    },
+    {
+     "fold": 7,
+     "trade_year": "2016",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0038
+    },
+    {
+     "fold": 8,
+     "trade_year": "2017",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0036
+    },
+    {
+     "fold": 9,
+     "trade_year": "2018",
+     "model": "sGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0045
+    },
+    {
+     "fold": 10,
+     "trade_year": "2019",
+     "model": "sGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0046
+    },
+    {
+     "fold": 11,
+     "trade_year": "2020",
+     "model": "sGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0036
+    },
+    {
+     "fold": 12,
+     "trade_year": "2021",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0006
+    },
+    {
+     "fold": 13,
+     "trade_year": "2022",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0007
+    },
+    {
+     "fold": 14,
+     "trade_year": "2023",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0023
+    },
+    {
+     "fold": 15,
+     "trade_year": "2024",
+     "model": "gjrGARCH ARMA(0,0) std",
+     "variance_ratio": 1.0014
+    },
+    {
+     "fold": 16,
+     "trade_year": "2025",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0008
+    },
+    {
+     "fold": 17,
+     "trade_year": "2026",
+     "model": "eGARCH ARMA(1,1) std",
+     "variance_ratio": 0.9986
+    },
+    {
+     "fold": 18,
+     "trade_year": "2026",
+     "model": "sGARCH ARMA(1,1) std",
+     "variance_ratio": 1.0016
+    }
+   ],
+   "shape": [
+    {
+     "fold": 1,
+     "trade_year": "2010",
+     "model": "sGARCH ARMA(0,0) std",
+     "tail_freq": 0.0087,
+     "nu": 7.82,
+     "was": 9.1779725283
+    },
+    {
+     "fold": 2,
+     "trade_year": "2011",
+     "model": "eGARCH ARMA(0,0) std",
+     "tail_freq": 0.0098,
+     "nu": 6.55,
+     "was": 7.4495105363
+    },
+    {
+     "fold": 3,
+     "trade_year": "2012",
+     "model": "eGARCH ARMA(0,0) std",
+     "tail_freq": 0.0095,
+     "nu": 6.85,
+     "was": 8.001751963
+    },
+    {
+     "fold": 4,
+     "trade_year": "2013",
+     "model": "gjrGARCH ARMA(0,0) std",
+     "tail_freq": 0.0093,
+     "nu": 7.1,
+     "was": 8.2866969212
+    },
+    {
+     "fold": 5,
+     "trade_year": "2014",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "tail_freq": 0.0082,
+     "nu": 8.43,
+     "was": 8.7952286996
+    },
+    {
+     "fold": 6,
+     "trade_year": "2015",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "tail_freq": 0.0082,
+     "nu": 8.52,
+     "was": 8.5832175258
+    },
+    {
+     "fold": 7,
+     "trade_year": "2016",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "tail_freq": 0.0085,
+     "nu": 8.07,
+     "was": 7.7889279481
+    },
+    {
+     "fold": 8,
+     "trade_year": "2017",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "tail_freq": 0.0077,
+     "nu": 9.18,
+     "was": 8.14433337
+    },
+    {
+     "fold": 9,
+     "trade_year": "2018",
+     "model": "sGARCH ARMA(1,1) std",
+     "tail_freq": 0.0081,
+     "nu": 8.68,
+     "was": 7.6126291405
+    },
+    {
+     "fold": 10,
+     "trade_year": "2019",
+     "model": "sGARCH ARMA(1,1) std",
+     "tail_freq": 0.0069,
+     "nu": 10.84,
+     "was": 8.0757427714
+    },
+    {
+     "fold": 11,
+     "trade_year": "2020",
+     "model": "sGARCH ARMA(1,1) std",
+     "tail_freq": 0.007,
+     "nu": 10.67,
+     "was": 8.1615328792
+    },
+    {
+     "fold": 12,
+     "trade_year": "2021",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "tail_freq": 0.0078,
+     "nu": 9.09,
+     "was": 7.9326521769
+    },
+    {
+     "fold": 13,
+     "trade_year": "2022",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "tail_freq": 0.0083,
+     "nu": 8.35,
+     "was": 7.4370521926
+    },
+    {
+     "fold": 14,
+     "trade_year": "2023",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "tail_freq": 0.0085,
+     "nu": 8.06,
+     "was": 7.2944129246
+    },
+    {
+     "fold": 15,
+     "trade_year": "2024",
+     "model": "gjrGARCH ARMA(0,0) std",
+     "tail_freq": 0.008,
+     "nu": 8.7,
+     "was": 7.2326060895
+    },
+    {
+     "fold": 16,
+     "trade_year": "2025",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "tail_freq": 0.0084,
+     "nu": 8.12,
+     "was": 7.0898491298
+    },
+    {
+     "fold": 17,
+     "trade_year": "2026",
+     "model": "eGARCH ARMA(1,1) std",
+     "tail_freq": 0.0095,
+     "nu": 6.81,
+     "was": 6.8738286799
+    },
+    {
+     "fold": 18,
+     "trade_year": "2026",
+     "model": "sGARCH ARMA(1,1) std",
+     "tail_freq": 0.0091,
+     "nu": 7.33,
+     "was": 6.7071909724
+    }
+   ],
+   "location": [
+    {
+     "fold": 1,
+     "trade_year": "2010",
+     "model": "sGARCH ARMA(0,0) std",
+     "arma_was": "0,0"
+    },
+    {
+     "fold": 2,
+     "trade_year": "2011",
+     "model": "eGARCH ARMA(0,0) std",
+     "arma_was": "0,0"
+    },
+    {
+     "fold": 3,
+     "trade_year": "2012",
+     "model": "eGARCH ARMA(0,0) std",
+     "arma_was": "0,0"
+    },
+    {
+     "fold": 4,
+     "trade_year": "2013",
+     "model": "gjrGARCH ARMA(0,0) std",
+     "arma_was": "0,0"
+    },
+    {
+     "fold": 5,
+     "trade_year": "2014",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 6,
+     "trade_year": "2015",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 7,
+     "trade_year": "2016",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 8,
+     "trade_year": "2017",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 9,
+     "trade_year": "2018",
+     "model": "sGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 10,
+     "trade_year": "2019",
+     "model": "sGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 11,
+     "trade_year": "2020",
+     "model": "sGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 12,
+     "trade_year": "2021",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 13,
+     "trade_year": "2022",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 14,
+     "trade_year": "2023",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 15,
+     "trade_year": "2024",
+     "model": "gjrGARCH ARMA(0,0) std",
+     "arma_was": "0,0"
+    },
+    {
+     "fold": 16,
+     "trade_year": "2025",
+     "model": "gjrGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 17,
+     "trade_year": "2026",
+     "model": "eGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    },
+    {
+     "fold": 18,
+     "trade_year": "2026",
+     "model": "sGARCH ARMA(1,1) std",
+     "arma_was": "1,1"
+    }
+   ]
+  },
+  "chosen": "shape",
+  "qualifies": false
+ }
+}

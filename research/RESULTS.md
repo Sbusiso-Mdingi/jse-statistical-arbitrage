@@ -218,6 +218,21 @@ Every one of these was made before the affected verdict was known, or changed no
 
 15. **Re-centring on the pair.** Registered 9 November 2026 before any new pair figure, listing the pair figures already seen. `research/pair.py` was run once, then rerun with two descriptive additions (the next-session figure by year and the fixed copula's edge) and the cost output reshaped; every other figure was byte-identical between the two runs. Ran in seconds on the Mac.
 
+## H11: a direct repair to the Nedbank margin
+
+Stopped at the design stage, as the protocol requires: no edit qualified, so nothing was frozen and no edited instrument runs live. The harness reproduces the stored walk-forward Nedbank transforms to 1e-10.
+
+| Edit, set from each fold's training residuals | Design years failing at 5% | Design log density gain, thousandths a day | DM t |
+| --- | --- | --- | --- |
+| None | 2010, 2012, 2015, 2019 | | |
+| Scale | the same four | 0.17 | 3.74 |
+| Shape (ν from the share beyond 3 sd) | the same four | 0.56 | 1.43 |
+| Location (ARMA terms to zero) | the same four | −0.71 | −0.53 |
+
+No edit fixes a single failing year. The rule chose the shape edit (all tie on failing years; it has the best design density), and its gain has t = 1.43, short of 2, so H11 stops. The scale edit's t of 3.74 is on a gain of 0.17 thousandths a day, and it was not the edit the rule chose.
+
+The diagnosis says why. In 2010 the miss is scale: the realised variance of the standardised residual was 0.63, the model expecting post-crisis volatility that did not come; the training residuals' variance is 0.995 in that fold, so nothing set from training data can see it. In 2015 and 2019 the miss is location: 60% and 57% of days fell below the forecast median, the years Nedbank drifted down (December 2015's rand and finance-minister shock; 2019's derating). 2012 is a little of both. These are changes between training and test, not a flaw in the fitted parameters. In the weight-editing study the edit worked where there was a built-in fault to remove and did nothing where there was none; this margin is the second case. The expectation written in the protocol, that a scale edit would fix two or three of the years, was wrong.
+
 ## Run order
 
 ```sh
@@ -238,6 +253,7 @@ service/.venv/bin/python research/h5_edit.py      # the one validation run; writ
 service/.venv/bin/python research/h6_rl_exit.py   # about 3 minutes; reads h5_daily.csv, writes research/results/h6.json
 service/.venv/bin/python research/hourly_study.py  # descriptive; needs data/raw/sbk_60m.csv and ned_60m.csv (TradingView export, not in the repo)
 service/.venv/bin/python research/h7_intraday.py   # design grid, then the one validation run; writes research/results/h7.json
+service/.venv/bin/python research/h11_ned_repair.py design   # under a minute; writes research/results/h11.json
 service/.venv/bin/python research/models/pairdata.py && service/.venv/bin/python research/models/margins_py.py && Rscript research/08_margins_r.R   # margin models
 service/.venv/bin/python research/models/copulas_py.py && service/.venv/bin/python research/models/compare.py 2020-01-01 2026-04-01 validation research/results/copulas_validation.json && service/.venv/bin/python research/models/h8_edge.py
 service/.venv/bin/python research/models/h9_basket_gas.py   # about 10 minutes on 8 cores
