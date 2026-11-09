@@ -102,5 +102,61 @@
     "entries": 8
    }
   }
+ },
+ {
+  "n": 6,
+  "when": "2026-11-09",
+  "label": "H1 rule on the GAS copula h (reported)",
+  "periods": [
+   "design",
+   "validation",
+   "post-freeze"
+  ],
+  "note": "H9 reported figure, not a pass mark",
+  "result": {
+   "design": {
+    "sharpe": 0.06,
+    "before_costs_sharpe": 0.76,
+    "entries": 183
+   },
+   "validation": {
+    "sharpe": 0.15,
+    "before_costs_sharpe": 0.77,
+    "entries": 122
+   },
+   "post-freeze": {
+    "sharpe": -1.42,
+    "before_costs_sharpe": -0.38,
+    "entries": 11
+   }
+  }
+ },
+ {
+  "n": 7,
+  "when": "2026-11-09",
+  "label": "H1 rule on the static h (comparison)",
+  "periods": [
+   "design",
+   "validation",
+   "post-freeze"
+  ],
+  "note": "baseline for H9 paired comparison",
+  "result": {
+   "design": {
+    "sharpe": 0.08,
+    "before_costs_sharpe": 0.74,
+    "entries": 158
+   },
+   "validation": {
+    "sharpe": 0.06,
+    "before_costs_sharpe": 0.64,
+    "entries": 104
+   },
+   "post-freeze": {
+    "sharpe": -2.31,
+    "before_costs_sharpe": -1.35,
+    "entries": 8
+   }
+  }
  }
 ]

@@ -116,6 +116,7 @@ export type BasketModel = {
     pit_ks: { sbk: number; bsk: number };
   };
   pit: { walkforward: { u: number[]; v: number[] }; live: { u: number[]; v: number[] } };
+  dependence: { model: "gas_t"; omega: number; beta: number; alpha: number; nu: number; rho_train_end: number; rho_live: number | null } | { model: "static_t" };
 };
 
 type Perf = { sharpe: number; sortino: number; cagr: number; mdd: number };
@@ -158,6 +159,17 @@ export type Research = {
     "2010_2019": { n: number; bps: number; se: number; next_bps: number };
     "2020_2026": { n: number; bps: number; se: number; next_bps: number };
     "2021_2026": { n: number; bps: number; se: number; next_bps: number };
+    copula?: string;
+  };
+  instrument?: {
+    copula: string;
+    validation_gain_per_day: number;
+    dm_t: number;
+    h_ks_p: number;
+    static_h_ks_p: number;
+    fires: number;
+    rule: Record<"design" | "validation" | "post_freeze", { after: number; before: number }>;
+    rule_static: Record<"design" | "validation" | "post_freeze", { after: number; before: number }>;
   };
 };
 

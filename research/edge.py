@@ -13,6 +13,15 @@ HOLD = 5
 rows = list(csv.DictReader(open("data/h1_daily.csv")))
 dates = [r["date"] for r in rows]
 h = np.array([float(r["h"]) for r in rows])
+# The instrument's copula is the score-driven one (H9) when its export exists; fall back to the static h.
+import os
+if os.path.exists("data/basket_gas.json"):
+    g = json.load(open("data/basket_gas.json"))["history"]
+    gh = dict(zip(g["date"], g["h"]))
+    h = np.array([gh.get(dd, x) for dd, x in zip(dates, h)])
+    COPULA = "gas_t"
+else:
+    COPULA = "static_t"
 rs = np.array([float(r["sbk"]) for r in rows])
 rb = np.array([[float(r[k]) for k in BASKET] for r in rows]).mean(axis=1)
 spread = 0.5 * (rs - rb)
@@ -22,7 +31,7 @@ d = np.where(h[sig] > 0.5, 1.0, -1.0)
 fwd5 = np.array([spread[t + 1:t + 1 + HOLD].sum() for t in sig]) * d
 fwd1 = spread[sig + 1] * d
 years = sorted({dates[t][:4] for t in sig})
-out = {"cost_round_trip_bps": 20.0, "hold": HOLD, "by_year": [], "last_date": dates[-1]}
+out = {"cost_round_trip_bps": 20.0, "hold": HOLD, "by_year": [], "last_date": dates[-1], "copula": COPULA}
 print("year   n   5-day gross/signal (bps)   se    next day (bps)")
 for y in years:
     m = np.array([dates[t][:4] == y for t in sig])

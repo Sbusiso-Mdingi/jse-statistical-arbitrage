@@ -40,3 +40,21 @@ def test_basket_live_filter_matches_r():
     np.testing.assert_allclose(rows["u"], par["u"], atol=1e-8)
     np.testing.assert_allclose(rows["v"], par["v"], atol=1e-8)
     np.testing.assert_allclose(rows["h"], par["h"], atol=1e-7)
+
+
+def test_gas_copula_matches_research():
+    """The service's score-driven copula, run forward from the exported state, reproduces the research h."""
+    import csv, json
+    from pathlib import Path
+    import numpy as np
+    from app import basket as bk
+    root = Path(__file__).resolve().parents[2]
+    gas_path = root / "data" / "basket_gas.json"
+    if not gas_path.exists():
+        return
+    b = bk.Basket(json.loads((root / "data" / "basket.json").read_text()), json.loads(gas_path.read_text()))
+    live = b.live_rows(b.snapshot_rows())
+    research = {r["date"]: float(r["h"]) for r in csv.DictReader(open(root / "research" / "results" / "copulas_basket.csv")) if r["model"] == "gas_t"}
+    pairs = [(h, research[d.isoformat()]) for d, h in zip(live["date"], live["h"]) if d.isoformat() in research]
+    assert len(pairs) >= 5
+    assert max(abs(a - b_) for a, b_ in pairs) < 1e-6

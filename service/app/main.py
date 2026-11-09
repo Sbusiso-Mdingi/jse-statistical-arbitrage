@@ -39,7 +39,8 @@ FRAME_ANCESTORS = "'self' https://mdingi.co.za https://www.mdingi.co.za http://l
 
 walkforward = json.loads((DATA / "walkforward.json").read_text())
 final = json.loads((DATA / "model_final.json").read_text())
-BASKET = bk.Basket(json.loads((DATA / "basket.json").read_text()))
+_GAS = DATA / "basket_gas.json"
+BASKET = bk.Basket(json.loads((DATA / "basket.json").read_text()), json.loads(_GAS.read_text()) if _GAS.exists() else None)
 FREEZE = date.fromisoformat(walkforward["freeze"])
 VOL_WINDOW = walkforward["vol_window"]
 folds = {f["id"]: f for f in walkforward["folds"]}

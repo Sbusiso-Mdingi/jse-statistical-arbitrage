@@ -105,7 +105,13 @@ cointegration = {
     "breaks": c["bai_perron"]["breaks"],
     "segments": [{"from": s["from"], "to": s["to"], "slope": round(s["slope"], 2)} for s in c["bai_perron"]["segments"]],
 }
-out = {"periods": PERIODS, "tests": tests, "decay": json.load(open("data/decay.json")), "cointegration": cointegration, "edge": json.load(open("research/results/edge.json"))}
+cv = json.load(open("research/results/copulas_basket_validation.json"))
+h9 = json.load(open("research/results/h9_rule.json"))
+instrument = {"copula": "gas_t", "validation_gain_per_day": cv["gas_t"]["vs_static_per_day"], "dm_t": cv["gas_t"]["dm_t"],
+              "h_ks_p": cv["gas_t"]["h_ks_p"], "static_h_ks_p": cv["static_t"]["h_ks_p"], "fires": cv["gas_t"]["fires"],
+              "rule": {p: {"after": h9["gas"][n]["after_costs"]["sharpe"], "before": h9["gas"][n]["before_costs"]["sharpe"]} for p, n in (("design", "design"), ("validation", "validation"), ("post_freeze", "post-freeze"))},
+              "rule_static": {p: {"after": h9["static"][n]["after_costs"]["sharpe"], "before": h9["static"][n]["before_costs"]["sharpe"]} for p, n in (("design", "design"), ("validation", "validation"), ("post_freeze", "post-freeze"))}}
+out = {"periods": PERIODS, "tests": tests, "decay": json.load(open("data/decay.json")), "cointegration": cointegration, "edge": json.load(open("research/results/edge.json")), "instrument": instrument}
 json.dump(out, open("data/research.json", "w"), separators=(",", ":"))
 for t in tests:
     print(f"{t['name']:30s} design {t['design']['sharpe']:5.2f}  validation {t['validation']['sharpe']:5.2f}  post {t['post_freeze']['sharpe']:5.2f}  passed {t.get('passed')}")

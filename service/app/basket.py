@@ -13,7 +13,7 @@ from datetime import date
 
 import numpy as np
 
-from .model import MarginalState, filter_marginal, h_func
+from .model import MarginalState, filter_marginal, gas_filter, h_func
 from .strategy import metrics, window
 
 LIVE_FROM = date(2026, 4, 1)
@@ -39,12 +39,17 @@ class BasketParams:
 
 
 class Basket:
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict, gas: dict | None = None) -> None:
         self.data = data
         self.fits = data["fits"]
         self.latest = data["latest"]
         self.train_end = date.fromisoformat(self.latest["train_end"])
+        # The score-driven copula (H9) replaces the static one when its export is present and matches the fits.
+        self.gas = gas if gas and gas["latest"]["train_end"] == self.latest["train_end"] else None
         h = data["history"]
+        if self.gas:
+            gh = dict(zip(self.gas["history"]["date"], self.gas["history"]["h"]))
+            h = {**h, "h": [gh.get(d, x) for d, x in zip(h["date"], h["h"])]}
         dates = [date.fromisoformat(d) for d in h["date"]]
         keep = np.array([d <= self.train_end for d in dates])
         basket = np.mean([np.array(h[k], dtype=float) for k in data["basket"]], axis=0)
@@ -74,12 +79,17 @@ class Basket:
         fs = filter_marginal(self.latest["sbk"], MarginalState(**st["sbk"]), r_sbk, vix)
         fb = filter_marginal(self.latest["bsk"], MarginalState(**st["bsk"]), r_bsk, vix)
         c = self.latest["copula"]
+        if self.gas:
+            h, rho, _ = gas_filter(self.gas["latest"], fs["u"], fb["u"])
+            self.live_rho = float(rho[-1]) if len(rho) else None
+        else:
+            h = h_func(c["family"], fs["u"], fb["u"], c["par"], c.get("par2", 0.0))
         return {
             "date": [r["date"] for r in rows],
             "fit": np.full(len(rows), len(self.fits)),
             "u": fs["u"],
             "v": fb["u"],
-            "h": h_func(c["family"], fs["u"], fb["u"], c["par"], c.get("par2", 0.0)),
+            "h": h,
             # Simple returns for the backtest.
             "r_sbk": np.expm1(r_sbk),
             "r_bsk": np.expm1(r_bsk),
@@ -172,6 +182,11 @@ def model_summary(b: Basket, live: dict) -> dict:
             "copula": b.latest["copula"],
             "pit_ks": b.latest["pit_ks"],
         },
+        "dependence": (
+            {"model": "gas_t", **{k: b.gas["latest"][k] for k in ("omega", "beta", "alpha", "nu", "rho_train_end")}, "rho_live": getattr(b, "live_rho", None)}
+            if b.gas
+            else {"model": "static_t"}
+        ),
         "pit": {
             "walkforward": {
                 "u": [u for u, d in zip(hist["u"], hist["date"]) if d < LIVE_FROM],

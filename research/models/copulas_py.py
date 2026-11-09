@@ -136,44 +136,45 @@ def ms_score(p, u, v, n_train):
     return np.log(mix), h, pred[sl, 1], dict(rho1=rho1, rho2=rho2, nu=nu, p11=p11, p22=p22)
 
 
-rows = []
-t0 = time.time()
-for k, f in enumerate(folds):
-    te = f["train_end"]
-    n_train = sum(1 for x in dates if x.isoformat() <= te)
-    n_all = sum(1 for x in dates if x.isoformat() <= ends[k + 1]) if k + 1 < len(folds) else n
-    if n_all <= n_train:
-        continue
-    u, v = pits(f, n_all, n_train)
-    sl = slice(n_train, n_all)
-    test_dates = [dates[t].isoformat() for t in range(n_train, n_all)]
-    # (a) static, the walk-forward's own parameters
-    rho, nu = f["copula"]["par"], f["copula"]["par2"]
-    lc = t_logc(u[sl], v[sl], rho, nu); h = h_func(2, u[sl], v[sl], rho, nu)
-    rows += [(dd, k + 1, "static_t", a, b, rho) for dd, a, b in zip(test_dates, lc, h)]
-    # (b) rolling 252-day refit at each month end inside the test window
-    months = sorted({dd[:7] for dd in test_dates})
-    for m in months:
-        idx = [t for t in range(n_train, n_all) if dates[t].isoformat()[:7] == m]
-        start = idx[0]
-        r_m, nu_m = fit_static(u[start - 252:start], v[start - 252:start])
-        lc = t_logc(u[idx], v[idx], r_m, nu_m); h = h_func(2, u[idx], v[idx], r_m, nu_m)
-        rows += [(dates[t].isoformat(), k + 1, "rolling_t_252", a, b, r_m) for t, a, b in zip(idx, lc, h)]
-    # (c) GAS t copula fitted on training PITs, filtered through the test window
-    pg = gas_fit(u[:n_train], v[:n_train], rho)
-    lc, h, rho_t, par_g = gas_score(pg, u[:n_all], v[:n_all], n_train)
-    rows += [(dd, k + 1, "gas_t", a, b, c) for dd, a, b, c in zip(test_dates, lc, h, rho_t)]
-    # (d) Markov-switching t copula
-    pm = ms_fit(u[:n_train], v[:n_train], rho)
-    lc, h, p2, par_m = ms_score(pm, u[:n_all], v[:n_all], n_train)
-    rows += [(dd, k + 1, "ms_t", a, b, c) for dd, a, b, c in zip(test_dates, lc, h, p2)]
-    print(f"fold {k+1:2d} to {te}: static rho {rho:.3f} nu {nu:.1f} | gas beta {par_g['beta']:.3f} alpha {par_g['alpha']:.3f} nu {par_g['nu']:.1f} | ms rho {par_m['rho1']:.2f}/{par_m['rho2']:.2f} p11 {par_m['p11']:.3f} p22 {par_m['p22']:.3f} nu {par_m['nu']:.1f}  ({time.time()-t0:.0f}s)", flush=True)
+if __name__ == "__main__":
+    rows = []
+    t0 = time.time()
+    for k, f in enumerate(folds):
+        te = f["train_end"]
+        n_train = sum(1 for x in dates if x.isoformat() <= te)
+        n_all = sum(1 for x in dates if x.isoformat() <= ends[k + 1]) if k + 1 < len(folds) else n
+        if n_all <= n_train:
+            continue
+        u, v = pits(f, n_all, n_train)
+        sl = slice(n_train, n_all)
+        test_dates = [dates[t].isoformat() for t in range(n_train, n_all)]
+        # (a) static, the walk-forward's own parameters
+        rho, nu = f["copula"]["par"], f["copula"]["par2"]
+        lc = t_logc(u[sl], v[sl], rho, nu); h = h_func(2, u[sl], v[sl], rho, nu)
+        rows += [(dd, k + 1, "static_t", a, b, rho) for dd, a, b in zip(test_dates, lc, h)]
+        # (b) rolling 252-day refit at each month end inside the test window
+        months = sorted({dd[:7] for dd in test_dates})
+        for m in months:
+            idx = [t for t in range(n_train, n_all) if dates[t].isoformat()[:7] == m]
+            start = idx[0]
+            r_m, nu_m = fit_static(u[start - 252:start], v[start - 252:start])
+            lc = t_logc(u[idx], v[idx], r_m, nu_m); h = h_func(2, u[idx], v[idx], r_m, nu_m)
+            rows += [(dates[t].isoformat(), k + 1, "rolling_t_252", a, b, r_m) for t, a, b in zip(idx, lc, h)]
+        # (c) GAS t copula fitted on training PITs, filtered through the test window
+        pg = gas_fit(u[:n_train], v[:n_train], rho)
+        lc, h, rho_t, par_g = gas_score(pg, u[:n_all], v[:n_all], n_train)
+        rows += [(dd, k + 1, "gas_t", a, b, c) for dd, a, b, c in zip(test_dates, lc, h, rho_t)]
+        # (d) Markov-switching t copula
+        pm = ms_fit(u[:n_train], v[:n_train], rho)
+        lc, h, p2, par_m = ms_score(pm, u[:n_all], v[:n_all], n_train)
+        rows += [(dd, k + 1, "ms_t", a, b, c) for dd, a, b, c in zip(test_dates, lc, h, p2)]
+        print(f"fold {k+1:2d} to {te}: static rho {rho:.3f} nu {nu:.1f} | gas beta {par_g['beta']:.3f} alpha {par_g['alpha']:.3f} nu {par_g['nu']:.1f} | ms rho {par_m['rho1']:.2f}/{par_m['rho2']:.2f} p11 {par_m['p11']:.3f} p22 {par_m['p22']:.3f} nu {par_m['nu']:.1f}  ({time.time()-t0:.0f}s)", flush=True)
 
-with open("research/results/copulas_py.csv", "w", newline="") as fh:
-    w = csv.writer(fh); w.writerow(["date", "fold", "model", "logc", "h", "state"])
-    for r in rows:
-        w.writerow([r[0], r[1], r[2], f"{r[3]:.6f}", f"{r[4]:.8f}", f"{r[5]:.5f}"])
-for model in ("static_t", "rolling_t_252", "gas_t", "ms_t"):
-    x = [(r[3], r[4]) for r in rows if r[2] == model and "2010-01-01" <= r[0] < "2020-01-01"]
-    lc = np.array([a for a, _ in x]); h = np.array([b for _, b in x])
-    print(f"design {model:14s} mean logc {lc.mean():.4f}  n {len(lc)}  h KS p {st.kstest(h, 'uniform').pvalue:.3f}  fires {100*np.mean(np.abs(h-0.5) > 0.45):.1f}%")
+    with open("research/results/copulas_py.csv", "w", newline="") as fh:
+        w = csv.writer(fh); w.writerow(["date", "fold", "model", "logc", "h", "state"])
+        for r in rows:
+            w.writerow([r[0], r[1], r[2], f"{r[3]:.6f}", f"{r[4]:.8f}", f"{r[5]:.5f}"])
+    for model in ("static_t", "rolling_t_252", "gas_t", "ms_t"):
+        x = [(r[3], r[4]) for r in rows if r[2] == model and "2010-01-01" <= r[0] < "2020-01-01"]
+        lc = np.array([a for a, _ in x]); h = np.array([b for _, b in x])
+        print(f"design {model:14s} mean logc {lc.mean():.4f}  n {len(lc)}  h KS p {st.kstest(h, 'uniform').pvalue:.3f}  fires {100*np.mean(np.abs(h-0.5) > 0.45):.1f}%")

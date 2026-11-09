@@ -80,6 +80,14 @@ With the validation years spent for trading rules, the pair's models were compar
 
 H8 passes its pre-registered mark. Post-freeze (131 days) shows no difference between any of them, as expected on that little data. The reported trading measurement, the gross five-day return per signal on the pair before costs: 28 bps on design and −27 in validation under the static copula; 23 and −20 under the GAS copula (standard errors 8 and 17). A better-calibrated instrument reads the same thing the basket instrument reads: the reversal between the two banks has been absent since 2020.
 
+## H9: the score-driven copula becomes the instrument
+
+The same comparison on the basket instrument's 202 monthly fits (`research/models/h9_basket_gas.py`, results in `copulas_basket_*.json`). On design the GAS copula scores +23.8 × 10⁻³ a day over the static one (DM t = 6.9) and the Markov-switching copula +21.5 (t = 6.8). In validation, the one test: GAS +26.4 × 10⁻³ a day, DM t = 3.97, pass; Markov-switching +24.8 (t = 4.03), reported. The conditional probability is calibrated under the GAS copula in validation (KS p = 0.14; static 0.000) and fires on 9.5% of days against the model's 10%. Post-freeze (131 days) separates nothing.
+
+As the protocol said it would, the GAS copula is now the instrument: `research/models/export_gas.py` writes `data/basket_gas.json` (the GAS h for every walk-forward day and the latest fit's parameters and state), the service filters new sessions through it (`service/app/model.py`, `gas_filter`; parity test against the research record in `service/tests/test_parity.py`), and the headline measurement is re-made with it. Latest fit, to 30 September 2026: ω 0.020, β 0.981, α 0.032, ν 7.8, ρ 0.757 at the training end.
+
+Re-measured: a signal was worth 21.0 bps over the five-day hold from 2010 to 2019 (213 signals, standard error 7.5) and 1.6 bps since 2021 (135 signals, standard error 9.2), against the 17.8 and 1.0 read by the static copula. Same answer, more signals, tighter errors. The H1 rule run on the GAS h, reported and not a pass mark: Sharpe after costs 0.06 in design, 0.15 in validation (0.77 before costs), −1.42 post-freeze; against the same rule on the static h it is 55 bps a year ahead in validation with t = 0.36. The rule was validated on the static instrument (0.06); the figure on the new instrument is a measurement.
+
 ## Decay study
 
 Mean one-year lag-1 autocorrelation of the daily return spread across the 15 pairs of SBK, NED, FSR, ABG, CPI and INL: about −0.16 in 2011, close to zero from 2020 (−0.01 at the start of 2026). The SBK/NED next-day return after an extreme copula signal averaged about 16 bps from 2010 to 2019 and about −6 bps since 2020. This is the most likely reason every reversal rule weakens after 2019.
@@ -103,6 +111,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 9. **Model comparison and H8.** Candidates declared on 9 November 2026 before any score; H8 registered after the design comparison and before any validation score. The validation scores of the other two copulas were produced by the same script run and are reported, not tested. The first copula run was started with a training-length bug that made every PIT undefined; it was stopped before producing output, fixed, and rerun.
 
+10. **H9.** Registered after the H8 result and before any H9 score. The reported rule figures on the GAS h are logged in `research/results/h5_log.json` with the other looks at returns. Switching the service and the headline chart to the GAS copula was written into the protocol before the test.
+
 ## Run order
 
 ```sh
@@ -122,5 +132,8 @@ service/.venv/bin/python research/hourly_study.py  # descriptive; needs data/raw
 service/.venv/bin/python research/h7_intraday.py   # design grid, then the one validation run; writes research/results/h7.json
 service/.venv/bin/python research/models/pairdata.py && service/.venv/bin/python research/models/margins_py.py && Rscript research/08_margins_r.R   # margin models
 service/.venv/bin/python research/models/copulas_py.py && service/.venv/bin/python research/models/compare.py 2020-01-01 2026-04-01 validation research/results/copulas_validation.json && service/.venv/bin/python research/models/h8_edge.py
+service/.venv/bin/python research/models/h9_basket_gas.py   # about 10 minutes on 8 cores
+COPULAS_CSV=research/results/copulas_basket.csv service/.venv/bin/python research/models/compare.py 2020-01-01 2026-04-01 validation research/results/copulas_basket_validation.json
+service/.venv/bin/python research/models/export_gas.py     # writes data/basket_gas.json for the service; then research/edge.py and export_research.py again
 service/.venv/bin/python research/export_research.py
 ```

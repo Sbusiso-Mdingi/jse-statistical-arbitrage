@@ -117,3 +117,30 @@ def conditional_probabilities(copula: dict, u: np.ndarray, v: np.ndarray) -> tup
     """Return P(NED <= v | SBK = u) and P(SBK <= u | NED = v)."""
     fam, par, par2 = copula["family"], copula["par"], copula.get("par2", 0.0)
     return h_func(fam, u, v, par, par2), h_func(fam, v, u, par, par2)
+
+
+def t_copula_score_rho(x: float, y: float, rho: float, nu: float) -> float:
+    """d log c / d rho of the bivariate Student t copula at t-quantiles x, y."""
+    r2 = 1 - rho * rho
+    q = (x * x - 2 * rho * x * y + y * y) / r2
+    dq = (-2 * x * y * r2 + 2 * rho * (x * x - 2 * rho * x * y + y * y)) / (r2 * r2)
+    return rho / r2 - (nu + 2) / 2 * dq / (nu + q)
+
+
+def gas_filter(gas: dict, u: np.ndarray, v: np.ndarray) -> tuple[np.ndarray, np.ndarray, float]:
+    """Score-driven Student t copula (research/models/copulas_py.py): rho_t = tanh(f_t),
+    f_{t+1} = omega + beta f_t + alpha s_t with identity scaling. Starts from the stored state f_next.
+    Returns h = P(V <= v | U = u), rho_t, and the state after the last day."""
+    omega, beta, alpha, nu, f = gas["omega"], gas["beta"], gas["alpha"], gas["nu"], gas["f_next"]
+    u = np.clip(u, 1e-6, 1 - 1e-6)
+    v = np.clip(v, 1e-6, 1 - 1e-6)
+    h = np.empty(len(u))
+    rho = np.empty(len(u))
+    for t in range(len(u)):
+        r = math.tanh(f)
+        rho[t] = r
+        h[t] = h_func(2, np.array([u[t]]), np.array([v[t]]), r, nu)[0]
+        x, y = stats.t.ppf(u[t], nu), stats.t.ppf(v[t], nu)
+        f = omega + beta * f + alpha * t_copula_score_rho(x, y, r, nu) * (1 - r * r)
+        f = max(min(f, 4.0), -4.0)
+    return h, rho, f

@@ -148,8 +148,10 @@ function LiveRecord({ bt, costBps, period }: { bt: BasketBacktest; costBps: numb
   );
 }
 
-function Instrument({ model }: { model: BasketModel }) {
+function Instrument({ model, research }: { model: BasketModel; research: Research | null }) {
   const latest = model.latest;
+  const dep = model.dependence;
+  const ins = research?.instrument;
   return (
     <section className="panel split">
       <div>
@@ -167,6 +169,9 @@ function Instrument({ model }: { model: BasketModel }) {
           Each day’s returns, turned into probabilities by that month’s volatility models. If the models are right these fill the square
           evenly, and they do: the probability transforms pass uniformity tests in every one of {model.fits.length} monthly fits. The signal
           is P(basket ≤ today | Standard Bank = today) from the copula; it fires beyond 0.05 and 0.95.
+          {ins && dep.model === "gas_t"
+            ? ` The copula’s correlation moves with the data (a score-driven update), chosen over a fixed correlation by a pre-registered forecast test on 2020 to March 2026: ${num(ins.validation_gain_per_day * 1000, 0)} thousandths of a log point a day better, t = ${num(ins.dm_t)}, and the signal is calibrated out of sample (KS p ${num(ins.h_ks_p)} against ${num(ins.static_h_ks_p, 3)} for the fixed correlation).`
+            : ""}
         </p>
       </div>
       <div>
@@ -184,11 +189,21 @@ function Instrument({ model }: { model: BasketModel }) {
             <tr>
               <td>Copula</td>
               <td>
-                Student t, ρ {latest.copula.par.toFixed(3)}, ν {latest.copula.par2.toFixed(1)}
+                {dep.model === "gas_t"
+                  ? `Student t, score-driven: ρ ${(dep.rho_live ?? dep.rho_train_end).toFixed(3)} today, ν ${dep.nu.toFixed(1)}`
+                  : `Student t, ρ ${latest.copula.par.toFixed(3)}, ν ${latest.copula.par2.toFixed(1)}`}
               </td>
             </tr>
+            {dep.model === "gas_t" && (
+              <tr>
+                <td>Correlation dynamics</td>
+                <td>
+                  β {dep.beta.toFixed(3)}, α {dep.alpha.toFixed(3)}
+                </td>
+              </tr>
+            )}
             <tr>
-              <td>Kendall’s τ</td>
+              <td>Kendall’s τ, static fit</td>
               <td>{latest.copula.tau.toFixed(3)}</td>
             </tr>
             <tr>
@@ -205,7 +220,7 @@ function Instrument({ model }: { model: BasketModel }) {
         </table>
         <p className="note">
           The basket is an equal-weight, daily-rebalanced mix of FirstRand, Absa, Nedbank and Capitec. Specifications come from 36
-          ARMA-GARCH candidates by BIC each December; parameters and the copula (by AIC, Student t every time) are re-estimated at
+          ARMA-GARCH candidates by BIC each December; parameters and the copula (Student t in every fit) are re-estimated at
           every month end and trade only the following month. Standard Bank and Nedbank are not cointegrated, which is why dependence
           is modelled day to day rather than through a long-run spread.
         </p>
@@ -275,6 +290,7 @@ export function App({ embedded }: { embedded: boolean }) {
   }, []);
   const status = model?.status;
   const h1 = research?.tests.find((t) => t.id === "h1");
+  const ins = research?.instrument;
 
   return (
     <main className="preview">
@@ -307,10 +323,18 @@ export function App({ embedded }: { embedded: boolean }) {
           <h2 className="serif">
             The record, <em>after costs</em>
           </h2>
-          {h1 && h1.before_costs && (
+          {ins ? (
             <span className="legend">
-              Validation Sharpe {num(h1.before_costs.validation.sharpe)} before costs, {num(h1.validation.sharpe)} after
+              Validation Sharpe {num(ins.rule.validation.before)} before costs, {num(ins.rule.validation.after)} after · the rule passed its
+              pre-registered mark at {num(ins.rule_static.validation.after)} on the fixed-correlation copula
             </span>
+          ) : (
+            h1 &&
+            h1.before_costs && (
+              <span className="legend">
+                Validation Sharpe {num(h1.before_costs.validation.sharpe)} before costs, {num(h1.validation.sharpe)} after
+              </span>
+            )
           )}
         </div>
         <div className="tabs" role="tablist">
@@ -337,7 +361,7 @@ export function App({ embedded }: { embedded: boolean }) {
         {bt && <LiveRecord bt={bt} costBps={cost} period={period} />}
       </section>
 
-      {model && <Instrument model={model} />}
+      {model && <Instrument model={model} research={research} />}
       {research && <EverythingElse r={research} />}
 
       <section className="panel" style={{ borderBottom: 0 }}>

@@ -4,8 +4,9 @@ import csv, math, sys
 import numpy as np
 from scipy import stats as st
 lo, hi = sys.argv[1], sys.argv[2]
-rows = list(csv.DictReader(open("research/results/copulas_py.csv")))
-models = ["static_t", "rolling_t_252", "gas_t", "ms_t"]
+import os
+rows = list(csv.DictReader(open(os.environ.get("COPULAS_CSV", "research/results/copulas_py.csv"))))
+models = [m for m in ["static_t", "rolling_t_252", "gas_t", "ms_t"] if any(r["model"] == m for r in rows)]
 by = {m: {r["date"]: (float(r["logc"]), float(r["h"])) for r in rows if r["model"] == m and lo <= r["date"] < hi} for m in models}
 base = by["static_t"]
 print(f"{sys.argv[3] if len(sys.argv) > 3 else ''} {lo} to {hi}")
