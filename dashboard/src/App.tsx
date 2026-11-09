@@ -714,7 +714,7 @@ function ResearchSection() {
                       {` Validation Sortino ${num(t.validation.sortino)}.`}
                       {t.entries ? ` ${t.entries.validation} trades in validation.` : ""}
                       {t.edge_vs_h1
-                        ? ` Ahead of H1 in validation by ${num(t.edge_vs_h1.bps_per_year, 0)} bps a year (t = ${num(t.edge_vs_h1.t_stat)}), too small to tell from chance.`
+                        ? ` ${t.edge_vs_h1.bps_per_year >= 0 ? "Ahead of" : "Behind"} H1 in validation by ${num(Math.abs(t.edge_vs_h1.bps_per_year), 0)} bps a year (t = ${num(t.edge_vs_h1.t_stat)})${Math.abs(t.edge_vs_h1.t_stat) < 2 ? ", too small to tell from chance" : ""}.`
                         : ""}
                     </div>
                   </td>

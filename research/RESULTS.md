@@ -1,6 +1,6 @@
 # Results
 
-Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day, after its protocol entry; H4 on 25 October, after its protocol entry). All figures are annualised, after 10 bps per leg unless stated, from `data/research.json`. Post-freeze runs from 1 April 2026 and is reported only: to 9 October for v1, H1 and H3, and to 23 October for the five-day hold, H2 and H4, which read the price cache directly.
+Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day, after its protocol entry; H4 on 25 October and H5 on 9 November, each after its protocol entry). All figures are annualised, after 10 bps per leg unless stated, from `data/research.json`. Post-freeze runs from 1 April 2026 and is reported only: to 9 October for v1, H1, H3 and H5, and to 23 October for the five-day hold, H2 and H4, which read the price cache directly.
 
 ## Every rule tested
 
@@ -15,6 +15,7 @@ Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day
 | H3b, learned exit, fitted Q-iteration | −0.14 | 0.14 | 0.22 | 0.6% | −13.2% | −2.00 | > 0 and > 0.06 | Passed, within noise |
 | H4a, classic z-score trade (NED/SBK) | 0.63 | 0.07 | 0.10 | 0.2% | −24.4% | no trades | > 0 | Passed, within noise |
 | H4b, classic trade, cointegrated windows only | 0.40 | 0.45 | 0.67 | 2.3% | −7.9% | no trades | > 0 | Passed, within noise |
+| H5, copula correlation edited to track recent dependence | 0.15 | −0.23 | −0.35 | −1.8% | −20.7% | −1.59 | > 0 and > 0.06 | Failed |
 
 Sortino ratios (added by amendment 5) use the downside deviation over all days. H1 over the full walk-forward: Sortino 0.11.
 
@@ -38,6 +39,16 @@ H4 trades the classic way anyway, so the copula has a fair comparison. Chosen on
 
 Read it as within noise, for four reasons. Against H1 on paired daily returns, H4b is ahead by 202 bps a year with t = 0.62 (H4a: 19 bps, t = 0.05). Across all 18 H4b rules the median validation Sharpe is 0.03, half are positive (−0.74 to 0.83), and the design ranking does not predict the validation ranking (correlation −0.01; H4a 0.07). H4a and H4b were both validated on the same data. And since April the Engle-Granger gate has been open on no day at any window length, so neither rule has traded post-freeze. The honest summary: the classic method, gated on cointegration, did no worse than the copula rules in validation and possibly better, but it trades rarely and only while the relationship briefly holds.
 
+## H5: editing the fitted parameters directly
+
+The idea comes from Takehi, Teoh, Zhang and Khattab (MIT, 2026), who had a language model read a small network's weights, find the mechanism behind a flaw and edit about 0.016% of the weights by hand, with no retraining, and saw its maths scores rise sixfold. The analogue here: the 202 monthly fits in `data/basket.json` were read as text by a language model with the design-period record and a budget of looks at returns, logged in `research/results/h5_log.json` (three design evaluations, one validation run). `research/h5_weights.py` re-filters every walk-forward month from the stored coefficients and reproduces `data/h1_daily.csv` to within 1e-9, so an edit changes exactly one thing.
+
+Two mechanisms were found on design data. The first was a false lead: every SBK margin carries an ARMA(1,1) with ar1 ≈ 0.80 and ma1 ≈ −0.85, roots that nearly cancel, which usually means an over-parameterised mean. But the term is a slow reversal forecast (half-life 2.7 days) that does predict the next return (slope 0.74), and zeroing it cut the design Sharpe from 0.08 to 0.00. The second held up: the margins are calibrated out of sample (KS p = 0.49 for SBK, 0.06 for the basket) but the conditional probability h is not (p < 0.001). Too many values sit near 0.5 and too few in the tails, so the rule fired on 7.5% of design days against the 10% the model implies, and on only 2.8% of days in 2019. Realised Kendall's tau between the out-of-sample PITs rose from about 0.5 in 2010 to 2015 to about 0.7 in 2016 to 2019, while the copula correlation, estimated on an expanding window from 2005, moved from 0.727 to 0.751. The one dependence weight lags the data. No constant shift and no change to the degrees of freedom calibrates h, because the error grows through time.
+
+The edit replaces the correlation in each fit with the value implied by Kendall's tau of that fit's last 252 training-day PITs, keeping everything else. On design it does what it was meant to: the rule fires on 9.3% of days, between 6.9% and 12.5% in every year, and the Sharpe after costs rises from 0.08 to 0.15 (0.74 to 0.90 before costs, max drawdown −12.7% to −8.7%), 37 bps a year ahead of H1 with t = 0.49.
+
+In validation it fails. The mechanism is still there, and the edit still corrects it: the edited correlation runs 0.79 to 0.91 against the fitted 0.76 to 0.78, h is closer to uniform (KS p from 0.000 to 0.010), and the rule fires on 12.4% of days. Before costs the Sharpe is 0.48, positive but below H1's 0.64. After costs it is −0.23 against H1's 0.06, 191 bps a year behind with t = −1.17, with 151 entries against 104 and a −20.7% drawdown. Post-freeze it is −1.59 against H1's −2.31, on ten trades. Read as: the fitted correlation was wrong, and correcting it made the model honest and the strategy poorer. The extra signals the corrected model admits are moderate divergences that revert by less than a round trip costs, so the under-dispersed h was working as an accidental higher threshold. This is consistent with the MIT result's own caveat: a direct edit can remove an identifiable flaw, but it cannot put in an edge that is not there. The live service keeps the fitted correlation.
+
 ## Decay study
 
 Mean one-year lag-1 autocorrelation of the daily return spread across the 15 pairs of SBK, NED, FSR, ABG, CPI and INL: about −0.16 in 2011, close to zero from 2020 (−0.01 at the start of 2026). The SBK/NED next-day return after an extreme copula signal averaged about 16 bps from 2010 to 2019 and about −6 bps since 2020. This is the most likely reason every reversal rule weakens after 2019.
@@ -53,6 +64,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 5. **Sortino ratios and H4.** Added to the protocol on 25 October 2026, before any H4 result was computed. Adding Sortino changed no other figure in H1, H2 or H3. Rerunning H2 extended its post-freeze figures to 23 October; design and validation figures are unchanged.
 
+6. **H5.** Added to the protocol on 9 November 2026 after the design-period inspection and before the validation run. The inspection used three design-period return evaluations, all logged; the ARMA edit it rejected is reported above rather than dropped.
+
 ## Run order
 
 ```sh
@@ -64,5 +77,8 @@ service/.venv/bin/python research/fetch_volume.py   # basket volumes for H3
 service/.venv/bin/python research/h3_exit.py      # also reads data/raw/gdelt_basket.csv (research/sql/gdelt_basket.sql)
 Rscript research/04_cointegration.R          # descriptive; writes research/results/cointegration.json
 service/.venv/bin/python research/h4_cointegration.py
+service/.venv/bin/python research/h5_weights.py    # parity check of the edit harness against data/h1_daily.csv
+service/.venv/bin/python research/h5_inspect.py && service/.venv/bin/python research/h5_inspect2.py && service/.venv/bin/python research/h5_inspect3.py   # design only
+service/.venv/bin/python research/h5_edit.py      # the one validation run; writes research/results/h5.json
 service/.venv/bin/python research/export_research.py
 ```

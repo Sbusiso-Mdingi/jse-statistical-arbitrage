@@ -46,5 +46,61 @@
     "entries": 196
    }
   }
+ },
+ {
+  "n": 4,
+  "when": "2026-11-09",
+  "label": "H5: par tracks 252-day tau",
+  "periods": [
+   "design",
+   "validation",
+   "post-freeze"
+  ],
+  "note": "the one validation run",
+  "result": {
+   "design": {
+    "sharpe": 0.15,
+    "before_costs_sharpe": 0.9,
+    "entries": 196
+   },
+   "validation": {
+    "sharpe": -0.23,
+    "before_costs_sharpe": 0.48,
+    "entries": 151
+   },
+   "post-freeze": {
+    "sharpe": -1.59,
+    "before_costs_sharpe": -0.68,
+    "entries": 10
+   }
+  }
+ },
+ {
+  "n": 5,
+  "when": "2026-11-09",
+  "label": "H1 as fitted (comparison)",
+  "periods": [
+   "design",
+   "validation",
+   "post-freeze"
+  ],
+  "note": "baseline for the paired comparison; figures already in h1.json",
+  "result": {
+   "design": {
+    "sharpe": 0.08,
+    "before_costs_sharpe": 0.74,
+    "entries": 158
+   },
+   "validation": {
+    "sharpe": 0.06,
+    "before_costs_sharpe": 0.64,
+    "entries": 104
+   },
+   "post-freeze": {
+    "sharpe": -2.31,
+    "before_costs_sharpe": -1.35,
+    "entries": 8
+   }
+  }
  }
 ]
