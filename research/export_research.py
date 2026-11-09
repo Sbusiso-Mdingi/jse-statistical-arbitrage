@@ -1,7 +1,7 @@
 """Collect the decay study and every tested rule into data/research.json for the dashboard.
 
 Run after research/decay.py, research/h1_evaluate.py, research/h2_news.py, research/h3_exit.py,
-research/04_cointegration.R, research/h4_cointegration.py, research/h5_edit.py, research/h6_rl_exit.py and research/h7_intraday.py.
+research/04_cointegration.R, research/h4_cointegration.py, research/h5_edit.py, research/h6_rl_exit.py, research/h7_intraday.py and research/edge.py.
 """
 import json, sys
 from datetime import date
@@ -105,7 +105,7 @@ cointegration = {
     "breaks": c["bai_perron"]["breaks"],
     "segments": [{"from": s["from"], "to": s["to"], "slope": round(s["slope"], 2)} for s in c["bai_perron"]["segments"]],
 }
-out = {"periods": PERIODS, "tests": tests, "decay": json.load(open("data/decay.json")), "cointegration": cointegration}
+out = {"periods": PERIODS, "tests": tests, "decay": json.load(open("data/decay.json")), "cointegration": cointegration, "edge": json.load(open("research/results/edge.json"))}
 json.dump(out, open("data/research.json", "w"), separators=(",", ":"))
 for t in tests:
     print(f"{t['name']:30s} design {t['design']['sharpe']:5.2f}  validation {t['validation']['sharpe']:5.2f}  post {t['post_freeze']['sharpe']:5.2f}  passed {t.get('passed')}")

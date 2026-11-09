@@ -150,6 +150,15 @@ export type Research = {
     mean_acf: number[];
     reversal_by_year: { year: number; n: number; bps: number; se: number | null }[];
   };
+  edge: {
+    cost_round_trip_bps: number;
+    hold: number;
+    last_date: string;
+    by_year: { year: number; n: number; bps: number; se: number; next_bps: number; next_se: number; partial: boolean }[];
+    "2010_2019": { n: number; bps: number; se: number; next_bps: number };
+    "2020_2026": { n: number; bps: number; se: number; next_bps: number };
+    "2021_2026": { n: number; bps: number; se: number; next_bps: number };
+  };
 };
 
 async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {

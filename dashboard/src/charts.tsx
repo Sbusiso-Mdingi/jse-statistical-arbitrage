@@ -303,6 +303,47 @@ export function DecayChart({
   );
 }
 
+export function EdgeBars({ rows, cost, label }: { rows: { year: number; n: number; bps: number; se: number | null; partial?: boolean }[]; cost: number; label: string }) {
+  const H = 260;
+  const pad = { l: 46, r: 12, t: 12, b: 28 };
+  const ext = rows.map((r) => [r.bps - 2 * (r.se ?? 0), r.bps + 2 * (r.se ?? 0)]).flat();
+  const lo = Math.min(-40, ...ext);
+  const hi = Math.max(cost + 20, ...ext);
+  const y = scaleLinear(lo, hi, H - pad.b, pad.t);
+  const bw = (W - pad.l - pad.r) / rows.length;
+  return (
+    <svg className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label}>
+      {ticks(lo, hi, 6).map((t) => (
+        <g key={t}>
+          <path d={`M${pad.l} ${y(t)}H${W - pad.r}`} stroke={t === 0 ? "var(--foreground)" : "var(--border)"} strokeOpacity={t === 0 ? 0.5 : 1} />
+          <text x={pad.l - 8} y={y(t) + 3} textAnchor="end">
+            {t}
+          </text>
+        </g>
+      ))}
+      <path d={`M${pad.l} ${y(cost)}H${W - pad.r}`} stroke="var(--negative)" strokeDasharray="4 4" />
+      <text x={W - pad.r} y={y(cost) - 5} textAnchor="end" fill="var(--negative)">
+        cost of a round trip, {cost} bps
+      </text>
+      {rows.map((r, i) => {
+        const cx = pad.l + bw * (i + 0.5);
+        const top = Math.min(y(r.bps), y(0));
+        return (
+          <g key={r.year}>
+            <rect x={cx - bw * 0.3} y={top} width={bw * 0.6} height={Math.abs(y(r.bps) - y(0))} fill={r.bps >= cost ? "var(--primary)" : r.bps >= 0 ? "var(--border-strong)" : "var(--negative)"} opacity={r.partial ? 0.55 : 1} />
+            {r.se != null && <path d={`M${cx} ${y(r.bps - 2 * r.se)}V${y(r.bps + 2 * r.se)}`} stroke="var(--foreground)" strokeOpacity=".45" />}
+            {(i % 2 === 0 || rows.length < 12) && (
+              <text x={cx} y={H - 8} textAnchor="middle">
+                {r.year}
+              </text>
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 export function ReversalBars({ rows }: { rows: { year: number; n: number; bps: number; se: number | null }[] }) {
   const H = 240;
   const pad = { l: 46, r: 12, t: 12, b: 28 };
