@@ -165,3 +165,11 @@ Added 9 November 2026, before any of these figures was computed. A battery of at
 7. Copula combination. The equal-weight mixture of the score-driven and Markov-switching copula densities, scored by out-of-sample log density against the score-driven copula alone, pair and basket. Expected: a gain of under 2 thousandths of a log point a day.
 
 Untestable here and stated: Yahoo Finance adjusted closes are revised after the fact for dividends, so the series the model saw in any earlier year is not the one downloaded now. Point-in-time prices would be needed to measure it.
+
+## Overlay (reporting only)
+
+Added 9 November 2026, before any figure. The red team left one use standing: timing trades that someone has to do anyway, so the signal's value is collected at no incremental cost. Measured here at fills a real order can have.
+
+- Setting: on every session t a manager must complete a relative trade between Standard Bank and the basket (half of each direction, so the measurement is symmetric) within a deadline of W sessions, W in {5, 10}. Baseline: fill at the close of t + 1. Overlay: fill at the close of the first session s in t + 2 to t + W whose previous close gave a signal in the trade's favour (h > 0.95 for buying Standard Bank against the basket, h < 0.05 for the reverse); if none, fill at the close of t + W. Placebo: fill at a uniformly random session in t + 1 to t + W.
+- Value: the relative price improvement of the overlay fill against the baseline fill, in bps of the trade's notional, averaged by year and by period. The same for the pair (Standard Bank against Nedbank, the score-driven h) with fills at the 10:00 bar of the chosen session from the hourly data, which is the earliest a real order can act on a close.
+- Expectation: a few bps a trade before 2020 and nothing since, bounded above by the lagged edge the red team measured (about 6 bps a signal on the basket, 11 on the pair at the next morning's price). Reporting only; nothing is chosen on it.
