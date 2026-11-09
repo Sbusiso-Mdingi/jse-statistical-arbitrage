@@ -2,7 +2,6 @@
 Writes research/results/copulas_basket.csv with the static, GAS and MS log copula scores and h per day."""
 import csv, json, math, sys, time
 import numpy as np
-from joblib import Parallel, delayed
 sys.path.insert(0, "research"); sys.path.insert(0, "research/models"); sys.path.insert(0, "service")
 from h5_weights import load, month_ends, _filter_full  # noqa: E402
 from copulas_py import t_logc, gas_fit, gas_score, ms_fit, ms_score  # noqa: E402
@@ -35,11 +34,20 @@ def one(k):
     return rows
 
 
-t0 = time.time()
-res = Parallel(n_jobs=-1, verbose=5)(delayed(one)(k) for k in range(len(ends)))
-rows = [r for rr in res for r in rr]
-with open("research/results/copulas_basket.csv", "w", newline="") as fh:
-    w = csv.writer(fh); w.writerow(["date", "fold", "model", "logc", "h", "state"])
-    for r in rows:
-        w.writerow([r[0], r[1], r[2], f"{r[3]:.6f}", f"{r[4]:.8f}", f"{r[5]:.5f}"])
-print(f"wrote {len(rows)} rows in {time.time()-t0:.0f}s")
+def write_rows(rows, path="research/results/copulas_basket.csv", append=False):
+    with open(path, "a" if append else "w", newline="") as fh:
+        w = csv.writer(fh)
+        if not append:
+            w.writerow(["date", "fold", "model", "logc", "h", "state"])
+        for r in rows:
+            w.writerow([r[0], r[1], r[2], f"{r[3]:.6f}", f"{r[4]:.8f}", f"{r[5]:.5f}"])
+
+
+if __name__ == "__main__":
+    from joblib import Parallel, delayed
+
+    t0 = time.time()
+    res = Parallel(n_jobs=-1, verbose=5)(delayed(one)(k) for k in range(len(ends)))
+    rows = [r for rr in res for r in rr]
+    write_rows(rows)
+    print(f"wrote {len(rows)} rows in {time.time()-t0:.0f}s")

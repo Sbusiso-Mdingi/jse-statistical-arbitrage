@@ -7,6 +7,7 @@ Sessions after the latest month end are filtered live with the latest fit.
 
 from __future__ import annotations
 
+import logging
 import math
 from dataclasses import dataclass
 from datetime import date
@@ -46,6 +47,11 @@ class Basket:
         self.train_end = date.fromisoformat(self.latest["train_end"])
         # The score-driven copula (H9) replaces the static one when its export is present and matches the fits.
         self.gas = gas if gas and gas["latest"]["train_end"] == self.latest["train_end"] else None
+        if gas and not self.gas:
+            logging.getLogger("pairs").warning(
+                "basket_gas.json is fitted to %s but the basket fits end %s: falling back to the static copula; rerun research/models/export_gas.py",
+                gas["latest"]["train_end"], self.latest["train_end"],
+            )
         h = data["history"]
         if self.gas:
             gh = dict(zip(self.gas["history"]["date"], self.gas["history"]["h"]))

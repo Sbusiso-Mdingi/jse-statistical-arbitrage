@@ -11,12 +11,20 @@ git config user.email "cloud-run-refit@users.noreply.github.com"
 Rscript research/00_data.R
 Rscript research/02_basket.R
 
-# Parity tests run in an isolated venv (the base image is R-first).
+# Python runs in an isolated venv (the base image is R-first).
 python3 -m venv /tmp/parity
 /tmp/parity/bin/pip install --no-cache-dir -r service/requirements.txt pytest
+
+# The score-driven copula (H9) for the new fit, the re-measured headline, and the dashboard's research.json.
+/tmp/parity/bin/python research/models/export_gas.py
+/tmp/parity/bin/python research/edge.py
+/tmp/parity/bin/python research/export_research.py
+
+# Parity tests, including the score-driven copula against the research record.
 ( cd service && PATH=/tmp/parity/bin:$PATH python -m pytest -q tests )
 
-git add data/basket.json data/h1_daily.csv
+git add data/basket.json data/h1_daily.csv data/basket_gas.json data/research.json \
+        research/results/copulas_basket.csv research/results/edge.json
 if git diff --cached --quiet; then
   echo "No change in fits; nothing to commit."
 else

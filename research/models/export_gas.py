@@ -26,7 +26,17 @@ f_next = omega + beta * f[-1] + alpha * t_score_rho(x_T, y_T, rho_T, nu) * (1 - 
 f_next = max(min(f_next, 4.0), -4.0)
 print(f"latest GAS fit to {te}: omega {omega:.4f} beta {beta:.4f} alpha {alpha:.4f} nu {nu:.2f}; rho at train end {rho_T:.3f}, next {math.tanh(f_next):.3f}")
 
-rows = list(csv.DictReader(open("research/results/copulas_basket.csv")))
+CSV = "research/results/copulas_basket.csv"
+rows = list(csv.DictReader(open(CSV)))
+# After a monthly refit the newest fit has no GAS record yet: compute it (one or two fits, seconds).
+import h9_basket_gas as h9
+have = {int(r["fold"]) for r in rows}
+missing = [k for k in range(len(h9.ends)) if k + 1 not in have]
+if missing:
+    new_rows = [r for k in missing for r in h9.one(k)]
+    h9.write_rows(new_rows, CSV, append=True)
+    rows = list(csv.DictReader(open(CSV)))
+    print(f"added GAS records for {len(missing)} new fit(s): {[h9.ends[k].isoformat() for k in missing]}")
 gas = {r["date"]: (float(r["h"]), float(r["state"])) for r in rows if r["model"] == "gas_t"}
 hist_dates = [x.isoformat() for x in dates if x.isoformat() in gas]
 out = {
@@ -38,7 +48,9 @@ out = {
 json.dump(out, open("data/basket_gas.json", "w"))
 print("wrote data/basket_gas.json with", len(hist_dates), "days")
 
-# The H1 rule on the GAS h, by period: reported, not a pass mark.
+if "--report" not in sys.argv:
+    sys.exit(0)
+# The H1 rule on the GAS h, by period: reported, not a pass mark. Run once with --report (H9).
 idx = {x.isoformat(): i for i, x in enumerate(dates)}
 pos_idx = [idx[x] for x in hist_dates]
 sig = {"date": [dates[i] for i in pos_idx], "h": np.array([gas[x][0] for x in hist_dates]),
