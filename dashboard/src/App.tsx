@@ -7,6 +7,7 @@ import {
   type BasketBacktest,
   type BasketModel,
   type BasketParams,
+  type CostTier,
   type Period,
   type Research,
 } from "./api";
@@ -60,8 +61,11 @@ function useBacktest(period: Period, params: BasketParams) {
 }
 
 /** What a signal was worth before costs, year by year, against the cost of acting on it. */
-function EdgePanel({ r }: { r: Research }) {
+const TIER_LABEL: Record<CostTier, string> = { protocol: "Protocol: 10 bps a leg, brokerage only", institutional: "JSE, institutional", retail: "JSE, retail brokerage" };
+
+function EdgePanel({ r, tier }: { r: Research; tier: CostTier }) {
   const e = r.edge;
+  const cost = r.costs?.tiers[tier].round_trip_bps ?? e.cost_round_trip_bps;
   const early = e["2010_2019"];
   const late = e["2021_2026"];
   const covid = e.by_year.find((y) => y.year === 2020);
@@ -77,12 +81,12 @@ function EdgePanel({ r }: { r: Research }) {
           <span style={{ color: "var(--negative)" }}>■ Negative</span>
         </div>
       </div>
-      <EdgeBars rows={e.by_year} cost={e.cost_round_trip_bps} label="Gross return per signal over the five-day hold, by year, against the cost of a round trip" />
+      <EdgeBars rows={e.by_year} cost={cost} label="Gross return per signal over the five-day hold, by year, against the cost of a round trip" />
       <p className="note">
         Each bar is the average return, in basis points of capital and before costs, from taking the position the signal points
         to and holding it {e.hold} sessions, for every day the signal fired that year. Whiskers are two standard errors; {e.last_date.slice(0, 4)} is
         partial. From 2010 to 2019 a signal was worth {num(early.bps, 0)} bps on average ({early.n} signals, standard error{" "}
-        {num(early.se, 0)}); the round trip costs {num(e.cost_round_trip_bps, 0)}. Since 2021 it has been worth {num(late.bps, 0)} bps (
+        {num(early.se, 0)}); a round trip costs {num(cost, 0)} bps under the cost schedule chosen below. Since 2021 it has been worth {num(late.bps, 0)} bps (
         {late.n} signals). {covid ? `The one year that paid, 2020, averaged ${num(covid.bps, 0)} bps on ${covid.n} signals.` : ""} The next
         session alone went from {num(early.next_bps, 0)} bps to {num(late.next_bps, 0)}.
       </p>
@@ -90,7 +94,7 @@ function EdgePanel({ r }: { r: Research }) {
   );
 }
 
-function LiveRecord({ bt, costBps, period }: { bt: BasketBacktest; costBps: number; period: Period }) {
+function LiveRecord({ bt, tier, roundTrip, period }: { bt: BasketBacktest; tier: CostTier; roundTrip: number; period: Period }) {
   const m = bt.metrics;
   const short = m.years < 1;
   // Two standard deviations of the total return of a zero-mean strategy with this volatility, over this span.
@@ -114,8 +118,8 @@ function LiveRecord({ bt, costBps, period }: { bt: BasketBacktest; costBps: numb
         {short
           ? `${Math.round(m.years * 12)} months of unseen sessions so far. At this volatility a strategy with no edge would end this many months between ${pct(-band)} and ${pct(band)} about 95% of the time, so the record cannot yet tell the signal from noise. `
           : ""}
-        Net of {costBps} bps per leg on every change of position, each side sized at half of capital. Holding half Standard Bank and half the
-        basket returned {pct(bt.benchmark.total_return)} over the same dates.
+        Net of {TIER_LABEL[tier].toLowerCase()}, about {num(roundTrip, 0)} bps of capital a round trip, each side sized at half of capital. Holding half
+        Standard Bank and half the basket returned {pct(bt.benchmark.total_return)} over the same dates.
       </p>
       <section className="panel">
         <div className="panel-head">
@@ -229,58 +233,10 @@ function Instrument({ model, research }: { model: BasketModel; research: Researc
   );
 }
 
-function EverythingElse({ r }: { r: Research }) {
-  const verdict = (t: Research["tests"][number]) =>
-    t.passed == null ? "Baseline" : !t.passed ? "Failed" : t.edge_vs_h1 && Math.abs(t.edge_vs_h1.t_stat) < 2 ? "Passed, within noise" : "Passed, narrowly";
-  const tried = r.tests.filter((t) => t.id !== "h1");
-  return (
-    <section className="panel">
-      <details>
-        <summary className="serif" style={{ cursor: "pointer", fontSize: 20 }}>
-          Everything else tried, <em>{tried.length} rules and baselines, one line each</em>
-        </summary>
-        <p className="note">
-          Each was fixed on 2010 to 2019, written into the protocol with its pass mark, and validated once on 2020 to March 2026.
-          Sharpe ratios after costs. None earned a place above; all stay on the record.
-        </p>
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Rule</th>
-                <th className="num">Design</th>
-                <th className="num">Validation</th>
-                <th>Verdict</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tried.map((t) => (
-                <tr key={t.id}>
-                  <td>
-                    {t.name}
-                    <div className="muted" style={{ fontSize: 12, maxWidth: 520 }}>
-                      {t.detail}
-                    </div>
-                  </td>
-                  <td className="num">{num(t.design.sharpe)}</td>
-                  <td className="num" style={{ color: t.validation.sharpe < 0 ? "var(--negative)" : undefined }}>
-                    {num(t.validation.sharpe)}
-                  </td>
-                  <td>{verdict(t)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </details>
-    </section>
-  );
-}
-
 export function App({ embedded }: { embedded: boolean }) {
   const [period, setPeriod] = useState<Period>("live");
-  const [cost, setCost] = useState(BASKET_DEFAULTS.cost_bps);
-  const params: BasketParams = { ...BASKET_DEFAULTS, cost_bps: cost };
+  const [tier, setTier] = useState<CostTier>("protocol");
+  const params: BasketParams = { ...BASKET_DEFAULTS, costs: tier };
   const { bt, error } = useBacktest(period, params);
   const [model, setModel] = useState<BasketModel | null>(null);
   const [research, setResearch] = useState<Research | null>(null);
@@ -316,7 +272,7 @@ export function App({ embedded }: { embedded: boolean }) {
         )}
       </header>
 
-      {research && <EdgePanel r={research} />}
+      {research && <EdgePanel r={research} tier={tier} />}
 
       <section className="panel">
         <div className="panel-head">
@@ -344,25 +300,32 @@ export function App({ embedded }: { embedded: boolean }) {
             </button>
           ))}
         </div>
-        <section className="controls" aria-label="Cost assumption">
+        <section className="controls" aria-label="Cost schedule">
           <div className="control">
-            <label>
-              Cost per leg <output>{cost} bps</output>
-            </label>
-            <input type="range" min={0} max={50} value={cost} onChange={(e) => setCost(Number(e.target.value))} aria-label="Cost per leg" />
+            <span className="label">Costs</span>
+            <div className="segmented">
+              {(Object.keys(TIER_LABEL) as CostTier[]).map((t) => (
+                <button key={t} aria-pressed={tier === t} onClick={() => setTier(t)}>
+                  {TIER_LABEL[t]}
+                  {research?.costs ? <span>{num(research.costs.tiers[t].round_trip_bps, 0)} bps a round trip</span> : null}
+                </button>
+              ))}
+            </div>
           </div>
-          {cost !== BASKET_DEFAULTS.cost_bps && (
-            <button className="reset" onClick={() => setCost(BASKET_DEFAULTS.cost_bps)}>
-              Back to 10 bps
-            </button>
-          )}
         </section>
+        {research?.costs && tier !== "protocol" && (
+          <p className="note">
+            A round trip is four executions at half of capital each, two of them purchases. Securities transfer tax of 0.25% on the purchases is{" "}
+            {num(research.costs.components_institutional.stt, 0)} bps of capital on its own; brokerage with VAT {num(research.costs.components_institutional.brokerage_incl_vat, 0)} at
+            institutional rates, half-spreads {num(research.costs.components_institutional.spread, 0)}, Strate and the levy under 1, borrow about 1 over a five-day hold. The
+            half-spread and borrow are assumptions. The pre-registered verdicts were set at the protocol’s flat 10 bps a leg.
+          </p>
+        )}
         {!bt && (error ? <p className="loading">Could not load the record: {error}</p> : <p className="loading">Filtering the latest prices…</p>)}
-        {bt && <LiveRecord bt={bt} costBps={cost} period={period} />}
+        {bt && <LiveRecord bt={bt} tier={tier} roundTrip={bt.params.round_trip_bps} period={period} />}
       </section>
 
       {model && <Instrument model={model} research={research} />}
-      {research && <EverythingElse r={research} />}
 
       <section className="panel" style={{ borderBottom: 0 }}>
         <div className="panel-head">
@@ -383,7 +346,9 @@ export function App({ embedded }: { embedded: boolean }) {
           <li>
             <strong>Pre-registration</strong>
             The rule was fixed on 2010 to 2019 and validated once on 2020 to March 2026 against a pass mark written down beforehand.
-            Every later idea went through the same gate; the protocol and all results are in the repository.
+            Nine later trading rules went through the same gate: news filters, the classic z-score trade, learned exits, a direct edit to the
+            fitted copula, an exit network and an intraday rule. Four failed and five passed within noise; none earned a place here. The protocol
+            and every result are in the repository.
           </li>
           <li>
             <strong>Unseen data</strong>

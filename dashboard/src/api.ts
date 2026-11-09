@@ -95,10 +95,12 @@ export async function getModel(): Promise<Model> {
   return res.json();
 }
 
-export type BasketParams = { entry: number; hold: number; cost_bps: number };
-export const BASKET_DEFAULTS: BasketParams = { entry: 90, hold: 5, cost_bps: 10 };
+export type CostTier = "protocol" | "institutional" | "retail";
+export type BasketParams = { entry: number; hold: number; cost_bps: number; costs: CostTier };
+export const BASKET_DEFAULTS: BasketParams = { entry: 90, hold: 5, cost_bps: 10, costs: "protocol" };
 
-export type BasketBacktest = Omit<Backtest, "latest" | "series"> & {
+export type BasketBacktest = Omit<Backtest, "latest" | "series" | "params"> & {
+  params: BasketParams & { round_trip_bps: number };
   latest: { date: string; position: number; h: number };
   series: { date: string[]; equity: number[]; benchmark: number[]; position: number[]; h: number[]; level: number };
 };
@@ -120,6 +122,7 @@ export type BasketModel = {
 };
 
 type Perf = { sharpe: number; sortino: number; cagr: number; mdd: number };
+type Perf3 = { sharpe: number; cagr: number; mdd: number };
 export type Research = {
   tests: {
     id: string;
@@ -161,6 +164,11 @@ export type Research = {
     "2021_2026": { n: number; bps: number; se: number; next_bps: number };
     copula?: string;
   };
+  costs?: {
+    tiers: Record<CostTier, { label: string; round_trip_bps: number; design: Perf3; validation: Perf3; full: Perf3 }>;
+    components_institutional: Record<string, number>;
+    hold_until_normal: { avg_days_held: number; trades: number; tiers: Record<CostTier, { full: Perf3 }> };
+  };
   instrument?: {
     copula: string;
     validation_gain_per_day: number;
@@ -181,7 +189,7 @@ async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
 
 export const getBasketBacktest = (period: Period, p: BasketParams, signal?: AbortSignal) =>
   getJson<BasketBacktest>(
-    `/api/basket/backtest?${new URLSearchParams({ period, entry: String(p.entry), hold: String(p.hold), cost_bps: String(p.cost_bps) })}`,
+    `/api/basket/backtest?${new URLSearchParams({ period, entry: String(p.entry), hold: String(p.hold), cost_bps: String(p.cost_bps), costs: p.costs })}`,
     signal,
   );
 export const getBasketModel = () => getJson<BasketModel>("/api/basket/model");

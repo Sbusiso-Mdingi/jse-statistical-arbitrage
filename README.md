@@ -2,7 +2,7 @@
 
 A copula-GARCH signal on Standard Bank against an equal-weight basket of FirstRand, Absa, Nedbank and Capitec, built to answer one question: is there still a reversal between South African banks worth trading after costs? The signal is a measuring instrument. It is calibrated out of sample, it is refitted every month on data before the month it trades, and it has been scored live on sessions no model has seen since 1 April 2026.
 
-The answer it gives: a signal was worth about 21 bps before costs from 2010 to 2019 and about 2 bps since 2021, against a round trip that costs 20. The edge was never larger than the cost of acting on it, and it has since gone.
+The answer it gives: a signal was worth about 21 bps before costs from 2010 to 2019 and about 2 bps since 2021, against a round trip that costs 20 bps in brokerage alone and about 59 on the JSE once securities transfer tax, VAT, spread and borrow are counted. The edge was never larger than the cost of acting on it, and it has since gone.
 
 Live record: https://mdingi-jse-pairs.azurewebsites.net (embedded at mdingi.co.za/work/jse-statistical-arbitrage).
 
@@ -21,7 +21,9 @@ Standard Bank and Nedbank are not cointegrated (Engle-Granger −2.61 in logs ag
 | Gross per signal, 2010 to 2019 | 21 bps (SE 8) | |
 | Gross per signal, 2021 onward | 2 bps (SE 9) | |
 
-Those are the rule's figures on the score-driven instrument, a measurement. The rule itself was validated once, on the fixed-correlation copula: Sharpe 0.64 before costs and 0.06 after in validation, passing its pre-registered mark as narrowly as a pass can be.
+Those are the rule's figures on the score-driven instrument at the protocol's flat 10 bps a leg, a measurement. The rule itself was validated once, on the fixed-correlation copula: Sharpe 0.64 before costs and 0.06 after in validation, passing its pre-registered mark as narrowly as a pass can be.
+
+The protocol's cost is brokerage only. What a round trip actually costs on the JSE, with securities transfer tax of 0.25% on the two purchases, VAT on brokerage, a half-spread, Strate and borrow on the short leg, is about 58.6 bps of capital at institutional brokerage and 94.5 at retail rates (`research/costs.py`). At those costs the rule returns -6.7% and -12.7% a year over the walk-forward. STT alone is more than a signal was ever worth.
 
 Holding half Standard Bank and half the basket returned 10.5% a year over the walk-forward. The live record since April 2026 is served by `/api/summary` and changes daily; with months of data it sits inside the range a strategy with no edge would land in.
 

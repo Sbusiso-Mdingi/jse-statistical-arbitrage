@@ -259,8 +259,9 @@ def api_basket_backtest(
     entry: int = 90,
     hold: int = 5,
     cost_bps: float = 10.0,
+    costs: str = "protocol",
 ):
-    return JSONResponse(_clean(_basket_run(period, bk.BasketParams(entry, hold, cost_bps).clamp())))
+    return JSONResponse(_clean(_basket_run(period, bk.BasketParams(entry, hold, cost_bps, costs).clamp())))
 
 
 @app.get("/api/basket/model")

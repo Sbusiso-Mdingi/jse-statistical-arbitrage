@@ -88,6 +88,20 @@ As the protocol said it would, the GAS copula is now the instrument: `research/m
 
 Re-measured: a signal was worth 21.0 bps over the five-day hold from 2010 to 2019 (213 signals, standard error 7.5) and 1.6 bps since 2021 (135 signals, standard error 9.2), against the 17.8 and 1.0 read by the static copula. Same answer, more signals, tighter errors. The H1 rule run on the GAS h, reported and not a pass mark: Sharpe after costs 0.06 in design, 0.15 in validation (0.77 before costs), −1.42 post-freeze; against the same rule on the static h it is 55 bps a year ahead in validation with t = 0.36. The rule was validated on the static instrument (0.06); the figure on the new instrument is a measurement.
 
+## What it costs to trade on the JSE
+
+The protocol's 10 bps a leg is brokerage and nothing else. A round trip of the pairs position is four executions at half of capital each, and two of them are purchases, which pay securities transfer tax of 0.25% of value. With brokerage at 10 bps plus VAT, a 5 bps half-spread, Strate and the levy, and 1% a year of borrow on the short leg, the institutional round trip is 58.6 bps of capital: brokerage 23.0, STT 25.0, spread 10.0, Strate and levy 0.6, borrow about 0.99 over a five-day hold. At retail brokerage of 25 bps it is 94.5 bps. Varying the half-spread between 2 and 10 bps and the borrow between 0.5% and 3% a year moves the institutional figure between 52.6 and 68.6 bps. STT alone, 25 bps, is more than the 21 bps a signal was worth before costs from 2010 to 2019.
+
+| Costs | Round trip | Sharpe, design | Sharpe, validation | Sharpe, 2010 to Mar 2026 | Return a year |
+| --- | --- | --- | --- | --- | --- |
+| Protocol: 10 bps a leg, flat | 20.0 bps | 0.06 | 0.15 | 0.1 | 0.4% |
+| JSE, institutional | 58.6 bps | -1.41 | -1.16 | -1.3 | -6.7% |
+| JSE, retail brokerage | 94.5 bps | -2.62 | -2.33 | -2.49 | -12.7% |
+
+The rule on the score-driven instrument, reported. The original report's exit, closing when the signal is back inside the 50th percentile instead of after five sessions, holds for 2.0 days on average over 314 trades and does worse at every cost: Sharpe -0.72 at the protocol's costs and -2.85 at institutional costs over the full walk-forward. More trades, more round trips.
+
+Sources: SARS for the STT rate; EasyEquities for the 0.25% retail commission; Standard Bank's AutoShare Invest for a 0.15% brokerage reference. Strate and the levy are taken from broker fee schedules as about a basis point per execution at retail size and less at institutional size. The half-spread and borrow fee could not be sourced for these two shares and are stated assumptions.
+
 ## Decay study
 
 Mean one-year lag-1 autocorrelation of the daily return spread across the 15 pairs of SBK, NED, FSR, ABG, CPI and INL: about −0.16 in 2011, close to zero from 2020 (−0.01 at the start of 2026). The SBK/NED next-day return after an extreme copula signal averaged about 16 bps from 2010 to 2019 and about −6 bps since 2020. This is the most likely reason every reversal rule weakens after 2019.
@@ -113,6 +127,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 10. **H9.** Registered after the H8 result and before any H9 score. The reported rule figures on the GAS h are logged in `research/results/h5_log.json` with the other looks at returns. Switching the service and the headline chart to the GAS copula was written into the protocol before the test.
 
+11. **Cost schedule.** Added 9 November 2026 as reporting only. No verdict uses it; the pre-registered marks stay at 10 bps a leg.
+
 ## Run order
 
 ```sh
@@ -135,5 +151,6 @@ service/.venv/bin/python research/models/copulas_py.py && service/.venv/bin/pyth
 service/.venv/bin/python research/models/h9_basket_gas.py   # about 10 minutes on 8 cores
 COPULAS_CSV=research/results/copulas_basket.csv service/.venv/bin/python research/models/compare.py 2020-01-01 2026-04-01 validation research/results/copulas_basket_validation.json
 service/.venv/bin/python research/models/export_gas.py     # writes data/basket_gas.json for the service; then research/edge.py and export_research.py again
+service/.venv/bin/python research/costs.py                 # the JSE cost schedule; writes research/results/costs.json
 service/.venv/bin/python research/export_research.py
 ```
