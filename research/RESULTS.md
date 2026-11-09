@@ -122,6 +122,21 @@ Seven attacks declared in the protocol with their expectations, run once on an A
 
 Verdict. The instrument survives every attack on its honesty: the signal is real before 2020 against placebo, no single year carries it, the cleaning is not the story and the basket costs are not the story. It does not survive the attack on its practicability. A fill one session after the close removes about three quarters of a 21 bps edge that was already below the 25 bps of securities transfer tax on a round trip. As a trading strategy it cannot stand on its own; as a measurement of a reversal that existed, was never tradeable after costs, and has since gone, it stands.
 
+## Overlay
+
+Reporting only (`research/overlay.py`, results in `research/results/overlay.json`). A manager who must make a relative trade between Standard Bank and the basket within W sessions waits for a signal in the trade's favour and fills at the next close, or at the deadline if none comes; the baseline fills at the first possible close. Value is the log price improvement over the baseline, in bps of notional, averaged over the buy and the sell each session; intervals are block bootstraps.
+
+| | 2010 to 2019 | 2021 to 2026 | Random-day placebo, 2010 to 2019 |
+| --- | --- | --- | --- |
+| Basket, 5-day window | 0.3 bps [-0.7, 1.3] | -0.4 [-1.7, 1.0] | 0.0 |
+| Basket, 10-day window | 2.5 [-0.3, 5.4] | 0.6 [-4.3, 5.2] | -1.3 |
+| Pair at the next 10:00 bar, 5-day window | 1.0 [-0.2, 2.0] | 0.0 [-2.1, 1.9] | 1.0 |
+| Pair at the next 10:00 bar, 10-day window | 2.8 [-0.6, 5.7] | 1.6 [-4.5, 7.4] | 0.2 |
+
+A favourable signal arrives inside the window for 16% of trades at five days and about a third at ten. Every interval includes zero, in both periods. The figure for trades where a signal does arrive (about 47 bps on the basket) is not a value: the signal fires because the price has already moved the trade's way since the baseline fill, so conditioning on it selects that move. Expectation was a few bps before 2020 and nothing since; the point estimates match, but none is distinguishable from zero.
+
+Verdict. Timed at a price a real order can have, the instrument is worth at most about 3 bps a trade to someone trading these banks anyway, and that cannot be told apart from nothing. It does not earn a use as an overlay either.
+
 ## Decay study
 
 Mean one-year lag-1 autocorrelation of the daily return spread across the 15 pairs of SBK, NED, FSR, ABG, CPI and INL: about −0.16 in 2011, close to zero from 2020 (−0.01 at the start of 2026). The SBK/NED next-day return after an extreme copula signal averaged about 16 bps from 2010 to 2019 and about −6 bps since 2020. This is the most likely reason every reversal rule weakens after 2019.
@@ -153,11 +168,14 @@ Every one of these was made before the affected verdict was known, or changed no
 
 13. **Red team.** Seven attacks declared with expectations on 9 November 2026 before any figure, run once on an Azure VM, reported in full. The expectation for the execution lag understated it.
 
+14. **Overlay.** Registered 9 November 2026 before any figure. The first run measured improvement in simple price ratios, and its placebo showed 2 to 7 bps with no information: Jensen's inequality, not timing. Amended to log prices and block bootstraps before any figure was reported; the first-run output is not used anywhere. Ran in seconds on the Mac, so no VM was used.
+
 ## Run order
 
 ```sh
 Rscript research/02_basket.R                 # about 15 minutes; writes data/basket.json and data/h1_daily.csv
 service/.venv/bin/python research/decay.py
+service/.venv/bin/python research/overlay.py
 service/.venv/bin/python research/h1_evaluate.py
 service/.venv/bin/python research/h2_news.py # reads data/raw/gdelt_banks.csv, the output of research/sql/gdelt_banks.sql on BigQuery
 service/.venv/bin/python research/fetch_volume.py   # basket volumes for H3
