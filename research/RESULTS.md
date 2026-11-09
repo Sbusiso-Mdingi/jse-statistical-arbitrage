@@ -6,6 +6,8 @@ Results of the tests in `PROTOCOL.md`, computed 13 October 2026 (H3 the same day
 
 The project is about Standard Bank and Nedbank, and from 9 November 2026 so is the write-up (PROTOCOL.md, "Re-centring"). The instrument is the pair's yearly walk-forward margins, frozen on 31 March 2026, with the score-driven Student t copula that passed H8. Everything here was computed once by `research/pair.py` into `research/results/pair.json`, after the protocol entry. It is reporting only; nothing is a pass mark. The basket sections below stay as the record.
 
+**Margin calibration out of sample.** Computed once on 9 November 2026 for the write-up, from the stored walk-forward history (`data/walkforward.json`): a Kolmogorov-Smirnov test of each traded year's probability transforms against uniform. Standard Bank passes at 5% in all 17 traded years. Nedbank passes in 13 and fails in 2010, 2012, 2015 and 2019 (p 0.022, 0.018, 0.008, 0.023), so it is the weaker margin. Over the validation years together Nedbank passes (p 0.16) and Standard Bank is borderline (p 0.047). The per-fold `pit_ks` in the export is in-sample and is not this test.
+
 **What a signal was worth.** Over a five-day hold, half of capital a side, before costs:
 
 | | Signals | Gross per signal | Standard error | Next session alone |
