@@ -22,7 +22,7 @@ for m in models:
     ks = st.kstest(h, "uniform").pvalue
     fires = float(np.mean(np.abs(h - 0.5) > 0.45))
     dec = np.histogram(h, bins=10, range=(0, 1))[0] / len(h) * 10
-    out[m] = dict(n=T, mean_logc=float(lc.mean()), vs_static_per_day=float(mu), dm_t=float(dm), h_ks_p=float(ks), fires=fires)
+    out[m] = dict(n=T, mean_logc=float(lc.mean()), vs_static_per_day=float(mu), dm_t=float(dm), h_ks_p=float(ks), fires=fires, deciles=[round(float(x), 3) for x in dec])
     print(f"  {m:14s} n {T:4d} mean logc {lc.mean():.4f}  vs static {mu*1e3:+.2f}e-3/day  DM t {dm:5.2f}  h KS p {ks:.3f}  fires {100*fires:4.1f}%  deciles " + " ".join(f"{x:.2f}" for x in dec))
 if len(sys.argv) > 4:
     import json; json.dump(out, open(sys.argv[4], "w"), indent=1)
