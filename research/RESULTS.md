@@ -283,6 +283,12 @@ Only 121 of the 223 close signals show at 16:00 on the same side. The ones that 
 
 On validation the 16:00 signal earns −38.8 bps (se 21.8) against −18.7 for the close signal. The bars end on 2 June 2026, and no signal fell in the covered sessions after the freeze. The headline 23 bps is the instrument's measurement; a trader acting before the close would have had about 12.
 
+## H13: two volatility variants scored only on live sessions
+
+Frozen on 9 November 2026 (`research/models/export_shadow.py`, `data/pair_shadow.json`). Served live at `/api/shadow` from dashboard v10, and scored on signals from 10 November 2026. A, the own-volatility copula, refits the final fold to γ = 0.0069 and η₁ = 0.108, H12's last-fold values. The service's filter matches the research filter (`tests/test_parity.py`). B gates the H8 signal on a VIX above 17.10.
+
+Since the freeze, before scoring began, A's h has correlated 0.999 with H8's: A fired 9 times to H8's 10, and B fired twice. A will hardly ever separate from H8. Verdict at 225 signals each or on 31 December 2030.
+
 ## Run order
 
 ```sh
