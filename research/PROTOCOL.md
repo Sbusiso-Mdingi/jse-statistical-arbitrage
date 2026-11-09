@@ -98,3 +98,14 @@ Added 9 November 2026, after the H5 result was known and before any H6 result wa
 ## Hourly study (descriptive)
 
 Added 9 November 2026. 60-minute bars for SBK and NED from February 2009 to 2 June 2026 (a TradingView export kept in `data/raw/*_60m.csv`, not redistributed, and not refreshable, so nothing built on it can run live). `research/hourly_study.py` reports, on design data only: the realised intraday correlation by month against the yearly copula correlation; its persistence and distribution; and what the SBK minus NED spread does over the rest of the day and the next day after a large move in the first one to four hours. Descriptive, like the decay study; nothing is selected from it until a hypothesis is written below.
+
+## H7: the intraday reversal of the SBK and NED spread
+
+Added 9 November 2026, after the hourly study above and before any H7 return was computed. Rationale: on design data the spread's move over the first two trading hours after the 10:00 bar reverses by about 30 bps over the rest of the day when it is in its top decile (t ≈ −4.6), and the effect grew in 2015 to 2019 while the daily reversal faded. With half of capital on each leg that is about 16 bps a trade against a 20 bps round trip, so the threshold is left to design data.
+
+- Data: the 60-minute bars (`data/raw/sbk_60m.csv`, `ned_60m.csv`; TradingView, bar `time` is the opening time, eight bars a day closing 10:00 to 17:00 SAST). Only days with all eight bars for both names are traded. The data ends 2 June 2026, so post-freeze is 1 April to 2 June 2026 and the rule cannot run live.
+- Signal at the 12:00 close: the divergence D = log(SBK 12:00 / SBK 10:00) − log(NED 12:00 / NED 10:00). Open when |D| exceeds the q-th percentile of |D| over the previous 250 traded days (no same-day data). Direction: short SBK / long NED when D > 0, the reverse when D < 0. Half of capital on each leg. Close at the 17:00 bar close the same day. No overnight positions.
+- Costs: 10 bps per unit of notional traded on each leg, so 20 bps of capital per round trip. The daily net return is the position's return from 12:00 to 17:00 less costs, zero on days without a trade. Sharpe and Sortino are annualised over all trading days, as elsewhere.
+- Grid, on design data (2010 to 2019) only: q in {90, 95, 97.5}. The best by design Sharpe after costs is validated once (2020 to March 2026). Three design evaluations, logged in `research/results/h7_log.json`.
+- Pass mark: validation Sharpe after costs above zero. The paired t-statistic against H1 on validation days is reported, as for H4, and is not a pass mark.
+- Reported but not tested: figures before costs and at 5 bps per leg; the other two grid points in validation; results by year; the number of trades. Bar closes carry bid-ask bounce, which reverses mechanically, so part of the measured reversal is not tradeable; this is read as a limitation, not estimated.
