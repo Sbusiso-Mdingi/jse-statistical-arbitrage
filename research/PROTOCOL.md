@@ -139,3 +139,15 @@ Added 9 November 2026, after the H8 result and before any H9 score was computed.
 ## Amendment: a JSE cost schedule (reporting only)
 
 Added 9 November 2026. Every pre-registered verdict above was set at a flat 10 bps a leg (20 bps of capital a round trip) and stands. `research/costs.py` reports the same positions under a schedule of what trading the position on the JSE costs: brokerage plus 15% VAT, a half bid-ask spread, Strate settlement and the investor protection levy on each of the four executions in a round trip, and securities transfer tax of 0.25% of value on the two purchases (the long leg to open, the short leg to cover), with borrow on the short leg charged daily. Two tiers: institutional (10 bps brokerage, 5 bps half-spread, 1% a year borrow) and retail (25 bps brokerage, as EasyEquities charges). The half-spread and the borrow fee are assumptions and are varied. Also reported under each tier: the original report's exit, closing when the signal is back inside the 50th percentile, on the basket instrument. Nothing is chosen on these figures.
+
+## H10: what each leg gets
+
+Added 9 November 2026, before any H10 figure was computed. The rule sizes the two legs 1:1 by rand. The instrument already produces, every day, a volatility for each leg (the GARCH margins) and a correlation between them (the score-driven copula), so a sizing that minimises the variance of the position's return is arithmetic on numbers it already has. Three sizings, each fixed at entry for the life of the trade (a restart on a new signal re-sizes) and each with gross exposure one so costs compare:
+
+- 1:1, half of capital a leg (the rule as registered);
+- inverse volatility, each leg's weight proportional to one over its GARCH volatility on the entry day;
+- minimum-variance hedge, basket weight to Standard Bank weight in the ratio ρ_t σ_SBK / σ_basket on the entry day, with ρ_t the score-driven correlation.
+
+Pass mark: the minimum-variance hedge gives a lower realised variance of the position's daily gross return than 1:1 in validation (2020 to March 2026), by a Diebold-Mariano test on the daily squared-return differences (Newey-West, five lags) at 5%. This is a hedge-quality test, not a return test; the validation years are spent for return tests.
+
+Reported, not tested: the inverse-volatility sizing; the position's beta to the equal-weight bank return under each sizing; gross return per signal over the five-day hold and the rule's Sharpe under each sizing at the three cost schedules, by period. Expectation stated now: sizing changes the risk of a trade, not its edge, and cannot carry a 21 bps signal over a 59 bps round trip. If H10 passes, the minimum-variance hedge becomes the instrument's sizing in the service and the headline chart, as the copula did after H9.
