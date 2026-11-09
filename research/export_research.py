@@ -120,6 +120,12 @@ instrument = {"pair": "SBK/NED", "copula": "gas_t", "validation_gain_per_day": c
               "h_ks_p": cv["gas_t"]["h_ks_p"], "static_h_ks_p": cv["static_t"]["h_ks_p"], "fires": cv["gas_t"]["fires"],
               "rule": {p: {"after": ct["protocol"][p]["sharpe"], "before": ct["gross"][p]["sharpe"]} for p in ("design", "validation", "post_freeze")},
               "benchmark_walkforward_cagr": pj["benchmark_walkforward_cagr"]}
+# Margin calibration out of sample (RESULTS.md): KS of each traded year's probability transforms against uniform.
+from scipy import stats  # noqa: E402
+_yr = np.array([d.year for d in HISTORY["date"]])
+_years = sorted(set(_yr.tolist()))
+instrument["margin_oos"] = {"years": len(_years), **{k: [int(y) for y in _years if stats.kstest(HISTORY[c][_yr == y], "uniform").pvalue < 0.05]
+                                                    for k, c in (("sbk_fail_years", "u"), ("ned_fail_years", "v"))}}
 costs = {**pj["costs"], "tiers": {k: v for k, v in ct.items() if k != "gross"}}
 redteam = {"lag_next_close_2010_2019_bps": pj["lag"]["lag_1_closes"]["2010_2019"]["bps"],
            "lag_next_close_2021_2026_bps": pj["lag"]["lag_1_closes"]["2021_2026"]["bps"],

@@ -122,6 +122,7 @@ export type Research = {
     dm_t: number;
     h_ks_p: number;
     static_h_ks_p: number;
+    margin_oos?: { years: number; sbk_fail_years: number[]; ned_fail_years: number[] };
     fires: number;
     rule: Record<"design" | "validation" | "post_freeze", { after: number; before: number }>;
     benchmark_walkforward_cagr: number;

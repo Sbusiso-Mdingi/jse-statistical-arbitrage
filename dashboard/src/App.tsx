@@ -86,9 +86,9 @@ function EdgePanel({ r, tier }: { r: Research; tier: CostTier }) {
         to and holding it {e.hold} sessions, for every day the signal fired that year. Whiskers are two standard errors; {e.last_date.slice(0, 4)} is
         partial. From 2010 to 2019 a signal was worth {num(early.bps, 0)} bps on average ({early.n} signals, standard error{" "}
         {num(early.se, 0)}); a round trip costs {num(cost, 0)} bps under the cost schedule chosen below. Since 2021 it has been worth {num(late.bps, 0)} bps (
-        {late.n} signals, standard error {num(late.se, 0)}). The next session alone went from {num(early.next_bps, 0)} bps to {num(late.next_bps, 0)}.
+        {late.n} signals, standard error {num(late.se, 0)}). The first session after a signal was worth {num(early.next_bps, 0)} bps before 2020 and {num(late.next_bps, 0)} since.
         {r.redteam
-          ? ` These figures assume a fill at the close that produced the signal. Filled at the next close, the 2010 to 2019 figure is ${num(r.redteam.lag_next_close_2010_2019_bps, 0)} bps, and at the next morning's 10:00 price ${num(r.redteam.lag_next_10am_2010_2019_bps, 0)}. Against 10,000 random entry sets the 2010 to 2019 figure sits at the ${num(r.redteam.placebo_percentile_2010_2019, 1)}th percentile, and the 2021 onward figure at the ${num(r.redteam.placebo_percentile_2021_2026, 0)}th.`
+          ? ` These figures assume a fill at the close that produced the signal. Filled at the next close, the 2010 to 2019 figure is ${num(r.redteam.lag_next_close_2010_2019_bps, 0)} bps, and filled at 10:00 the next morning, ${num(r.redteam.lag_next_10am_2010_2019_bps, 0)}. Against 10,000 random entry sets the 2010 to 2019 figure sits at the ${num(r.redteam.placebo_percentile_2010_2019, 1)}th percentile, and the 2021 onward figure at the ${num(r.redteam.placebo_percentile_2021_2026, 0)}th.`
           : ""}
       </p>
     </section>
@@ -107,7 +107,7 @@ function LiveRecord({ bt, tier, roundTrip, period }: { bt: PairBacktest; tier: C
         <Metric value={pct(m.total_return)} label="Total return" negative={m.total_return < 0} sub={`${fmtDate(bt.start)} to ${fmtDate(bt.end)}`} />
         <Metric value={num(m.sharpe)} label="Sharpe ratio" negative={m.sharpe < 0} sub={`Sortino ${num(m.sortino)} · annualised`} />
         <Metric value={pct(m.max_drawdown)} label="Max drawdown" negative />
-        <Metric value={String(m.trades)} label="Trades" sub={m.avg_hold_days != null ? `Average ${m.avg_hold_days.toFixed(1)} days held` : undefined} />
+        <Metric value={String(m.trades)} label="Trades" sub={m.avg_hold_days != null ? `Average ${m.avg_hold_days.toFixed(1)} sessions held; a new signal restarts the five` : undefined} />
         <Metric value={pct(m.hit_rate, 0)} label="Winning trades" sub={`In the market ${pct(m.time_in_market, 0)} of days`} />
         <Metric
           value={bt.latest.position > 0 ? "Long SBK" : bt.latest.position < 0 ? "Short SBK" : "Flat"}
@@ -172,7 +172,10 @@ function Instrument({ model, research }: { model: PairModel; research: Research 
         <PitScatter history={model.pit.walkforward} live={model.pit.live} yLabel="Nedbank v → 1" />
         <p className="note">
           Each day’s returns, turned into probabilities by that year’s volatility models. If the models are right these fill the square
-          evenly, and they do across {model.fits.length} yearly fits. The signal is P(Nedbank ≤ today | Standard Bank = today) from the
+          evenly.
+          {ins?.margin_oos
+            ? ` Tested year by year on the days each fit had not seen, Standard Bank's probabilities ${ins.margin_oos.sbk_fail_years.length ? `fail in ${ins.margin_oos.sbk_fail_years.join(", ")}` : `pass in all ${ins.margin_oos.years} years`} and Nedbank's ${ins.margin_oos.ned_fail_years.length ? `fail in ${ins.margin_oos.ned_fail_years.length} (${ins.margin_oos.ned_fail_years.join(", ")})` : `pass in all ${ins.margin_oos.years}`}, so Nedbank is the weaker margin (KS at 5%).`
+            : ""} The signal is P(Nedbank ≤ today | Standard Bank = today) from the
           copula; it fires beyond 0.05 and 0.95.
           {ins && dep.model === "gas_t"
             ? ` The copula’s correlation moves with the data (a score-driven update), chosen over a fixed correlation by a pre-registered forecast test on 2020 to March 2026: ${num(ins.validation_gain_per_day * 1000, 0)} thousandths of a log point a day better, t = ${num(ins.dm_t)}, and the signal is calibrated out of sample (KS p ${num(ins.h_ks_p)} against ${num(ins.static_h_ks_p, 3)} for the fixed correlation).`
@@ -216,7 +219,7 @@ function Instrument({ model, research }: { model: PairModel; research: Research 
               <td>{latest.copula.taildep.lower.toFixed(3)} in each tail</td>
             </tr>
             <tr>
-              <td>PIT uniformity, KS p</td>
+              <td>PIT uniformity, KS p, in sample</td>
               <td>
                 SBK {latest.pit_ks.sbk.toFixed(2)} · NED {latest.pit_ks.ned.toFixed(2)}
               </td>
@@ -256,7 +259,7 @@ export function App({ embedded }: { embedded: boolean }) {
             <h1 className="serif">
               Standard Bank against Nedbank:
               <br />
-              <em>a signal that works, measuring an edge that costs more than it pays.</em>
+              <em>the signal works; the edge costs more than it pays.</em>
             </h1>
           )}
         </div>
