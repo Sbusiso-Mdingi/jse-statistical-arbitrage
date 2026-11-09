@@ -1,0 +1,513 @@
+{
+ "dropped": {
+  "top40": "history starts 2009-01-02, not 2005"
+ },
+ "zar_prints_dropped": 4,
+ "h8_parity_max_abs": 4.999465409438741e-07,
+ "gauges": {
+  "vix": {
+   "by_fold": [
+    {
+     "train_end": "2009-12-31",
+     "gamma": 0.0197,
+     "eta1": 1.077,
+     "beta": 0.6794,
+     "nu_mean": 66.9058,
+     "train_gain": 3.0502
+    },
+    {
+     "train_end": "2010-12-31",
+     "gamma": 0.0185,
+     "eta1": 0.6236,
+     "beta": 0.6936,
+     "nu_mean": 24.1704,
+     "train_gain": 3.0553
+    },
+    {
+     "train_end": "2011-12-31",
+     "gamma": 0.0223,
+     "eta1": 0.4739,
+     "beta": 0.7022,
+     "nu_mean": 18.726,
+     "train_gain": 4.7653
+    },
+    {
+     "train_end": "2012-12-31",
+     "gamma": 0.0213,
+     "eta1": 0.6334,
+     "beta": 0.7357,
+     "nu_mean": 18.0061,
+     "train_gain": 6.1261
+    },
+    {
+     "train_end": "2013-12-31",
+     "gamma": 0.0172,
+     "eta1": 0.6133,
+     "beta": 0.7778,
+     "nu_mean": 19.1204,
+     "train_gain": 5.9421
+    },
+    {
+     "train_end": "2014-12-31",
+     "gamma": 0.0145,
+     "eta1": 0.6025,
+     "beta": 0.7845,
+     "nu_mean": 15.9682,
+     "train_gain": 5.1461
+    },
+    {
+     "train_end": "2015-12-31",
+     "gamma": 0.0099,
+     "eta1": 0.4528,
+     "beta": 0.8442,
+     "nu_mean": 12.3929,
+     "train_gain": 4.1297
+    },
+    {
+     "train_end": "2016-12-31",
+     "gamma": 0.0004,
+     "eta1": 0.3714,
+     "beta": 0.9771,
+     "nu_mean": 11.1522,
+     "train_gain": 1.1315
+    },
+    {
+     "train_end": "2017-12-31",
+     "gamma": -0.0001,
+     "eta1": 0.383,
+     "beta": 0.9854,
+     "nu_mean": 11.0479,
+     "train_gain": 1.2904
+    },
+    {
+     "train_end": "2018-12-31",
+     "gamma": -0.0001,
+     "eta1": 0.3709,
+     "beta": 0.988,
+     "nu_mean": 11.3646,
+     "train_gain": 1.289
+    },
+    {
+     "train_end": "2019-12-31",
+     "gamma": -0.0002,
+     "eta1": 0.3437,
+     "beta": 0.9925,
+     "nu_mean": 10.8485,
+     "train_gain": 1.3083
+    },
+    {
+     "train_end": "2020-12-31",
+     "gamma": 0.0,
+     "eta1": 0.2173,
+     "beta": 0.9939,
+     "nu_mean": 9.7823,
+     "train_gain": 0.5126
+    },
+    {
+     "train_end": "2021-12-31",
+     "gamma": 0.0,
+     "eta1": 0.2097,
+     "beta": 0.9925,
+     "nu_mean": 9.6844,
+     "train_gain": 0.5112
+    },
+    {
+     "train_end": "2022-12-31",
+     "gamma": 0.0,
+     "eta1": 0.1088,
+     "beta": 0.9948,
+     "nu_mean": 8.7593,
+     "train_gain": 0.1731
+    },
+    {
+     "train_end": "2023-12-31",
+     "gamma": -0.0001,
+     "eta1": 0.0539,
+     "beta": 0.9965,
+     "nu_mean": 8.3724,
+     "train_gain": 0.0702
+    },
+    {
+     "train_end": "2024-12-31",
+     "gamma": 0.0002,
+     "eta1": 0.1272,
+     "beta": 0.9921,
+     "nu_mean": 8.4861,
+     "train_gain": 0.3376
+    },
+    {
+     "train_end": "2025-12-31",
+     "gamma": 0.0016,
+     "eta1": 0.1483,
+     "beta": 0.9704,
+     "nu_mean": 8.3635,
+     "train_gain": 1.5175
+    },
+    {
+     "train_end": "2026-03-31",
+     "gamma": 0.0014,
+     "eta1": 0.1719,
+     "beta": 0.9667,
+     "nu_mean": 8.3672,
+     "train_gain": 1.2574
+    }
+   ],
+   "design": {
+    "n": 2581,
+    "gain_per_day_x1000": -1.41,
+    "dm_t": -1.39,
+    "h_ks_p": 0.008
+   },
+   "validation": {
+    "n": 1562,
+    "gain_per_day_x1000": -0.71,
+    "dm_t": -1.22,
+    "h_ks_p": 0.391
+   },
+   "post_freeze": {
+    "n": 131,
+    "gain_per_day_x1000": 1.03,
+    "dm_t": 1.15,
+    "h_ks_p": 0.842
+   }
+  },
+  "zar": {
+   "by_fold": [
+    {
+     "train_end": "2009-12-31",
+     "gamma": 0.0114,
+     "eta1": -0.3273,
+     "beta": 0.6893,
+     "nu_mean": 32.5294,
+     "train_gain": 0.9477
+    },
+    {
+     "train_end": "2010-12-31",
+     "gamma": 0.0109,
+     "eta1": 0.4663,
+     "beta": 0.6963,
+     "nu_mean": 20.8286,
+     "train_gain": 0.9986
+    },
+    {
+     "train_end": "2011-12-31",
+     "gamma": 0.0165,
+     "eta1": 0.1439,
+     "beta": 0.6893,
+     "nu_mean": 15.4724,
+     "train_gain": 2.1102
+    },
+    {
+     "train_end": "2012-12-31",
+     "gamma": 0.0169,
+     "eta1": 0.1523,
+     "beta": 0.7139,
+     "nu_mean": 13.4227,
+     "train_gain": 2.7919
+    },
+    {
+     "train_end": "2013-12-31",
+     "gamma": 0.0137,
+     "eta1": 0.1335,
+     "beta": 0.7784,
+     "nu_mean": 14.7885,
+     "train_gain": 3.0528
+    },
+    {
+     "train_end": "2014-12-31",
+     "gamma": 0.0005,
+     "eta1": 0.4015,
+     "beta": 0.976,
+     "nu_mean": 14.2509,
+     "train_gain": 0.6243
+    },
+    {
+     "train_end": "2015-12-31",
+     "gamma": 0.0029,
+     "eta1": 0.431,
+     "beta": 0.8814,
+     "nu_mean": 12.4374,
+     "train_gain": 1.3234
+    },
+    {
+     "train_end": "2016-12-31",
+     "gamma": 0.0017,
+     "eta1": 0.1948,
+     "beta": 0.9682,
+     "nu_mean": 10.6875,
+     "train_gain": 0.7225
+    },
+    {
+     "train_end": "2017-12-31",
+     "gamma": 0.0006,
+     "eta1": -0.0539,
+     "beta": 0.9853,
+     "nu_mean": 10.0167,
+     "train_gain": 0.3135
+    },
+    {
+     "train_end": "2018-12-31",
+     "gamma": 0.0007,
+     "eta1": -0.0008,
+     "beta": 0.9863,
+     "nu_mean": 10.3988,
+     "train_gain": 0.402
+    },
+    {
+     "train_end": "2019-12-31",
+     "gamma": 0.0002,
+     "eta1": -0.042,
+     "beta": 0.9931,
+     "nu_mean": 9.915,
+     "train_gain": 0.0597
+    },
+    {
+     "train_end": "2020-12-31",
+     "gamma": 0.0001,
+     "eta1": -0.1252,
+     "beta": 0.9947,
+     "nu_mean": 9.3413,
+     "train_gain": 0.181
+    },
+    {
+     "train_end": "2021-12-31",
+     "gamma": 0.0001,
+     "eta1": -0.0765,
+     "beta": 0.9932,
+     "nu_mean": 9.2987,
+     "train_gain": 0.0999
+    },
+    {
+     "train_end": "2022-12-31",
+     "gamma": 0.0001,
+     "eta1": -0.1138,
+     "beta": 0.9954,
+     "nu_mean": 8.6765,
+     "train_gain": 0.1768
+    },
+    {
+     "train_end": "2023-12-31",
+     "gamma": -0.0001,
+     "eta1": -0.1831,
+     "beta": 0.9972,
+     "nu_mean": 8.3847,
+     "train_gain": 0.4888
+    },
+    {
+     "train_end": "2024-12-31",
+     "gamma": 0.0001,
+     "eta1": -0.1146,
+     "beta": 0.9933,
+     "nu_mean": 8.3956,
+     "train_gain": 0.2306
+    },
+    {
+     "train_end": "2025-12-31",
+     "gamma": 0.0005,
+     "eta1": -0.072,
+     "beta": 0.9765,
+     "nu_mean": 8.2384,
+     "train_gain": 0.2185
+    },
+    {
+     "train_end": "2026-03-31",
+     "gamma": 0.0011,
+     "eta1": 0.0848,
+     "beta": 0.9686,
+     "nu_mean": 8.4085,
+     "train_gain": 0.6555
+    }
+   ],
+   "design": {
+    "n": 2581,
+    "gain_per_day_x1000": -1.19,
+    "dm_t": -1.58,
+    "h_ks_p": 0.006
+   },
+   "validation": {
+    "n": 1562,
+    "gain_per_day_x1000": -0.23,
+    "dm_t": -0.57,
+    "h_ks_p": 0.303
+   },
+   "post_freeze": {
+    "n": 131,
+    "gain_per_day_x1000": 0.79,
+    "dm_t": 0.68,
+    "h_ks_p": 0.801
+   }
+  },
+  "own": {
+   "by_fold": [
+    {
+     "train_end": "2009-12-31",
+     "gamma": 0.1017,
+     "eta1": 6712.3012,
+     "beta": 0.0,
+     "nu_mean": 358.4578,
+     "train_gain": 9.1012
+    },
+    {
+     "train_end": "2010-12-31",
+     "gamma": 0.0435,
+     "eta1": 2.2542,
+     "beta": 0.5858,
+     "nu_mean": 161.1036,
+     "train_gain": 10.8434
+    },
+    {
+     "train_end": "2011-12-31",
+     "gamma": 0.0377,
+     "eta1": 1.236,
+     "beta": 0.5935,
+     "nu_mean": 63.6407,
+     "train_gain": 8.1214
+    },
+    {
+     "train_end": "2012-12-31",
+     "gamma": 0.0409,
+     "eta1": 1.7822,
+     "beta": 0.6064,
+     "nu_mean": 90.3768,
+     "train_gain": 13.0731
+    },
+    {
+     "train_end": "2013-12-31",
+     "gamma": 0.0283,
+     "eta1": 1.2817,
+     "beta": 0.701,
+     "nu_mean": 57.6316,
+     "train_gain": 10.5441
+    },
+    {
+     "train_end": "2014-12-31",
+     "gamma": 0.0218,
+     "eta1": 1.2088,
+     "beta": 0.7238,
+     "nu_mean": 42.188,
+     "train_gain": 9.0893
+    },
+    {
+     "train_end": "2015-12-31",
+     "gamma": 0.0151,
+     "eta1": 0.9179,
+     "beta": 0.7916,
+     "nu_mean": 22.1533,
+     "train_gain": 7.0166
+    },
+    {
+     "train_end": "2016-12-31",
+     "gamma": 0.0054,
+     "eta1": 0.5309,
+     "beta": 0.9321,
+     "nu_mean": 12.9477,
+     "train_gain": 2.9654
+    },
+    {
+     "train_end": "2017-12-31",
+     "gamma": 0.0048,
+     "eta1": 0.4251,
+     "beta": 0.9379,
+     "nu_mean": 11.7672,
+     "train_gain": 2.004
+    },
+    {
+     "train_end": "2018-12-31",
+     "gamma": 0.0042,
+     "eta1": 0.4514,
+     "beta": 0.9519,
+     "nu_mean": 12.5735,
+     "train_gain": 2.6684
+    },
+    {
+     "train_end": "2019-12-31",
+     "gamma": 0.0012,
+     "eta1": 0.3031,
+     "beta": 0.9861,
+     "nu_mean": 10.9109,
+     "train_gain": 1.37
+    },
+    {
+     "train_end": "2020-12-31",
+     "gamma": 0.0021,
+     "eta1": 0.1588,
+     "beta": 0.9826,
+     "nu_mean": 9.8658,
+     "train_gain": 1.5858
+    },
+    {
+     "train_end": "2021-12-31",
+     "gamma": 0.0033,
+     "eta1": 0.1793,
+     "beta": 0.9722,
+     "nu_mean": 9.8815,
+     "train_gain": 2.1871
+    },
+    {
+     "train_end": "2022-12-31",
+     "gamma": 0.0012,
+     "eta1": 0.0505,
+     "beta": 0.989,
+     "nu_mean": 8.7972,
+     "train_gain": 0.9147
+    },
+    {
+     "train_end": "2023-12-31",
+     "gamma": 0.0005,
+     "eta1": 0.0058,
+     "beta": 0.9941,
+     "nu_mean": 8.3814,
+     "train_gain": 0.3485
+    },
+    {
+     "train_end": "2024-12-31",
+     "gamma": 0.0028,
+     "eta1": 0.0726,
+     "beta": 0.9745,
+     "nu_mean": 8.6635,
+     "train_gain": 2.6054
+    },
+    {
+     "train_end": "2025-12-31",
+     "gamma": 0.0052,
+     "eta1": 0.0707,
+     "beta": 0.9505,
+     "nu_mean": 8.5526,
+     "train_gain": 5.5089
+    },
+    {
+     "train_end": "2026-03-31",
+     "gamma": 0.0069,
+     "eta1": 0.1076,
+     "beta": 0.9396,
+     "nu_mean": 8.734,
+     "train_gain": 8.0364
+    }
+   ],
+   "design": {
+    "n": 2581,
+    "gain_per_day_x1000": -6.21,
+    "dm_t": -2.78,
+    "h_ks_p": 0.001
+   },
+   "validation": {
+    "n": 1562,
+    "gain_per_day_x1000": 3.97,
+    "dm_t": 2.12,
+    "h_ks_p": 0.24
+   },
+   "post_freeze": {
+    "n": 131,
+    "gain_per_day_x1000": 4.45,
+    "dm_t": 1.08,
+    "h_ks_p": 0.736
+   }
+  }
+ },
+ "h8_h_ks_p": {
+  "design": 0.019,
+  "validation": 0.313
+ },
+ "chosen": null,
+ "verdict": "stopped at design: no gauge beat H8 by DM t > 2"
+}

@@ -251,6 +251,24 @@ Net figures are taken at the signal's own close (gross 22.8 bps before 2020 and 
 
 The registered expectation, a round trip of 15 to 30 bps through either derivative with 2010–19 near breakeven, held only for institutional futures at the narrow end of the assumed spreads. The JSE's own futures fee is 0.55 bps, but no SBK or NED futures traded on 6 November 2026, so the price a dealer would quote is the real cost and it is not published. Retail futures and CFDs cost as much as cash or more, because the commission and the spread the market maker builds in replace the transfer tax. No route makes the rule pay since 2021, because the edge itself is below zero before costs.
 
+## H12: a market volatility gauge in the pair's copula
+
+`research/models/h12_gauge.py`, `research/results/h12.json`. **Stopped at design: no gauge beat H8.** The Top 40 gauge was dropped before fitting, because Yahoo's Satrix 40 history starts in January 2009, not 2005. Four rand prints were dropped as one-day spikes that reverse. The refitted H8 reproduces the stored H8 scores to 5 × 10⁻⁷.
+
+| Gauge | Design gain a day (×10⁻³) | DM t | Validation gain | DM t | Post-freeze gain | DM t |
+| --- | --- | --- | --- | --- | --- | --- |
+| VIX | −1.41 | −1.39 | −0.71 | −1.22 | +1.03 | 1.15 |
+| Rand volatility | −1.19 | −1.58 | −0.23 | −0.57 | +0.79 | 0.68 |
+| The pair's own volatility (control) | −6.21 | −2.78 | +3.97 | 2.12 | +4.45 | 1.08 |
+
+Every gauge improves the fit on its own training years, by 0.1 to 13 log points over several thousand days, and loses on the year that follows. Two things the fitted coefficients show:
+- **The correlation channel.** The gauge's effect on correlation (γ) is clearly positive only in the early, short-sample folds. From 2016 on it is near zero, and the score-driven correlation's own persistence (β about 0.99) carries what the gauge would add.
+- **The tail channel.** η₁ is positive, so a higher gauge means more degrees of freedom: thinner joint tails, not heavier ones. Each bank's GARCH margin already scales for volatility, so after that standardisation the joint extremes are no heavier when markets are volatile.
+
+The idea that the two banks' tails should widen with market volatility is absorbed by the margins; it is not missing from the copula.
+
+The registered expectation was wrong in direction. VIX and the control lower the design score; they do not raise it. The pair's own gauge scores DM t = 2.12 on validation, but the rule chose on design and it lost there (t = −2.78), so it is not adopted. Choosing it now would be choosing on validation. The page and the service are unchanged.
+
 ## Run order
 
 ```sh
@@ -273,6 +291,7 @@ service/.venv/bin/python research/hourly_study.py  # descriptive; needs data/raw
 service/.venv/bin/python research/h7_intraday.py   # design grid, then the one validation run; writes research/results/h7.json
 service/.venv/bin/python research/h11_ned_repair.py design   # under a minute; writes research/results/h11.json
 service/.venv/bin/python research/derivative_costs.py        # seconds; writes research/results/derivative_costs.json
+service/.venv/bin/python research/models/h12_gauge.py         # about three minutes on eight cores; writes research/results/h12.json
 service/.venv/bin/python research/models/pairdata.py && service/.venv/bin/python research/models/margins_py.py && Rscript research/08_margins_r.R   # margin models
 service/.venv/bin/python research/models/copulas_py.py && service/.venv/bin/python research/models/compare.py 2020-01-01 2026-04-01 validation research/results/copulas_validation.json && service/.venv/bin/python research/models/h8_edge.py
 service/.venv/bin/python research/models/h9_basket_gas.py   # about 10 minutes on 8 cores
