@@ -19,6 +19,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import basket as bk
 from . import data as market
+from . import pair as pr
 from .model import MarginalState, conditional_probabilities, filter_marginal
 from .strategy import Params, backtest, metrics, window
 
@@ -41,6 +42,7 @@ walkforward = json.loads((DATA / "walkforward.json").read_text())
 final = json.loads((DATA / "model_final.json").read_text())
 _GAS = DATA / "basket_gas.json"
 BASKET = bk.Basket(json.loads((DATA / "basket.json").read_text()), json.loads(_GAS.read_text()) if _GAS.exists() else None)
+PAIR = pr.Pair(walkforward, final, json.loads((DATA / "pair_gas.json").read_text()))
 FREEZE = date.fromisoformat(walkforward["freeze"])
 VOL_WINDOW = walkforward["vol_window"]
 folds = {f["id"]: f for f in walkforward["folds"]}
@@ -253,6 +255,28 @@ def _basket_run(period: str, p: bk.BasketParams) -> dict:
     return bk.run(BASKET.rows("all", cache.get().basket_rows), p, period)
 
 
+def _pair_run(period: str, p: bk.BasketParams) -> dict:
+    return bk.run(PAIR.rows(PAIR.live(cache.get().rows)), p, period, other="NED", strategy="pair")
+
+
+@app.get("/api/pair/backtest")
+def api_pair_backtest(
+    period: str = Query("live", pattern="^(live|walkforward|all)$"),
+    entry: int = 90,
+    hold: int = 5,
+    cost_bps: float = 10.0,
+    costs: str = "protocol",
+):
+    """The instrument: SBK against NED on the score-driven copula, five-day hold."""
+    return JSONResponse(_clean(_pair_run(period, bk.BasketParams(entry, hold, cost_bps, costs).clamp())))
+
+
+@app.get("/api/pair/model")
+def api_pair_model():
+    live = PAIR.live(cache.get().rows)
+    return JSONResponse(_clean({"status": _status(), **pr.model_summary(PAIR, live)}))
+
+
 @app.get("/api/basket/backtest")
 def api_basket_backtest(
     period: str = Query("live", pattern="^(live|walkforward|all)$"),
@@ -277,21 +301,22 @@ def api_research():
 
 @app.get("/api/summary")
 def api_summary():
-    """Pre-registered strategies, used by the portfolio case study. The basket is the headline."""
+    """The instrument's record, used by the portfolio case study: SBK against NED on the score-driven copula."""
     def block(r):
         return {"start": r["start"], "end": r["end"], **r["metrics"]}
 
-    bp, pp = bk.BasketParams(), Params()
-    live = _basket_run("live", bp)
+    bp = bk.BasketParams()
+    live = _pair_run("live", bp)
+    inst = bk.BasketParams(costs="institutional")
     return JSONResponse(
         _clean(
             {
-                "strategy": "basket",
+                "strategy": "pair",
                 "params": bp.__dict__,
                 "live": block(live),
-                "walkforward": block(_basket_run("walkforward", bp)),
+                "walkforward": block(_pair_run("walkforward", bp)),
+                "live_institutional": block(_pair_run("live", inst)),
                 "latest": live["latest"],
-                "pair": {"params": pp.__dict__, "live": block(run("live", pp)), "walkforward": block(run("walkforward", pp))},
                 "status": _status(),
             }
         )

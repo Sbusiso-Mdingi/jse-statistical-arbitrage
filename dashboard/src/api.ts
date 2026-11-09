@@ -169,7 +169,15 @@ export type Research = {
     components_institutional: Record<string, number>;
     hold_until_normal: { avg_days_held: number; trades: number; tiers: Record<CostTier, { full: Perf3 }> };
   };
-  redteam?: { lag_next_close_2010_2019_bps: number; lag_next_close_2021_2026_bps: number; placebo_percentile_2010_2019: number; placebo_percentile_2021_2026: number };
+  redteam?: {
+    lag_next_close_2010_2019_bps: number;
+    lag_next_close_2021_2026_bps: number;
+    lag_next_10am_2010_2019_bps: number;
+    placebo_percentile_2010_2019: number;
+    placebo_percentile_2021_2026: number;
+    loo_best_year: number;
+    loo_without_best_2010_2019_bps: number;
+  };
   instrument?: {
     copula: string;
     validation_gain_per_day: number;
@@ -178,7 +186,7 @@ export type Research = {
     static_h_ks_p: number;
     fires: number;
     rule: Record<"design" | "validation" | "post_freeze", { after: number; before: number }>;
-    rule_static: Record<"design" | "validation" | "post_freeze", { after: number; before: number }>;
+    benchmark_walkforward_cagr: number;
   };
 };
 
@@ -194,4 +202,19 @@ export const getBasketBacktest = (period: Period, p: BasketParams, signal?: Abor
     signal,
   );
 export const getBasketModel = () => getJson<BasketModel>("/api/basket/model");
+
+/** The instrument: Standard Bank against Nedbank on the score-driven copula. Same rule and costs as the basket endpoints. */
+export type PairModel = {
+  status: Model["status"];
+  fits: { train_end: string; sbk: ShortSpec; ned: ShortSpec; copula: { family: number; name: string; par: number; par2: number; tau: number } }[];
+  latest: { train_end: string; sbk: ShortSpec; ned: ShortSpec; copula: Model["folds"][number]["copula"]; pit_ks: { sbk: number; ned: number } };
+  pit: { walkforward: { u: number[]; v: number[] }; live: { u: number[]; v: number[] } };
+  dependence: { model: "gas_t"; omega: number; beta: number; alpha: number; nu: number; rho_train_end: number; rho_live: number | null };
+};
+export const getPairBacktest = (period: Period, p: BasketParams, signal?: AbortSignal) =>
+  getJson<BasketBacktest>(
+    `/api/pair/backtest?${new URLSearchParams({ period, entry: String(p.entry), hold: String(p.hold), cost_bps: String(p.cost_bps), costs: p.costs })}`,
+    signal,
+  );
+export const getPairModel = () => getJson<PairModel>("/api/pair/model");
 export const getResearch = () => getJson<Research>("/api/research");

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import {
   BASKET_DEFAULTS,
-  getBasketBacktest,
-  getBasketModel,
+  getPairBacktest,
+  getPairModel,
   getResearch,
   type BasketBacktest,
-  type BasketModel,
+  type PairModel,
   type BasketParams,
   type CostTier,
   type Period,
@@ -49,7 +49,7 @@ function useBacktest(period: Period, params: BasketParams) {
   const debounced = useDebounced(params, 200);
   useEffect(() => {
     const ctl = new AbortController();
-    getBasketBacktest(period, debounced, ctl.signal)
+    getPairBacktest(period, debounced, ctl.signal)
       .then((r) => {
         setBt(r);
         setError(null);
@@ -68,7 +68,6 @@ function EdgePanel({ r, tier }: { r: Research; tier: CostTier }) {
   const cost = r.costs?.tiers[tier].round_trip_bps ?? e.cost_round_trip_bps;
   const early = e["2010_2019"];
   const late = e["2021_2026"];
-  const covid = e.by_year.find((y) => y.year === 2020);
   return (
     <section className="panel">
       <div className="panel-head">
@@ -87,10 +86,9 @@ function EdgePanel({ r, tier }: { r: Research; tier: CostTier }) {
         to and holding it {e.hold} sessions, for every day the signal fired that year. Whiskers are two standard errors; {e.last_date.slice(0, 4)} is
         partial. From 2010 to 2019 a signal was worth {num(early.bps, 0)} bps on average ({early.n} signals, standard error{" "}
         {num(early.se, 0)}); a round trip costs {num(cost, 0)} bps under the cost schedule chosen below. Since 2021 it has been worth {num(late.bps, 0)} bps (
-        {late.n} signals). {covid ? `The one year that paid, 2020, averaged ${num(covid.bps, 0)} bps on ${covid.n} signals.` : ""} The next
-        session alone went from {num(early.next_bps, 0)} bps to {num(late.next_bps, 0)}.
+        {late.n} signals, standard error {num(late.se, 0)}). The next session alone went from {num(early.next_bps, 0)} bps to {num(late.next_bps, 0)}.
         {r.redteam
-          ? ` These figures assume a fill at the close that produced the signal. Filled at the next close, the 2010 to 2019 figure is ${num(r.redteam.lag_next_close_2010_2019_bps, 0)} bps. Against 10,000 random entry sets the 2010 to 2019 figure sits at the ${num(r.redteam.placebo_percentile_2010_2019, 1)}th percentile, and the 2021 onward figure at the ${num(r.redteam.placebo_percentile_2021_2026, 0)}th.`
+          ? ` These figures assume a fill at the close that produced the signal. Filled at the next close, the 2010 to 2019 figure is ${num(r.redteam.lag_next_close_2010_2019_bps, 0)} bps, and at the next morning's 10:00 price ${num(r.redteam.lag_next_10am_2010_2019_bps, 0)}. Against 10,000 random entry sets the 2010 to 2019 figure sits at the ${num(r.redteam.placebo_percentile_2010_2019, 1)}th percentile, and the 2021 onward figure at the ${num(r.redteam.placebo_percentile_2021_2026, 0)}th.`
           : ""}
       </p>
     </section>
@@ -114,7 +112,7 @@ function LiveRecord({ bt, tier, roundTrip, period }: { bt: BasketBacktest; tier:
         <Metric
           value={bt.latest.position > 0 ? "Long SBK" : bt.latest.position < 0 ? "Short SBK" : "Flat"}
           label={`Position into the next session`}
-          sub={`P(basket | SBK) ${bt.latest.h.toFixed(3)} at ${fmtDate(bt.latest.date)}`}
+          sub={`P(NED | SBK) ${bt.latest.h.toFixed(3)} at ${fmtDate(bt.latest.date)}`}
         />
       </section>
       <p className="note">
@@ -122,7 +120,7 @@ function LiveRecord({ bt, tier, roundTrip, period }: { bt: BasketBacktest; tier:
           ? `${Math.round(m.years * 12)} months of unseen sessions so far. At this volatility a strategy with no edge would end this many months between ${pct(-band)} and ${pct(band)} about 95% of the time, so the record cannot yet tell the signal from noise. `
           : ""}
         Net of {TIER_LABEL[tier].toLowerCase()}, about {num(roundTrip, 0)} bps of capital a round trip, each side sized at half of capital. Holding half
-        Standard Bank and half the basket returned {pct(bt.benchmark.total_return)} over the same dates.
+        Standard Bank and half Nedbank returned {pct(bt.benchmark.total_return)} over the same dates.
       </p>
       <section className="panel">
         <div className="panel-head">
@@ -139,7 +137,7 @@ function LiveRecord({ bt, tier, roundTrip, period }: { bt: BasketBacktest; tier:
               Buy and hold
             </label>
             <span style={{ color: "var(--primary)" }}>■ Long SBK</span>
-            <span style={{ color: "#b58b3c" }}>■ Long basket</span>
+            <span style={{ color: "#b58b3c" }}>■ Long NED</span>
           </div>
         </div>
         <EquityChart
@@ -155,7 +153,7 @@ function LiveRecord({ bt, tier, roundTrip, period }: { bt: BasketBacktest; tier:
   );
 }
 
-function Instrument({ model, research }: { model: BasketModel; research: Research | null }) {
+function Instrument({ model, research }: { model: PairModel; research: Research | null }) {
   const latest = model.latest;
   const dep = model.dependence;
   const ins = research?.instrument;
@@ -171,18 +169,18 @@ function Instrument({ model, research }: { model: BasketModel; research: Researc
             <span style={{ color: "var(--primary)" }}>● Unseen days</span>
           </div>
         </div>
-        <PitScatter history={model.pit.walkforward} live={model.pit.live} yLabel="Basket v → 1" />
+        <PitScatter history={model.pit.walkforward} live={model.pit.live} yLabel="Nedbank v → 1" />
         <p className="note">
-          Each day’s returns, turned into probabilities by that month’s volatility models. If the models are right these fill the square
-          evenly, and they do: the probability transforms pass uniformity tests in every one of {model.fits.length} monthly fits. The signal
-          is P(basket ≤ today | Standard Bank = today) from the copula; it fires beyond 0.05 and 0.95.
+          Each day’s returns, turned into probabilities by that year’s volatility models. If the models are right these fill the square
+          evenly, and they do across {model.fits.length} yearly fits. The signal is P(Nedbank ≤ today | Standard Bank = today) from the
+          copula; it fires beyond 0.05 and 0.95.
           {ins && dep.model === "gas_t"
             ? ` The copula’s correlation moves with the data (a score-driven update), chosen over a fixed correlation by a pre-registered forecast test on 2020 to March 2026: ${num(ins.validation_gain_per_day * 1000, 0)} thousandths of a log point a day better, t = ${num(ins.dm_t)}, and the signal is calibrated out of sample (KS p ${num(ins.h_ks_p)} against ${num(ins.static_h_ks_p, 3)} for the fixed correlation).`
             : ""}
         </p>
       </div>
       <div>
-        <p className="eyebrow">Latest fit, to {fmtDate(latest.train_end)}</p>
+        <p className="eyebrow">Final fit, frozen {fmtDate(latest.train_end)}</p>
         <table style={{ marginTop: 14 }}>
           <tbody>
             <tr>
@@ -190,8 +188,8 @@ function Instrument({ model, research }: { model: BasketModel; research: Researc
               <td>{specLabel(latest.sbk)}</td>
             </tr>
             <tr>
-              <td>Basket</td>
-              <td>{specLabel(latest.bsk)}</td>
+              <td>Nedbank</td>
+              <td>{specLabel(latest.ned)}</td>
             </tr>
             <tr>
               <td>Copula</td>
@@ -220,16 +218,15 @@ function Instrument({ model, research }: { model: BasketModel; research: Researc
             <tr>
               <td>PIT uniformity, KS p</td>
               <td>
-                SBK {latest.pit_ks.sbk.toFixed(2)} · basket {latest.pit_ks.bsk.toFixed(2)}
+                SBK {latest.pit_ks.sbk.toFixed(2)} · NED {latest.pit_ks.ned.toFixed(2)}
               </td>
             </tr>
           </tbody>
         </table>
         <p className="note">
-          The basket is an equal-weight, daily-rebalanced mix of FirstRand, Absa, Nedbank and Capitec. Specifications come from 36
-          ARMA-GARCH candidates by BIC each December; parameters and the copula (Student t in every fit) are re-estimated at
-          every month end and trade only the following month. Standard Bank and Nedbank are not cointegrated, which is why dependence
-          is modelled day to day rather than through a long-run spread.
+          Specifications come from 36 ARMA-GARCH candidates by BIC each December, fitted on data to that year end and used only for
+          the following year. The final fit was frozen on 31 March 2026, and every session since is filtered forward from it. Standard
+          Bank and Nedbank are not cointegrated, which is why dependence is modelled day to day rather than through a long-run spread.
         </p>
       </div>
     </section>
@@ -241,24 +238,23 @@ export function App({ embedded }: { embedded: boolean }) {
   const [tier, setTier] = useState<CostTier>("protocol");
   const params: BasketParams = { ...BASKET_DEFAULTS, costs: tier };
   const { bt, error } = useBacktest(period, params);
-  const [model, setModel] = useState<BasketModel | null>(null);
+  const [model, setModel] = useState<PairModel | null>(null);
   const [research, setResearch] = useState<Research | null>(null);
   useEffect(() => {
-    getBasketModel().then(setModel).catch(() => undefined);
+    getPairModel().then(setModel).catch(() => undefined);
     getResearch().then(setResearch).catch(() => undefined);
   }, []);
   const status = model?.status;
-  const h1 = research?.tests.find((t) => t.id === "h1");
   const ins = research?.instrument;
 
   return (
     <main className="preview">
       <header className="head">
         <div>
-          <p className="eyebrow">Live record · JSE banks · one copula-GARCH signal</p>
+          <p className="eyebrow">Live record · Standard Bank and Nedbank · one copula-GARCH signal</p>
           {!embedded && (
             <h1 className="serif">
-              Standard Bank against its peers:
+              Standard Bank against Nedbank:
               <br />
               <em>a signal that works, measuring an edge that costs more than it pays.</em>
             </h1>
@@ -282,18 +278,11 @@ export function App({ embedded }: { embedded: boolean }) {
           <h2 className="serif">
             The record, <em>after costs</em>
           </h2>
-          {ins ? (
+          {ins && (
             <span className="legend">
-              Validation Sharpe {num(ins.rule.validation.before)} before costs, {num(ins.rule.validation.after)} after · the rule passed its
-              pre-registered mark at {num(ins.rule_static.validation.after)} on the fixed-correlation copula
+              Validation Sharpe {num(ins.rule.validation.before)} before costs, {num(ins.rule.validation.after)} after at 10 bps a leg · a measurement,
+              not a validated strategy
             </span>
-          ) : (
-            h1 &&
-            h1.before_costs && (
-              <span className="legend">
-                Validation Sharpe {num(h1.before_costs.validation.sharpe)} before costs, {num(h1.validation.sharpe)} after
-              </span>
-            )
           )}
         </div>
         <div className="tabs" role="tablist">
@@ -310,7 +299,7 @@ export function App({ embedded }: { embedded: boolean }) {
               {(Object.keys(TIER_LABEL) as CostTier[]).map((t) => (
                 <button key={t} aria-pressed={tier === t} onClick={() => setTier(t)}>
                   {TIER_LABEL[t]}
-                  {research?.costs ? <span>{num(research.costs.tiers[t].round_trip_bps, 0)} bps a round trip</span> : null}
+                  {research?.costs ? <span>{" · "}{num(research.costs.tiers[t].round_trip_bps, 0)} bps a round trip</span> : null}
                 </button>
               ))}
             </div>
@@ -339,19 +328,18 @@ export function App({ embedded }: { embedded: boolean }) {
         <ul className="method">
           <li>
             <strong>Data</strong>
-            Daily adjusted closes for Standard Bank, FirstRand, Absa, Nedbank and Capitec from Yahoo Finance since 2005, VIX from FRED.
-            Single-day bad prints that reverse are removed.
+            Daily adjusted closes for Standard Bank and Nedbank from Yahoo Finance since 2005, VIX from FRED. Single-day bad prints that
+            reverse are removed.
           </li>
           <li>
             <strong>No look-ahead</strong>
-            Every fit uses only data before the month it trades. A position set at today’s close earns tomorrow’s return.
+            Every fit uses only data before the year it trades. A position set at today’s close earns tomorrow’s return.
           </li>
           <li>
             <strong>Pre-registration</strong>
-            The rule was fixed on 2010 to 2019 and validated once on 2020 to March 2026 against a pass mark written down beforehand.
-            Nine later trading rules went through the same gate: news filters, the classic z-score trade, learned exits, a direct edit to the
-            fitted copula, an exit network and an intraday rule. Four failed and five passed within noise; none earned a place here. The protocol
-            and every result are in the repository.
+            The copula was chosen by a forecast test written down before it was run. Every trading rule tried on the pair went through the
+            same gate: the report’s rule, a five-day hold, news filters, the classic z-score trade, an intraday rule and others. None passed
+            by more than noise, and none earned a place here. The protocol and every result are in the repository.
           </li>
           <li>
             <strong>Unseen data</strong>
@@ -359,8 +347,8 @@ export function App({ embedded }: { embedded: boolean }) {
           </li>
         </ul>
         <p className="footer-note">
-          Backtest and live paper record, not investment advice. Costs cover brokerage on every leg; slippage, short borrow fees and
-          securities transfer tax are not modelled. Extended from a group project with Matlhatse Makgopa.
+          Backtest and live paper record, not investment advice. Costs follow the schedule chosen above; the half-spread and borrow are
+          assumptions. Extended from a group project with Matlhatse Makgopa.
         </p>
       </section>
     </main>

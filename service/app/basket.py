@@ -160,7 +160,7 @@ def trading_costs(pos: np.ndarray, p: BasketParams) -> np.ndarray:
     return executions * per_exec + purchases * stt + borrow
 
 
-def run(rows: dict, p: BasketParams, period: str = "all") -> dict:
+def run(rows: dict, p: BasketParams, period: str = "all", other: str = "basket", strategy: str = "basket") -> dict:
     """Run on the full record, then report the period, keeping positions carried into it."""
     pos = positions(rows["h"], p)
     rs, rb = rows["r_sbk"], rows["r_bsk"]
@@ -170,7 +170,7 @@ def run(rows: dict, p: BasketParams, period: str = "all") -> dict:
     w = window(rows["date"], keep, pos, net, 0.5 * (rs + rb))
     dates, pos, h = w["dates"], w["position"], rows["h"][w["slice"]]
     return {
-        "strategy": "basket",
+        "strategy": strategy,
         "period": period,
         "params": {**p.__dict__, "round_trip_bps": round(p.round_trip_bps(), 1)},
         "start": dates[0],
@@ -190,7 +190,7 @@ def run(rows: dict, p: BasketParams, period: str = "all") -> dict:
             {
                 "open": rows["date"][t["open"]],
                 "close": rows["date"][t["close"]] if t["close"] is not None else None,
-                "side": "Long SBK / short basket" if t["side"] > 0 else "Short SBK / long basket",
+                "side": f"Long SBK / short {other}" if t["side"] > 0 else f"Short SBK / long {other}",
                 "return": t["ret"],
             }
             for t in w["trades"]

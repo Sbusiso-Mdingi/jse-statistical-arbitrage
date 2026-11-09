@@ -58,3 +58,19 @@ def test_gas_copula_matches_research():
     pairs = [(h, research[d.isoformat()]) for d, h in zip(live["date"], live["h"]) if d.isoformat() in research]
     assert len(pairs) >= 5
     assert max(abs(a - b_) for a, b_ in pairs) < 1e-6
+
+
+def test_pair_gas_matches_research():
+    """The service's pair h on post-freeze sessions must equal the research GAS filter (copulas_py.csv)."""
+    import csv
+
+    from app.main import PAIR, live_rows, snapshot_rows
+
+    rows = PAIR.live(live_rows(snapshot_rows()))
+    ref = {r["date"]: float(r["h"]) for r in csv.DictReader(open(ROOT / "research" / "results" / "copulas_py.csv")) if r["model"] == "gas_t"}
+    got = [(h, ref[d.isoformat()]) for d, h in zip(rows["date"], rows["h"]) if d.isoformat() in ref]
+    assert len(got) > 100
+    a = np.array(got)
+    np.testing.assert_allclose(a[:, 0], a[:, 1], atol=1e-7)
+    hist = PAIR.history
+    assert hist["date"][-1].isoformat() == final["train_end"]

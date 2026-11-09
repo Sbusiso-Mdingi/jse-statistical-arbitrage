@@ -105,19 +105,27 @@ cointegration = {
     "breaks": c["bai_perron"]["breaks"],
     "segments": [{"from": s["from"], "to": s["to"], "slope": round(s["slope"], 2)} for s in c["bai_perron"]["segments"]],
 }
-r_ = json.load(open("research/results/redteam.json"))
-cv = json.load(open("research/results/copulas_basket_validation.json"))
-h9 = json.load(open("research/results/h9_rule.json"))
-instrument = {"copula": "gas_t", "validation_gain_per_day": cv["gas_t"]["vs_static_per_day"], "dm_t": cv["gas_t"]["dm_t"],
+# The instrument is SBK against NED on the score-driven copula (PROTOCOL.md, "Re-centring"); the basket is kept as a record.
+pj = json.load(open("research/results/pair.json"))
+cv = json.load(open("research/results/copulas_validation.json"))
+ct = pj["costs"]["tiers"]
+instrument = {"pair": "SBK/NED", "copula": "gas_t", "validation_gain_per_day": cv["gas_t"]["vs_static_per_day"], "dm_t": cv["gas_t"]["dm_t"],
               "h_ks_p": cv["gas_t"]["h_ks_p"], "static_h_ks_p": cv["static_t"]["h_ks_p"], "fires": cv["gas_t"]["fires"],
-              "rule": {p: {"after": h9["gas"][n]["after_costs"]["sharpe"], "before": h9["gas"][n]["before_costs"]["sharpe"]} for p, n in (("design", "design"), ("validation", "validation"), ("post_freeze", "post-freeze"))},
-              "rule_static": {p: {"after": h9["static"][n]["after_costs"]["sharpe"], "before": h9["static"][n]["before_costs"]["sharpe"]} for p, n in (("design", "design"), ("validation", "validation"), ("post_freeze", "post-freeze"))}}
-out = {"periods": PERIODS, "tests": tests, "decay": json.load(open("data/decay.json")), "cointegration": cointegration, "edge": json.load(open("research/results/edge.json")), "instrument": instrument,
-       "costs": json.load(open("research/results/costs.json")),
-       "redteam": {"lag_next_close_2010_2019_bps": r_["lag"]["basket"]["lag_1_closes"]["per_signal"]["2010_2019"]["bps"],
-                   "lag_next_close_2021_2026_bps": r_["lag"]["basket"]["lag_1_closes"]["per_signal"]["2021_2026"]["bps"],
-                   "placebo_percentile_2010_2019": r_["placebo"]["periods"]["2010_2019"]["percentile"],
-                   "placebo_percentile_2021_2026": r_["placebo"]["periods"]["2021_2026"]["percentile"]}}
+              "rule": {p: {"after": ct["protocol"][p]["sharpe"], "before": ct["gross"][p]["sharpe"]} for p in ("design", "validation", "post_freeze")},
+              "benchmark_walkforward_cagr": pj["benchmark_walkforward_cagr"]}
+costs = {**pj["costs"], "tiers": {k: v for k, v in ct.items() if k != "gross"}}
+redteam = {"lag_next_close_2010_2019_bps": pj["lag"]["lag_1_closes"]["2010_2019"]["bps"],
+           "lag_next_close_2021_2026_bps": pj["lag"]["lag_1_closes"]["2021_2026"]["bps"],
+           "lag_next_10am_2010_2019_bps": pj["lag"]["next_10am_bar"]["next_open_to_close"]["2010_2019"]["bps"],
+           "placebo_percentile_2010_2019": pj["placebo"]["2010_2019"]["percentile"],
+           "placebo_percentile_2021_2026": pj["placebo"]["2021_2026"]["percentile"],
+           "loo_best_year": pj["loo"]["best_design_year"], "loo_without_best_2010_2019_bps": pj["loo"]["without"][str(pj["loo"]["best_design_year"])]["2010_2019"]}
+ov = json.load(open("research/results/overlay.json"))["pair_next_morning"]["W10"]
+out = {"periods": PERIODS, "tests": tests, "decay": json.load(open("data/decay.json")), "cointegration": cointegration,
+       "edge": pj["edge"], "edge_static": pj["edge_static"], "instrument": instrument, "costs": costs, "redteam": redteam,
+       "sizing": {k: {"mean_sbk_weight": v["mean_sbk_weight"], **v["periods"]["validation"]} for k, v in pj["sizing"].items()},
+       "overlay": {k: ov[k] for k in ("2010_2019", "2021_2026")},
+       "basket": {"edge": json.load(open("research/results/edge.json"))}}
 json.dump(out, open("data/research.json", "w"), separators=(",", ":"))
 for t in tests:
     print(f"{t['name']:30s} design {t['design']['sharpe']:5.2f}  validation {t['validation']['sharpe']:5.2f}  post {t['post_freeze']['sharpe']:5.2f}  passed {t.get('passed')}")
