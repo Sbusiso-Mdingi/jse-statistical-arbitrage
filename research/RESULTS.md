@@ -233,6 +233,24 @@ No edit fixes a single failing year. The rule chose the shape edit (all tie on f
 
 The diagnosis says why. In 2010 the miss is scale: the realised variance of the standardised residual was 0.63, the model expecting post-crisis volatility that did not come; the training residuals' variance is 0.995 in that fold, so nothing set from training data can see it. In 2015 and 2019 the miss is location: 60% and 57% of days fell below the forecast median, the years Nedbank drifted down (December 2015's rand and finance-minister shock; 2019's derating). 2012 is a little of both. These are changes between training and test, not a flaw in the fitted parameters. In the weight-editing study the edit worked where there was a built-in fault to remove and did nothing where there was none; this margin is the second case. The expectation written in the protocol, that a scale edit would fix two or three of the years, was wrong.
 
+## Trading the pair through derivatives (reporting only)
+
+`research/derivative_costs.py` reprices the same positions through single stock futures and CFDs. These carry no transfer tax and no stock borrow; financing is charged as the spread over JIBAR while a position is held. Fees come from the price lists of November 2026, cited in the script; the assumptions are marked. Capital is R250,000, R125,000 a leg. A round trip is one open and one close over a five-day hold. No hold reached an expiry, so no roll was paid.
+
+| Route | Round trip, bps | Net a signal 2010–19 | Net since 2021 | Sharpe, design | Sharpe, validation |
+| --- | --- | --- | --- | --- | --- |
+| Cash, institutional (with borrow) | 59.6 | −36.8 | −66.1 | −1.16 | −1.68 |
+| Cash, retail | 95.5 | −72.7 | −102.0 | −2.32 | −2.55 |
+| Futures, institutional (commission 5 bps and half-spread 10 assumed) | 33.8 | −11.0 | −40.2 | −0.28 | −1.03 |
+| Futures, Standard Bank online (R50 + 0.4% in the price) | 94.4 | −71.6 | −100.9 | −2.29 | −2.53 |
+| Futures, PSG (0.4% + 0.1% + VAT) | 116.3 | −93.5 | −122.7 | −2.90 | −3.02 |
+| CFD, IG (0.20%, half-spread 5 and borrow 1% assumed) | 62.0 | −39.2 | −68.4 | −1.23 | −1.74 |
+| CFD, Sharenet (0.30%, min R115) | 84.0 | −61.2 | −90.4 | −1.96 | −2.28 |
+
+Net figures are taken at the signal's own close (gross 22.8 bps before 2020 and −6.5 since 2021). At the next close the gross is 10.6 and −3.3, and every route is negative in both periods. The futures dealer's half-spread and commission are varied from 5 to 20 and 2 to 10 bps. The round trip runs from 16.9 to 65.3 bps. The best case, a 5 bps half-spread and a 2 bps commission, leaves +5.9 bps a signal before 2020 and −23.3 since 2021.
+
+The registered expectation, a round trip of 15 to 30 bps through either derivative with 2010–19 near breakeven, held only for institutional futures at the narrow end of the assumed spreads. The JSE's own futures fee is 0.55 bps, but no SBK or NED futures traded on 6 November 2026, so the price a dealer would quote is the real cost and it is not published. Retail futures and CFDs cost as much as cash or more, because the commission and the spread the market maker builds in replace the transfer tax. No route makes the rule pay since 2021, because the edge itself is below zero before costs.
+
 ## Run order
 
 ```sh
@@ -254,6 +272,7 @@ service/.venv/bin/python research/h6_rl_exit.py   # about 3 minutes; reads h5_da
 service/.venv/bin/python research/hourly_study.py  # descriptive; needs data/raw/sbk_60m.csv and ned_60m.csv (TradingView export, not in the repo)
 service/.venv/bin/python research/h7_intraday.py   # design grid, then the one validation run; writes research/results/h7.json
 service/.venv/bin/python research/h11_ned_repair.py design   # under a minute; writes research/results/h11.json
+service/.venv/bin/python research/derivative_costs.py        # seconds; writes research/results/derivative_costs.json
 service/.venv/bin/python research/models/pairdata.py && service/.venv/bin/python research/models/margins_py.py && Rscript research/08_margins_r.R   # margin models
 service/.venv/bin/python research/models/copulas_py.py && service/.venv/bin/python research/models/compare.py 2020-01-01 2026-04-01 validation research/results/copulas_validation.json && service/.venv/bin/python research/models/h8_edge.py
 service/.venv/bin/python research/models/h9_basket_gas.py   # about 10 minutes on 8 cores

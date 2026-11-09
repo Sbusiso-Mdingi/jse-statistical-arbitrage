@@ -1,0 +1,421 @@
+{
+ "capital_rand": 250000.0,
+ "gross_per_signal": {
+  "lag0": {
+   "2010_2019": 22.8,
+   "2021_2026": -6.5
+  },
+  "lag1": {
+   "2010_2019": 10.6,
+   "2021_2026": -3.3
+  }
+ },
+ "cash": {
+  "institutional": {
+   "label": "JSE, institutional",
+   "round_trip_bps": 59.6,
+   "net_per_signal_lag0": {
+    "2010_2019": -36.8,
+    "2021_2026": -66.1
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -49.0,
+    "2021_2026": -62.9
+   },
+   "design": {
+    "sharpe": -1.16,
+    "cagr": -0.0626
+   },
+   "validation": {
+    "sharpe": -1.68,
+    "cagr": -0.1097
+   },
+   "full": {
+    "sharpe": -1.38,
+    "cagr": -0.0807
+   }
+  },
+  "retail": {
+   "label": "JSE, retail brokerage",
+   "round_trip_bps": 95.5,
+   "net_per_signal_lag0": {
+    "2010_2019": -72.7,
+    "2021_2026": -102.0
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -84.9,
+    "2021_2026": -98.8
+   },
+   "design": {
+    "sharpe": -2.32,
+    "cagr": -0.1228
+   },
+   "validation": {
+    "sharpe": -2.55,
+    "cagr": -0.1613
+   },
+   "full": {
+    "sharpe": -2.41,
+    "cagr": -0.1375
+   }
+  }
+ },
+ "derivatives": {
+  "ssf_institutional": {
+   "label": "Futures, institutional",
+   "per_execution_bps": 16.38,
+   "rolls": 0,
+   "assumed": [
+    "commission",
+    "half_spread",
+    "funding"
+   ],
+   "round_trip_bps": 33.8,
+   "net_per_signal_lag0": {
+    "2010_2019": -11.0,
+    "2021_2026": -40.2
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -23.1,
+    "2021_2026": -37.0
+   },
+   "design": {
+    "sharpe": -0.28,
+    "cagr": -0.0169
+   },
+   "validation": {
+    "sharpe": -1.03,
+    "cagr": -0.0707
+   },
+   "full": {
+    "sharpe": -0.6,
+    "cagr": -0.0375
+   }
+  },
+  "ssf_standard_bank": {
+   "label": "Futures, Standard Bank online",
+   "per_execution_bps": 45.23,
+   "rolls": 0,
+   "assumed": [
+    "funding"
+   ],
+   "round_trip_bps": 94.4,
+   "net_per_signal_lag0": {
+    "2010_2019": -71.6,
+    "2021_2026": -100.9
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -83.8,
+    "2021_2026": -97.7
+   },
+   "design": {
+    "sharpe": -2.29,
+    "cagr": -0.1208
+   },
+   "validation": {
+    "sharpe": -2.53,
+    "cagr": -0.1601
+   },
+   "full": {
+    "sharpe": -2.38,
+    "cagr": -0.1358
+   }
+  },
+  "ssf_psg": {
+   "label": "Futures, PSG",
+   "per_execution_bps": 58.13,
+   "rolls": 0,
+   "assumed": [],
+   "round_trip_bps": 116.3,
+   "net_per_signal_lag0": {
+    "2010_2019": -93.5,
+    "2021_2026": -122.7
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -105.6,
+    "2021_2026": -119.5
+   },
+   "design": {
+    "sharpe": -2.9,
+    "cagr": -0.156
+   },
+   "validation": {
+    "sharpe": -3.02,
+    "cagr": -0.1897
+   },
+   "full": {
+    "sharpe": -2.94,
+    "cagr": -0.1689
+   }
+  },
+  "cfd_ig": {
+   "label": "CFD, IG",
+   "per_execution_bps": 28.0,
+   "rolls": 0,
+   "assumed": [
+    "half_spread",
+    "borrow"
+   ],
+   "round_trip_bps": 62.0,
+   "net_per_signal_lag0": {
+    "2010_2019": -39.2,
+    "2021_2026": -68.4
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -51.3,
+    "2021_2026": -65.2
+   },
+   "design": {
+    "sharpe": -1.23,
+    "cagr": -0.0663
+   },
+   "validation": {
+    "sharpe": -1.74,
+    "cagr": -0.1136
+   },
+   "full": {
+    "sharpe": -1.44,
+    "cagr": -0.0844
+   }
+  },
+  "cfd_sharenet": {
+   "label": "CFD, Sharenet",
+   "per_execution_bps": 39.5,
+   "rolls": 0,
+   "assumed": [
+    "half_spread",
+    "borrow"
+   ],
+   "round_trip_bps": 84.0,
+   "net_per_signal_lag0": {
+    "2010_2019": -61.2,
+    "2021_2026": -90.4
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -73.3,
+    "2021_2026": -87.2
+   },
+   "design": {
+    "sharpe": -1.96,
+    "cagr": -0.1036
+   },
+   "validation": {
+    "sharpe": -2.28,
+    "cagr": -0.1454
+   },
+   "full": {
+    "sharpe": -2.09,
+    "cagr": -0.1196
+   }
+  }
+ },
+ "sensitivity": {
+  "half_spread_5_commission_2": {
+   "round_trip_bps": 16.9,
+   "net_per_signal_lag0": {
+    "2010_2019": 5.9,
+    "2021_2026": -23.3
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -6.2,
+    "2021_2026": -20.1
+   },
+   "design": {
+    "sharpe": 0.28,
+    "cagr": 0.0142
+   },
+   "validation": {
+    "sharpe": -0.61,
+    "cagr": -0.0443
+   },
+   "full": {
+    "sharpe": -0.1,
+    "cagr": -0.0082
+   }
+  },
+  "half_spread_5_commission_5": {
+   "round_trip_bps": 23.8,
+   "net_per_signal_lag0": {
+    "2010_2019": -1.0,
+    "2021_2026": -30.2
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -13.1,
+    "2021_2026": -27.0
+   },
+   "design": {
+    "sharpe": 0.05,
+    "cagr": 0.0014
+   },
+   "validation": {
+    "sharpe": -0.78,
+    "cagr": -0.0551
+   },
+   "full": {
+    "sharpe": -0.31,
+    "cagr": -0.0203
+   }
+  },
+  "half_spread_5_commission_10": {
+   "round_trip_bps": 35.3,
+   "net_per_signal_lag0": {
+    "2010_2019": -12.5,
+    "2021_2026": -41.7
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -24.6,
+    "2021_2026": -38.5
+   },
+   "design": {
+    "sharpe": -0.33,
+    "cagr": -0.0196
+   },
+   "validation": {
+    "sharpe": -1.07,
+    "cagr": -0.073
+   },
+   "full": {
+    "sharpe": -0.65,
+    "cagr": -0.0401
+   }
+  },
+  "half_spread_10_commission_2": {
+   "round_trip_bps": 26.9,
+   "net_per_signal_lag0": {
+    "2010_2019": -4.1,
+    "2021_2026": -33.3
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -16.2,
+    "2021_2026": -30.1
+   },
+   "design": {
+    "sharpe": -0.05,
+    "cagr": -0.0043
+   },
+   "validation": {
+    "sharpe": -0.86,
+    "cagr": -0.06
+   },
+   "full": {
+    "sharpe": -0.4,
+    "cagr": -0.0257
+   }
+  },
+  "half_spread_10_commission_5": {
+   "round_trip_bps": 33.8,
+   "net_per_signal_lag0": {
+    "2010_2019": -11.0,
+    "2021_2026": -40.2
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -23.1,
+    "2021_2026": -37.0
+   },
+   "design": {
+    "sharpe": -0.28,
+    "cagr": -0.0169
+   },
+   "validation": {
+    "sharpe": -1.03,
+    "cagr": -0.0707
+   },
+   "full": {
+    "sharpe": -0.6,
+    "cagr": -0.0375
+   }
+  },
+  "half_spread_10_commission_10": {
+   "round_trip_bps": 45.3,
+   "net_per_signal_lag0": {
+    "2010_2019": -22.5,
+    "2021_2026": -51.7
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -34.6,
+    "2021_2026": -48.5
+   },
+   "design": {
+    "sharpe": -0.67,
+    "cagr": -0.0375
+   },
+   "validation": {
+    "sharpe": -1.32,
+    "cagr": -0.0882
+   },
+   "full": {
+    "sharpe": -0.95,
+    "cagr": -0.057
+   }
+  },
+  "half_spread_20_commission_2": {
+   "round_trip_bps": 46.9,
+   "net_per_signal_lag0": {
+    "2010_2019": -24.1,
+    "2021_2026": -53.3
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -36.2,
+    "2021_2026": -50.1
+   },
+   "design": {
+    "sharpe": -0.73,
+    "cagr": -0.0403
+   },
+   "validation": {
+    "sharpe": -1.36,
+    "cagr": -0.0907
+   },
+   "full": {
+    "sharpe": -0.99,
+    "cagr": -0.0596
+   }
+  },
+  "half_spread_20_commission_5": {
+   "round_trip_bps": 53.8,
+   "net_per_signal_lag0": {
+    "2010_2019": -31.0,
+    "2021_2026": -60.2
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -43.1,
+    "2021_2026": -57.0
+   },
+   "design": {
+    "sharpe": -0.96,
+    "cagr": -0.0525
+   },
+   "validation": {
+    "sharpe": -1.53,
+    "cagr": -0.101
+   },
+   "full": {
+    "sharpe": -1.2,
+    "cagr": -0.0711
+   }
+  },
+  "half_spread_20_commission_10": {
+   "round_trip_bps": 65.3,
+   "net_per_signal_lag0": {
+    "2010_2019": -42.5,
+    "2021_2026": -71.7
+   },
+   "net_per_signal_lag1": {
+    "2010_2019": -54.6,
+    "2021_2026": -68.5
+   },
+   "design": {
+    "sharpe": -1.35,
+    "cagr": -0.0724
+   },
+   "validation": {
+    "sharpe": -1.82,
+    "cagr": -0.118
+   },
+   "full": {
+    "sharpe": -1.54,
+    "cagr": -0.0899
+   }
+  }
+ }
+}
