@@ -231,18 +231,32 @@ def switch_state(pair: dict) -> dict:
             # The service's record starts in 2010, so its window first fills in mid-2010; that year comes from research.
             "spread_share_by_year": {str(y): (SWITCH["spread_mode_share_by_year"]["2010"] if y == 2010 else float(mode[[d.year == y for d in pair["date"]]].mean()))
                                      for y in sorted({d.year for d in pair["date"]})},
-            "switch": r["switch"],
-            "copula_alone": r["copula_alone"],
-            "spread_gate": {**r["spread_gate"], "crit": switch.GATE_CRIT, "frozen_on": SPREAD_GATE["frozen_on"], "score_from": SPREAD_GATE["score_from"],
+            "switch": {k: v for k, v in r["switch"].items() if k not in ("daily", "history")},
+            "copula_alone": {k: v for k, v in r["copula_alone"].items() if k not in ("daily", "history")},
+            "spread_gate": {**{k: v for k, v in r["spread_gate"].items() if k not in ("daily", "history")}, "crit": switch.GATE_CRIT, "frozen_on": SPREAD_GATE["frozen_on"], "score_from": SPREAD_GATE["score_from"],
                             "verdict_at": SPREAD_GATE["verdict"], "development": SPREAD_GATE["development"],
                             "expected_live_bps": SPREAD_GATE["expected_live_bps"]},
         })
+        # Each strategy as a book: cumulative net P&L in % of capital (daily net returns summed, no compounding).
+        _switch_cache["pnl"] = {
+            "as_of": as_of, "date": pair["date"], "score_from": SPREAD_GATE["score_from"], "development_end": "2026-03-31",
+            "strategies": {k: {"cum": {sch: np.round(np.cumsum(r[k]["daily"][sch]) * 100, 4) for sch in switch.SCHEDULES},
+                               "trades": r[k]["history"]}
+                           for k in ("spread_gate", "switch", "copula_alone")},
+        }
     return _switch_cache["body"]
 
 
 @app.get("/api/switch")
 def api_switch():
     return JSONResponse(_clean(switch_state(PAIR.rows(PAIR.live(cache.get().rows)))))
+
+
+@app.get("/api/pnl")
+def api_pnl():
+    """Each strategy's cumulative net P&L over the service's record, at both institutional schedules, and its trades."""
+    switch_state(PAIR.rows(PAIR.live(cache.get().rows)))
+    return JSONResponse(_clean(_switch_cache["pnl"]))
 
 
 @app.get("/api/research")

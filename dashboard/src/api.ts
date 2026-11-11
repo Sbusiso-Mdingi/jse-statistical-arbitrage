@@ -209,3 +209,15 @@ export type Switch = {
   };
 };
 export const getSwitch = () => getJson<Switch>("/api/switch");
+
+export type Schedule = "futures" | "cash";
+export type PnlTrade = { opened: string; closed: string | null; net_futures_bps: number; net_cash_bps: number };
+export type Pnl = {
+  as_of: string;
+  date: string[];
+  score_from: string;
+  development_end: string;
+  strategies: Record<"spread_gate" | "switch" | "copula_alone", { cum: Record<Schedule, number[]>; trades: PnlTrade[] }>;
+};
+
+export const getPnl = () => getJson<Pnl>("/api/pnl");

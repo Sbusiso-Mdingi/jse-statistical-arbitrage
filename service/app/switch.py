@@ -264,11 +264,16 @@ def record(dates: list[dt.date], r_sbk: np.ndarray, r_ned: np.ndarray, h: np.nda
     for key, trs in (("switch", trades(mode, h, b, z)), ("copula_alone", trades(np.zeros(len(h), np.int8), h, b, z, spread_on=False)),
                      ("spread_gate", trades(gate, h, b, z, copula_on=False, hold_through=True))):
         rows = None
+        daily = {}
         for k in SCHEDULES:
-            _, rk = daily_returns(trs, dates, r_sbk, r_ned, k)
+            daily[k], rk = daily_returns(trs, dates, r_sbk, r_ned, k)
             rows = [dict(r, **{f"net_{k}": rk[i]["net"]}) for i, r in enumerate(rows or rk)]
         out[key] = live_score(rows, dates, score_from[key] if isinstance(score_from, dict) else score_from)
         out[key]["position"] = position(trs, dates)
+        # The whole record, for the P&L chart: net daily return by schedule and every trade's net.
+        out[key]["daily"] = daily
+        out[key]["history"] = [{"opened": dates[r["open"]], "closed": dates[r["close"]] if r["complete"] else None,
+                                **{f"net_{k}_bps": round(r[f"net_{k}"] * 1e4, 1) for k in SCHEDULES}} for r in rows]
     return out
 
 
