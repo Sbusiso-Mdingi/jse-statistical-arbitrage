@@ -270,6 +270,18 @@ def run():
                      "bai_perron_last_segment": seg}
     out["transitions"] = int(np.abs(np.diff(mode.astype(int))).sum())
     json.dump(out, open("research/results/h14.json", "w"), indent=1)
+    # The frozen record the service serves: the chosen detector carries no fitted parameter, so this is the
+    # rule's identity, the dates and the reference figures the dashboard shows.
+    json.dump({"protocol": "research/PROTOCOL.md, H14", "frozen_on": "2026-11-11", "score_from": "2026-11-12", "detector": chosen,
+               "threshold": crit.get(chosen), "window": sw.L, "crit": sw.EG_CRIT,
+               "verdict": "225 completed trades or 31 December 2030; mean net per trade at the institutional futures schedule above zero, one-sided t > 1.65",
+               "bai_perron": json.load(open("research/results/cointegration.json"))["bai_perron"],
+               "spread_mode_share_by_year": {r["year"]: r["spread_mode_share"] for r in out["by_year"]},
+               "reference": {p: {"spread_mode_share": r["spread_mode_share"], "switch_vs_copula_t": r["switch_vs_copula_futures"]["t_stat"],
+                                 **{k: {s_: r[k][s_]["per_trade_bps"] for s_ in ("cash", "futures")} | {"trades": r[k]["futures"]["trades"]}
+                                    for k in ("switch", "copula_alone")}}
+                             for p, r in out["periods"].items() if p != "post_freeze"}},
+              open("data/pair_switch.json", "w"), indent=1)
     with open("research/results/h14_daily.csv", "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["date", "eg126", "crit", "hedge_ratio126", "z126", "mode", "h", "switch_net_cash", "switch_net_futures",

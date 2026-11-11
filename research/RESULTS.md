@@ -218,6 +218,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 15. **Re-centring on the pair.** Registered 9 November 2026 before any new pair figure, listing the pair figures already seen. `research/pair.py` was run once, then rerun with two descriptive additions (the next-session figure by year and the fixed copula's edge) and the cost output reshaped; every other figure was byte-identical between the two runs. Ran in seconds on the Mac.
 
+16. **H14.** Registered 11 November 2026, detector rule written before the simulation. `select` was run once; `run` was rerun after the first, and the reruns only added the frozen export and its reference figures, every other output identical. The first parity check read the wrong key for the futures Sharpe; it was a lookup error, fixed before any H14 figure was reported. Ran in under a minute on the Mac.
+
 ## H11: a direct repair to the Nedbank margin
 
 Stopped at the design stage, as the protocol requires: no edit qualified, so nothing was frozen and no edited instrument runs live. The harness reproduces the stored walk-forward Nedbank transforms to 1e-10.
@@ -289,6 +291,33 @@ Frozen on 9 November 2026 (`research/models/export_shadow.py`, `data/pair_shadow
 
 Since the freeze, before scoring began, A's h has correlated 0.999 with H8's: A fired 9 times to H8's 10, and B fired twice. A will hardly ever separate from H8. Verdict at 225 signals each or on 31 December 2030.
 
+## H14: the spread while the long-run relationship holds, the copula when it breaks
+
+Registered 11 November 2026 before any figure (`research/h14_switch.py`, engine `service/app/switch.py`). Spread mode is H4b's trade, copula mode H8's rule, both unchanged; the only new choice was the break detector, made on simulated pairs calibrated to design. Thresholds: CUSUM c = 7.66 (5%) and 5.98 (10%), real-time sup-F 47.6 and 41.4. Mean spread-mode sessions in the 252 after a break:
+
+| Detector | Stable | Hedge-ratio shift | Residual becomes a random walk | Spurious spell | Break score |
+| --- | --- | --- | --- | --- | --- |
+| E, the 126-session Engle-Granger gate | 246.8 | 213.9 | 40.8 | 19.8 | 91.5 |
+| C05, CUSUM at 5% | 251.9 | 247.3 | 155.7 | 209.1 | 204.0 |
+| C10, CUSUM at 10% | 251.9 | 244.8 | 142.2 | 195.7 | 194.2 |
+| B05, sup-F at 5% | 251.7 | 211.1 | 63.9 | 56.5 | 110.5 |
+| B10, sup-F at 10% | 251.3 | 207.7 | 58.5 | 48.5 | 104.9 |
+
+All five kept at least 90% of stable sessions; E has the lowest break score and was chosen. The expectation that C or B would be chosen was wrong: both are anchored to the spell's first window and keep trading a relationship the rolling gate has already dropped, and the CUSUM barely sees a hedge-ratio shift at all.
+
+Parity: the copula half alone reproduces H8's design Sharpe at the institutional cash and futures schedules (−1.16, −0.28) and the spread half alone H4b's 22 design trades and Sharpe 0.40 and 0.45 at 10 bps a leg.
+
+| Period | Spread-mode share | Switch Sharpe, gross / cash / futures | Copula alone | Switch net a trade, futures | Copula alone | Switch minus copula, futures |
+| --- | --- | --- | --- | --- | --- | --- |
+| Design, 2010–2019 | 17.3% | 0.80 / −0.94 / −0.18 (170 trades, 23 spread) | 0.82 / −1.16 / −0.28 (189) | −6.1 bps | −8.4 bps | +54 bps a year, t 0.54 |
+| Validation, already seen | 14.1% | −0.13 / −1.58 / −0.96 (105, 12 spread) | −0.21 / −1.68 / −1.03 (103) | −39.9 bps | −42.7 bps | +33 bps a year, t 0.25 |
+
+Validation (2020 to March 2026) had been seen through both halves before H14 and is not a test. Spread-mode trades netted +44.5 bps each at futures in design (+19.8 cash) and +23.8 in validation; the copula-mode trades lost. The switch helps by about the spread trades' few wins, within noise. From April to October 2026 the gate never held, so the switch equalled the copula rule trade for trade.
+
+Spread-mode share by year: 2010 3%, 2011 30%, 2012 57%, 2013 38%, 2014 1%, 2015 0%, 2016 5%, 2017 4%, 2018 25%, 2019 10%, 2020 7%, 2021 6%, 2022 26%, 2023 8%, 2024 26%, 2025 15%, 2026 0.5%. After the design Bai-Perron breaks: 133 spread sessions in the 252 after March 2011, 5 after February 2015, 9 after February 2019. On 10 November 2026 the statistic is −1.40 against −3.34, the 126-session hedge ratio about 0, the method copula; the last spread session was 30 January 2026.
+
+Frozen 11 November 2026 (`data/pair_switch.json`), served at `/api/switch` from dashboard v11, scored on trades opened from 12 November 2026 at institutional futures with cash reported and H8's trades beside it. Verdict at 225 completed trades or 31 December 2030: pass if mean net a trade is above zero with one-sided t > 1.65. If the gate stays closed, the switch is the copula rule, and no spread trade by the verdict means no evidence on the switch. Outputs: `research/results/h14_select.json`, `h14.json`, `h14_daily.csv` (statistic, hedge ratio, mode and daily net by date), `h14_by_year.csv`.
+
 ## Run order
 
 ```sh
@@ -321,5 +350,7 @@ service/.venv/bin/python research/models/export_gas.py     # writes data/basket_
 service/.venv/bin/python research/costs.py                 # the JSE cost schedule; writes research/results/costs.json
 service/.venv/bin/python research/h10_sizing.py            # leg sizing test; writes research/results/h10.json
 service/.venv/bin/python research/redteam.py all           # the red team; writes research/results/redteam.json (run on Azure, 3 seconds of compute)
+service/.venv/bin/python research/h14_switch.py select   # about a minute on eight cores; writes research/results/h14_select.json
+service/.venv/bin/python research/h14_switch.py run      # seconds; writes h14.json, h14_daily.csv, h14_by_year.csv and data/pair_switch.json
 service/.venv/bin/python research/export_research.py
 ```

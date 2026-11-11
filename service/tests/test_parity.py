@@ -82,3 +82,22 @@ def test_shadow_own_vol_matches_research():
     common = [(i, ref[d.isoformat()]) for i, d in enumerate(rows["date"]) if d.isoformat() in ref]
     assert len(common) > 50
     assert max(abs(h[i] - r) for i, r in common) < 1e-6
+
+
+def test_switch_gate_matches_research():
+    """H14: the service's rolling statistic and method reproduce research/results/h14_daily.csv once the
+    126-session window is full (the service's record starts in 2010, the research one in 2005)."""
+    import csv
+
+    from app import switch
+    from app.main import PAIR, live_rows, snapshot_rows, switch_state
+
+    body = switch_state(PAIR.rows(PAIR.live(live_rows(snapshot_rows()))))
+    ref = {r["date"]: r for r in csv.DictReader(open(Path(__file__).resolve().parents[2] / "research/results/h14_daily.csv"))}
+    s = body["series"]
+    rows = [(d.isoformat(), e, m) for d, e, m in zip(s["date"][switch.L:], s["eg"][switch.L:], s["mode"][switch.L:])]
+    common = [(e, m, ref[d]) for d, e, m in rows if d in ref]
+    assert len(common) > 3900
+    assert max(abs(e - float(r["eg126"])) for e, m, r in common) < 6e-5  # the csv keeps four decimals
+    assert all(("spread" if m else "copula") == r["mode"] for e, m, r in common)
+    assert body["switch"]["complete"] == body["copula_alone"]["complete"] == 0

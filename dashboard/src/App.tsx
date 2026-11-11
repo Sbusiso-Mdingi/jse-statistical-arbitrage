@@ -4,14 +4,16 @@ import {
   getPairBacktest,
   getPairModel,
   getResearch,
+  getSwitch,
   type PairBacktest,
+  type Switch,
   type PairModel,
   type RuleParams,
   type CostTier,
   type Period,
   type Research,
 } from "./api";
-import { EdgeBars, EquityChart, PitScatter } from "./charts";
+import { EdgeBars, EquityChart, GateChart, PitScatter } from "./charts";
 import { fmtDate, num, pct } from "./format";
 
 const PERIODS: { id: Period; label: string }[] = [
@@ -153,6 +155,103 @@ function LiveRecord({ bt, tier, roundTrip, period }: { bt: PairBacktest; tier: C
   );
 }
 
+/** Whether the long-run relationship holds on the last half-year, and the strategy that trades the spread while it does. */
+function SwitchPanel({ s }: { s: Switch }) {
+  const t = s.today;
+  const d = s.reference.design;
+  const v = s.reference.validation_already_seen;
+  const live = new Date() >= new Date(`${s.score_from}T00:00:00Z`);
+  const rows: [string, Switch["switch"]][] = [
+    ["Switching strategy", s.switch],
+    ["Copula signal alone", s.copula_alone],
+  ];
+  const share = Object.entries(s.spread_share_by_year);
+  return (
+    <section className="panel">
+      <div className="panel-head">
+        <h2 className="serif">
+          When the long-run relationship <em>holds</em>
+        </h2>
+        <div className="legend">
+          <span style={{ color: "var(--foreground)" }}>— Cointegration statistic, last {s.window} sessions</span>
+          <span style={{ color: "var(--primary)", opacity: 0.6 }}>■ Spread method in use</span>
+        </div>
+      </div>
+      <section className="metrics" aria-label="The relationship today">
+        <Metric
+          value={t.holds ? "Holds" : "Broken"}
+          label="Long-run relationship today"
+          negative={!t.holds}
+          sub={`Statistic ${num(t.eg)} against ${num(s.crit)} at ${fmtDate(s.as_of)}`}
+        />
+        <Metric
+          value={t.mode === "spread" ? "Spread" : "Copula"}
+          label="Method in use"
+          sub={t.last_spread_day ? `Spread method last used ${fmtDate(t.last_spread_day)}` : "Spread method not used yet"}
+        />
+        <Metric
+          value={num(Math.abs(t.hedge_ratio) < 0.005 ? 0 : t.hedge_ratio)}
+          label={`Hedge ratio, last ${s.window} sessions`}
+          sub={`Long-run segment since ${fmtDate(s.segment.from, { month: "short", year: "numeric" })}: ${num(s.segment.slope)}`}
+        />
+      </section>
+      <GateChart
+        dates={s.series.date}
+        stat={s.series.eg}
+        mode={s.series.mode}
+        crit={s.crit}
+        label="Rolling Engle-Granger statistic for log Nedbank on log Standard Bank against its 5% critical value, with sessions in spread mode shaded"
+      />
+      <p className="note">
+        Over the whole record the two prices are not tied together, but over shorter stretches they sometimes are. Each session the
+        regression of log Nedbank on log Standard Bank is refitted on the last {s.window} sessions and its residual tested for a unit root
+        (Engle-Granger); below {s.crit} the relationship holds at 5%. A second strategy, frozen on {fmtDate(s.frozen_on)}, uses that test as
+        a switch. While the relationship holds it trades the spread: it opens when the residual is 1.5 standard deviations from zero, closes
+        when it returns to zero, at 4 standard deviations or after 60 sessions, with the hedge ratio fixed at entry. While it is broken the
+        strategy follows the copula signal above, so on those days the two are the same trades. Of the ways to detect a break that were
+        compared on simulated pairs, the test itself saw breaks soonest, so it is the switch. The spread method was in use on{" "}
+        {pct(d.spread_mode_share, 0)} of sessions from 2010 to 2019 and {pct(v.spread_mode_share, 0)} from 2020 to March 2026, and on more than a
+        quarter of sessions in {share.filter(([, x]) => x >= 0.25).map(([y]) => y).join(", ")}. From 2010 to 2019, at institutional futures costs,
+        the switch lost {num(-d.switch.futures, 1)} bps a trade against {num(-d.copula_alone.futures, 1)} for the copula alone, a difference
+        within noise (t {num(d.switch_vs_copula_t)}). From 2020 to March 2026, which had already been seen when the switch was designed, the
+        figures are {num(-v.switch.futures, 1)} and {num(-v.copula_alone.futures, 1)} bps lost a trade.
+      </p>
+      <table style={{ marginTop: 14 }}>
+        <thead>
+          <tr>
+            <th>Trades opened from {fmtDate(s.score_from)}</th>
+            <th>Completed</th>
+            <th>Spread trades</th>
+            <th>Net a trade, futures</th>
+            <th>Net a trade, shares</th>
+            <th>t, futures</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(([name, r]) => (
+            <tr key={name}>
+              <td>{name}</td>
+              <td>{r.complete}</td>
+              <td>{name === "Switching strategy" ? r.spread_trades : "n/a"}</td>
+              <td>{r.net_futures_bps == null ? "n/a" : `${num(r.net_futures_bps, 1)} bps`}</td>
+              <td>{r.net_cash_bps == null ? "n/a" : `${num(r.net_cash_bps, 1)} bps`}</td>
+              <td>{num(r.t_futures)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="note">
+        {live ? "" : `Scoring starts on ${fmtDate(s.score_from)}. `}
+        Only trades opened from {fmtDate(s.score_from)} count. Costs are institutional: single stock futures with commission, the exchange
+        fee and VAT, a half-spread, funding and a roll at each expiry; shares with brokerage and VAT, securities transfer tax of 0.25% on
+        purchases, Strate, the levy, a half-spread and borrow on the short side. The switch is judged after 225 completed trades or at the
+        end of 2030, whichever comes first: it passes if its average trade after futures costs is above zero with a t-statistic above 1.65.
+        If the relationship never holds before then, there is no evidence either way on the switch.
+      </p>
+    </section>
+  );
+}
+
 function Instrument({ model, research }: { model: PairModel; research: Research | null }) {
   const latest = model.latest;
   const dep = model.dependence;
@@ -228,8 +327,8 @@ function Instrument({ model, research }: { model: PairModel; research: Research 
         </table>
         <p className="note">
           Specifications come from 36 ARMA-GARCH candidates by BIC each December, fitted on data to that year end and used only for
-          the following year. The final fit was frozen on 31 March 2026, and every session since is filtered forward from it. Standard
-          Bank and Nedbank are not cointegrated, which is why dependence is modelled day to day rather than through a long-run spread.
+          the following year. The final fit was frozen on 31 March 2026, and every session since is filtered forward from it. Over the
+          whole record Standard Bank and Nedbank are not cointegrated, which is why dependence is modelled day to day rather than through a long-run spread.
         </p>
       </div>
     </section>
@@ -243,7 +342,9 @@ export function App({ embedded }: { embedded: boolean }) {
   const { bt, error } = useBacktest(period, params);
   const [model, setModel] = useState<PairModel | null>(null);
   const [research, setResearch] = useState<Research | null>(null);
+  const [sw, setSw] = useState<Switch | null>(null);
   useEffect(() => {
+    getSwitch().then(setSw).catch(() => undefined);
     getPairModel().then(setModel).catch(() => undefined);
     getResearch().then(setResearch).catch(() => undefined);
   }, []);
@@ -321,6 +422,8 @@ export function App({ embedded }: { embedded: boolean }) {
       </section>
 
       {model && <Instrument model={model} research={research} />}
+
+      {sw && <SwitchPanel s={sw} />}
 
       <section className="panel" style={{ borderBottom: 0 }}>
         <div className="panel-head">

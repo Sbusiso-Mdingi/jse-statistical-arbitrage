@@ -233,3 +233,35 @@ def daily_returns(trs: list[dict], dates: list[dt.date], r_sbk: np.ndarray, r_ne
         total += g - cost
         rows.append({**tr, "gross": float(g.sum()), "net": float((g - cost).sum()), "complete": tr["close"] is not None})
     return total, rows
+
+
+def live_score(rows: list[dict], dates: list[dt.date], score_from: dt.date) -> dict:
+    """Trades opened on sessions from score_from: count, mean net per trade and its t at each schedule."""
+    live = [r for r in rows if dates[r["open"]] >= score_from]
+    done = [r for r in live if r["complete"]]
+    out = {"trades": [{"opened": dates[r["open"]], "closed": dates[r["close"]] if r["complete"] else None, "method": r["method"],
+                       "side": "Long SBK / short NED" if r["w_sbk"] > 0 else "Short SBK / long NED",
+                       "gross_bps": round(r["gross"] * 1e4, 1), **{f"net_{k}_bps": round(r[f"net_{k}"] * 1e4, 1) for k in SCHEDULES}}
+                      for r in live],
+           "complete": len(done), "spread_trades": sum(r["method"] == "spread" for r in done)}
+    for k in SCHEDULES:
+        v = np.array([r[f"net_{k}"] for r in done]) * 1e4
+        out[f"net_{k}_bps"] = round(float(v.mean()), 1) if len(v) else None
+        out[f"t_{k}"] = round(float(v.mean() / (v.std(ddof=1) / math.sqrt(len(v)))), 2) if len(v) > 1 and v.std() > 0 else None
+    return out
+
+
+def record(dates: list[dt.date], r_sbk: np.ndarray, r_ned: np.ndarray, h: np.ndarray, score_from: dt.date) -> dict:
+    """The switch on a record of simple returns and the copula's h: gate, mode, and the live scores of the
+    switch and of the copula rule alone."""
+    x, y = np.cumsum(np.log1p(r_sbk)), np.cumsum(np.log1p(r_ned))
+    b, z, eg = rolling(x, y)
+    mode = modes(x, y, eg, "E", None)
+    out = {"b": b, "z": z, "eg": eg, "mode": mode}
+    for key, trs in (("switch", trades(mode, h, b, z)), ("copula_alone", trades(np.zeros(len(h), np.int8), h, b, z, spread_on=False))):
+        rows = None
+        for k in SCHEDULES:
+            _, rk = daily_returns(trs, dates, r_sbk, r_ned, k)
+            rows = [dict(r, **{f"net_{k}": rk[i]["net"]}) for i, r in enumerate(rows or rk)]
+        out[key] = live_score(rows, dates, score_from)
+    return out

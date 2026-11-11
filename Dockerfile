@@ -12,7 +12,7 @@ WORKDIR /app
 COPY service/requirements.txt service/requirements.txt
 RUN pip install --no-cache-dir -r service/requirements.txt
 COPY service/app service/app
-COPY data/walkforward.json data/model_final.json data/pair_gas.json data/research.json data/pair_shadow.json data/
+COPY data/walkforward.json data/model_final.json data/pair_gas.json data/research.json data/pair_shadow.json data/pair_switch.json data/
 COPY --from=dashboard /build/dist dashboard/dist
 RUN useradd --uid 10001 app
 USER app

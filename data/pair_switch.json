@@ -1,0 +1,113 @@
+{
+ "protocol": "research/PROTOCOL.md, H14",
+ "frozen_on": "2026-11-11",
+ "score_from": "2026-11-12",
+ "detector": "E",
+ "threshold": null,
+ "window": 126,
+ "crit": -3.34,
+ "verdict": "225 completed trades or 31 December 2030; mean net per trade at the institutional futures schedule above zero, one-sided t > 1.65",
+ "bai_perron": {
+  "breaks": [
+   "2007-01-31",
+   "2011-03-31",
+   "2015-02-27",
+   "2019-02-28",
+   "2021-03-31",
+   "2023-04-28"
+  ],
+  "segments": [
+   {
+    "from": "2005-01-31",
+    "to": "2007-01-31",
+    "intercept": -4.244247,
+    "slope": 1.508559
+   },
+   {
+    "from": "2007-02-28",
+    "to": "2011-03-31",
+    "intercept": -1.658034,
+    "slope": 1.202455
+   },
+   {
+    "from": "2011-04-29",
+    "to": "2015-02-27",
+    "intercept": -2.31756,
+    "slope": 1.29715
+   },
+   {
+    "from": "2015-03-31",
+    "to": "2019-02-28",
+    "intercept": 3.353545,
+    "slope": 0.693169
+   },
+   {
+    "from": "2019-03-29",
+    "to": "2021-03-31",
+    "intercept": -5.706664,
+    "slope": 1.609345
+   },
+   {
+    "from": "2021-04-30",
+    "to": "2023-04-28",
+    "intercept": 0.387201,
+    "slope": 0.986065
+   },
+   {
+    "from": "2023-05-31",
+    "to": "2026-03-31",
+    "intercept": 5.234017,
+    "slope": 0.487501
+   }
+  ]
+ },
+ "spread_mode_share_by_year": {
+  "2010": 0.031,
+  "2011": 0.296,
+  "2012": 0.567,
+  "2013": 0.383,
+  "2014": 0.008,
+  "2015": 0.0,
+  "2016": 0.054,
+  "2017": 0.035,
+  "2018": 0.252,
+  "2019": 0.104,
+  "2020": 0.067,
+  "2021": 0.064,
+  "2022": 0.26,
+  "2023": 0.081,
+  "2024": 0.256,
+  "2025": 0.153,
+  "2026": 0.005
+ },
+ "reference": {
+  "design": {
+   "spread_mode_share": 0.173,
+   "switch_vs_copula_t": 0.54,
+   "switch": {
+    "cash": -31.8,
+    "futures": -6.1,
+    "trades": 170
+   },
+   "copula_alone": {
+    "cash": -34.2,
+    "futures": -8.4,
+    "trades": 189
+   }
+  },
+  "validation_already_seen": {
+   "spread_mode_share": 0.141,
+   "switch_vs_copula_t": 0.25,
+   "switch": {
+    "cash": -65.1,
+    "futures": -39.9,
+    "trades": 105
+   },
+   "copula_alone": {
+    "cash": -68.5,
+    "futures": -42.7,
+    "trades": 103
+   }
+  }
+ }
+}

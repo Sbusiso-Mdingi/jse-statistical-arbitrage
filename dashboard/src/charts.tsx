@@ -380,3 +380,66 @@ export function ReversalBars({ rows }: { rows: { year: number; n: number; bps: n
     </svg>
   );
 }
+
+/** The rolling cointegration statistic against its critical value; shaded sessions are those in spread mode. */
+export function GateChart({ dates, stat, mode, crit, label }: { dates: string[]; stat: (number | null)[]; mode: number[]; crit: number; label: string }) {
+  const H = 240;
+  const pad = { l: 46, r: 12, t: 12, b: 28 };
+  const vals = stat.filter((v): v is number => v != null);
+  const lo = Math.min(crit - 0.5, ...vals);
+  const hi = Math.max(1, ...vals);
+  const x = scaleLinear(0, dates.length - 1, pad.l, W - pad.r);
+  const y = scaleLinear(lo, hi, H - pad.b, pad.t);
+  const path = useMemo(() => {
+    let d = "";
+    let pen = false;
+    stat.forEach((v, i) => {
+      if (v == null) {
+        pen = false;
+        return;
+      }
+      d += `${pen ? "L" : "M"}${x(i).toFixed(1)} ${y(v).toFixed(1)}`;
+      pen = true;
+    });
+    return d;
+  }, [stat, x, y]);
+  const bands = useMemo(() => {
+    const out: [number, number][] = [];
+    let s: number | null = null;
+    mode.forEach((m, i) => {
+      if (m && s == null) s = i;
+      if (!m && s != null) {
+        out.push([s, i]);
+        s = null;
+      }
+    });
+    if (s != null) out.push([s, mode.length]);
+    return out;
+  }, [mode]);
+  const step = (W - pad.l - pad.r) / Math.max(dates.length - 1, 1);
+  return (
+    <svg className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label}>
+      {bands.map(([a, b]) => (
+        <rect key={a} x={x(a) - step / 2} y={pad.t} width={Math.max((b - a) * step, 1)} height={H - pad.t - pad.b} fill="var(--primary)" opacity={0.14} />
+      ))}
+      {ticks(lo, hi, 5).map((t) => (
+        <g key={t}>
+          <path d={`M${pad.l} ${y(t)}H${W - pad.r}`} stroke="var(--border)" />
+          <text x={pad.l - 8} y={y(t) + 3} textAnchor="end">
+            {t}
+          </text>
+        </g>
+      ))}
+      {yearTicks(dates).map((t) => (
+        <text key={t.i} x={x(t.i)} y={H - 8} textAnchor="middle">
+          {t.label}
+        </text>
+      ))}
+      <path d={path} fill="none" stroke="var(--foreground)" strokeOpacity={0.75} strokeWidth={1} />
+      <path d={`M${pad.l} ${y(crit)}H${W - pad.r}`} stroke="var(--negative)" strokeDasharray="4 4" />
+      <text x={W - pad.r} y={y(crit) + 13} textAnchor="end" fill="var(--negative)">
+        holds below {crit}
+      </text>
+    </svg>
+  );
+}

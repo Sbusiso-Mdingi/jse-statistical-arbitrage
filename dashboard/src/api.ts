@@ -144,3 +144,35 @@ export const getPairBacktest = (period: Period, p: RuleParams, signal?: AbortSig
   );
 export const getPairModel = () => getJson<PairModel>("/api/pair/model");
 export const getResearch = () => getJson<Research>("/api/research");
+
+type SwitchScore = {
+  trades: { opened: string; closed: string | null; method: "spread" | "copula"; side: string; gross_bps: number; net_cash_bps: number; net_futures_bps: number }[];
+  complete: number;
+  spread_trades: number;
+  net_cash_bps: number | null;
+  net_futures_bps: number | null;
+  t_cash: number | null;
+  t_futures: number | null;
+};
+
+/** The long-run relationship on a rolling half-year, which method the strategy uses, and both methods' live records. */
+export type Switch = {
+  frozen_on: string;
+  score_from: string;
+  window: number;
+  crit: number;
+  as_of: string;
+  today: { eg: number; hedge_ratio: number; z: number; holds: boolean; mode: "spread" | "copula"; last_spread_day: string | null };
+  segment: { from: string; to: string; slope: number; intercept: number };
+  reference: Record<"design" | "validation_already_seen", {
+    spread_mode_share: number;
+    switch_vs_copula_t: number;
+    switch: { cash: number; futures: number; trades: number };
+    copula_alone: { cash: number; futures: number; trades: number };
+  }>;
+  series: { date: string[]; eg: (number | null)[]; mode: number[] };
+  spread_share_by_year: Record<string, number>;
+  switch: SwitchScore;
+  copula_alone: SwitchScore;
+};
+export const getSwitch = () => getJson<Switch>("/api/switch");
