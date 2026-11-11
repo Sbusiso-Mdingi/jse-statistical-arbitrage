@@ -73,7 +73,8 @@ def main(te_s, kind):
     full = load()
     later = [i for i, t in enumerate(full["date"]) if t > te]
     if later:
-        ref = {"date": [full["date"][i].isoformat() for i in later]}
+        ref = {"date": [full["date"][i].isoformat() for i in later], "r_sbk": full["r_sbk"][later].tolist(),
+               "r_ned": full["r_ned"][later].tolist(), "vix": full["vix"][later].tolist()}
         uu = []
         for b in ("sbk", "ned"):
             fm = _filter_full(entry[b], full[f"r_{b}"], full["vix"], n)

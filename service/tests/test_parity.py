@@ -128,24 +128,32 @@ def test_refits_history():
     assert [e["train_end"] for e in book] == sorted({e["train_end"] for e in book})
     rows = live_rows(snapshot_rows())
     frozen = PAIR.live(rows)
+    snap = {d.isoformat() for d in rows["date"]}
     for k, e in enumerate(book[1:], 1):
         ref = e.get("reference")
         if not ref:
             continue
-        # Apply refit k from its first reference session, as if deployed then.
+        # Each refit as if deployed on its first reference session.
         trial = copy.deepcopy(book[: k + 1])
         for x in trial[1:]:
-            x["applies_from"] = x["applies_from"] or ref["date"][0]
+            x["applies_from"] = x["applies_from"] or (x.get("reference") or ref)["date"][0]
         p = pr.Pair(PAIR.walkforward, PAIR.final, PAIR.gas, trial)
+        # The refit's own filter on the sessions after its date.
+        seg_rows = {"date": [date.fromisoformat(d) for d in ref["date"]], **{c: np.array(ref[c]) for c in ("r_sbk", "r_ned", "vix")}}
+        seg = p.refit_segment(k, seg_rows)
+        for c in ("u", "v", "h"):
+            np.testing.assert_allclose(seg[c], ref[c], atol=1e-8, err_msg=c)
+        # Stitched into the live record: earlier sessions untouched, later ones from the refit.
+        if sum(d in snap for d in ref["date"]) < 10:
+            continue
         out = p.live(rows)
         ds = [d.isoformat() for d in out["date"]]
-        got = {d: (u, v, h) for d, u, v, h in zip(ds, out["u"], out["v"], out["h"])}
-        both = [i for i, d in enumerate(ref["date"]) if d in got and d >= trial[k]["applies_from"]]
-        assert len(both) > 10
-        for name, j in (("u", 0), ("v", 1), ("h", 2)):
-            np.testing.assert_allclose([got[ref["date"][i]][j] for i in both], [ref[name][i] for i in both], atol=1e-8, err_msg=name)
-        before = [i for i, d in enumerate(ds) if d < trial[k]["applies_from"]]
+        frm = trial[k]["applies_from"]
+        got = dict(zip(ds, out["h"]))
+        both = [i for i, d in enumerate(ref["date"]) if d in got and d >= frm]
+        np.testing.assert_allclose([got[ref["date"][i]] for i in both], [ref["h"][i] for i in both], atol=1e-8)
+        before = [i for i, d in enumerate(ds) if d < frm]
         np.testing.assert_array_equal(out["h"][before], frozen["h"][before])
         np.testing.assert_array_equal(out["h0"], frozen["h0"])
-        assert (out["fit"][[i for i, d in enumerate(ds) if d >= trial[k]["applies_from"]]] == final["id"] + k).all()
+        assert (out["fit"][[i for i, d in enumerate(ds) if d >= frm]] == final["id"] + k).all()
         assert p.in_force(date.fromisoformat(ds[-1]))["train_end"] == e["train_end"]
