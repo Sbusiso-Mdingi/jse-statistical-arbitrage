@@ -94,7 +94,7 @@ function useBacktest(period: Period, params: RuleParams) {
 
 /** What a signal was worth before costs, year by year, against the cost of acting on it. */
 const TIER_LABEL: Record<CostTier, string> = {
-  protocol: "Protocol: 10 bps a leg, brokerage only",
+  protocol: "Flat: 10 bps a leg, brokerage only",
   institutional: "JSE, institutional",
   retail: "JSE, retail brokerage",
 };
@@ -587,10 +587,10 @@ function Records({ s }: { s: Switch }) {
       </div>
       <p className="note">
         The spread strategy was found by searching the history:{" "}
-        {dv.specifications_searched} versions were tried on data to March 2026
-        (different cutoffs, windows, entry levels, exits, a sector-hedged spread
-        and forecast-based filters), and this one did best. Its figures are
-        therefore flattering. Cutoffs from −2.4 to −3.34 made{" "}
+        {dv.specifications_searched} rule settings were tried on data to March
+        2026 (different cutoffs, windows, entry levels, exits, a sector-hedged
+        spread and forecast-based filters), and this one did best. Its figures
+        are therefore flattering. Cutoffs from −2.4 to −3.34 made{" "}
         {num(Math.min(...Object.values(dv.by_cutoff)), 0)} to{" "}
         {num(Math.max(...Object.values(dv.by_cutoff)), 0)} bps a trade, so it is
         not a lone lucky number. The median trade made {num(dv.median_bps, 0)}{" "}
@@ -815,7 +815,7 @@ function Instrument({
           The signal is P(Nedbank ≤ today | Standard Bank = today) from the
           copula; it fires beyond 0.05 and 0.95.
           {ins && dep.model === "gas_t"
-            ? ` The copula’s correlation moves with the data (a score-driven update), chosen over a fixed correlation by a pre-registered forecast test on 2020 to March 2026: ${num(ins.validation_gain_per_day * 1000, 0)} thousandths of a log point a day better, t = ${num(ins.dm_t)}, and the signal is calibrated out of sample (KS p ${num(ins.h_ks_p)} against ${num(ins.static_h_ks_p, 3)} for the fixed correlation).`
+            ? ` The copula’s correlation moves with the data (a score-driven update), chosen over a fixed correlation by a forecast test on 2020 to March 2026 whose pass mark was set before it was run: ${num(ins.validation_gain_per_day * 1000, 0)} thousandths of a log point a day better, t = ${num(ins.dm_t)}, and the signal is calibrated out of sample (KS p ${num(ins.h_ks_p)} against ${num(ins.static_h_ks_p, 3)} for the fixed correlation).`
             : ""}
         </p>
       </div>
