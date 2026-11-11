@@ -136,7 +136,7 @@ def test_refits_history():
         # Each refit as if deployed on its first reference session.
         trial = copy.deepcopy(book[: k + 1])
         for x in trial[1:]:
-            x["applies_from"] = x["applies_from"] or (x.get("reference") or ref)["date"][0]
+            x["applies_from"] = (x.get("reference") or ref)["date"][0]
         p = pr.Pair(PAIR.walkforward, PAIR.final, PAIR.gas, trial)
         # The refit's own filter on the sessions after its date.
         seg_rows = {"date": [date.fromisoformat(d) for d in ref["date"]], **{c: np.array(ref[c]) for c in ("r_sbk", "r_ned", "vix")}}
