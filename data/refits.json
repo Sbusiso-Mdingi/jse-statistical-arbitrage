@@ -67,7 +67,7 @@
    "train_end": "2026-08-31",
    "kind": "catch-up",
    "reselected": false,
-   "applies_from": null,
+   "applies_from": "2026-11-12",
    "data_to": "2026-08-31",
    "state": {
     "sbk": {
