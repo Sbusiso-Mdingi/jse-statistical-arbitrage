@@ -153,6 +153,7 @@ type SwitchScore = {
   net_futures_bps: number | null;
   t_cash: number | null;
   t_futures: number | null;
+  position: { open: false } | { open: true; method: "spread" | "copula"; opened: string; side: string };
 };
 
 /** The long-run relationship on a rolling half-year, which method the strategy uses, and both methods' live records. */
@@ -162,7 +163,16 @@ export type Switch = {
   window: number;
   crit: number;
   as_of: string;
-  today: { eg: number; hedge_ratio: number; z: number; holds: boolean; mode: "spread" | "copula"; last_spread_day: string | null };
+  today: {
+    eg: number;
+    hedge_ratio: number;
+    z: number;
+    holds: boolean;
+    mode: "spread" | "copula";
+    last_spread_day: string | null;
+    gate_open: boolean;
+    last_gate_day: string | null;
+  };
   segment: { from: string; to: string; slope: number; intercept: number };
   reference: Record<"design" | "validation_already_seen", {
     spread_mode_share: number;
@@ -170,9 +180,32 @@ export type Switch = {
     switch: { cash: number; futures: number; trades: number };
     copula_alone: { cash: number; futures: number; trades: number };
   }>;
-  series: { date: string[]; eg: (number | null)[]; mode: number[] };
+  series: { date: string[]; eg: (number | null)[]; mode: number[]; gate: number[] };
   spread_share_by_year: Record<string, number>;
   switch: SwitchScore;
   copula_alone: SwitchScore;
+  spread_gate: SwitchScore & {
+    crit: number;
+    frozen_on: string;
+    score_from: string;
+    verdict_at: string;
+    expected_live_bps: [number, number];
+    development: {
+      from: string;
+      to: string;
+      specifications_searched: number;
+      trades: number;
+      futures_bps: number;
+      cash_bps: number;
+      t_futures: number;
+      median_bps: number;
+      win: number;
+      drop_top3_bps: number;
+      mean_days: number;
+      trades_per_year: number;
+      eras: { from: string; to: string; trades: number; futures_bps: number }[];
+      by_cutoff: Record<string, number>;
+    };
+  };
 };
 export const getSwitch = () => getJson<Switch>("/api/switch");

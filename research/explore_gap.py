@@ -208,6 +208,18 @@ def main():
     for k, v in log["trades"].items():
         print(f"{k:44s}", v["futures"], v["cash"]["per_trade_bps"], v["eras"], v.get("detail", ""))
     json.dump(log, open("research/results/explore_gap.json", "w"), indent=1)
+    # The frozen record the service serves (PROTOCOL.md, H16): the rule has no fitted parameter, so this is its
+    # identity, dates and development figures.
+    ch = log["trades"]["rolling|L126|eg<-2.8"]
+    json.dump({"protocol": "research/PROTOCOL.md, H16", "frozen_on": "2026-11-11", "score_from": "2026-11-12", "window": 126, "crit": sw.GATE_CRIT,
+               "verdict": "40 completed trades or 31 December 2036; mean net per trade at the institutional futures schedule above zero, one-sided t > 1.65",
+               "development": {"from": "2006-01-03", "to": "2026-03-31", "specifications_searched": log["specifications_tried"],
+                               "trades": ch["futures"]["trades"], "futures_bps": ch["futures"]["per_trade_bps"], "cash_bps": ch["cash"]["per_trade_bps"],
+                               "t_futures": ch["futures"]["t"], **ch["detail"],
+                               "eras": [{"from": a, "to": b, "trades": e[0], "futures_bps": e[1]} for (a, b), e in zip(ERAS, ch["eras"])],
+                               "trades_per_year": round(ch["futures"]["trades"] / 20.25, 1),
+                               "by_cutoff": {str(c): log["trades"][f"rolling|L126|eg<{c}"]["futures"]["per_trade_bps"] for c in (-2.4, -2.6, -2.8, -3.0, -3.34)}},
+               "expected_live_bps": [40, 60]}, open("data/pair_spread_gate.json", "w"), indent=1)
 
 
 if __name__ == "__main__":

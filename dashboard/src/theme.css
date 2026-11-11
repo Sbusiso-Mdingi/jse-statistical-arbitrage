@@ -433,3 +433,43 @@ tr.final td {
   opacity: 0.7;
   margin-top: 2px;
 }
+
+/* The strategies table and the collapsed detail. */
+table.strategies td {
+  vertical-align: top;
+  line-height: 1.45;
+}
+table.strategies td:first-child {
+  white-space: nowrap;
+}
+table.strategies td.state {
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.tag {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--positive);
+}
+tr.sub-row td {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+details.more {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 0;
+}
+details.more > summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+details.more[open] > summary {
+  margin-bottom: 8px;
+}

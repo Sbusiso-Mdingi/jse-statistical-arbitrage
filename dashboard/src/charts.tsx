@@ -382,11 +382,24 @@ export function ReversalBars({ rows }: { rows: { year: number; n: number; bps: n
 }
 
 /** The rolling cointegration statistic against its critical value; shaded sessions are those in spread mode. */
-export function GateChart({ dates, stat, mode, crit, label }: { dates: string[]; stat: (number | null)[]; mode: number[]; crit: number; label: string }) {
-  const H = 240;
+/** A rolling statistic against fixed cutoffs, with the sessions each rule was active shaded (lightest first). */
+export function GateChart({
+  dates,
+  stat,
+  lines,
+  bands: layers,
+  label,
+}: {
+  dates: string[];
+  stat: (number | null)[];
+  lines: { value: number; label: string }[];
+  bands: { mode: number[]; opacity: number }[];
+  label: string;
+}) {
+  const H = 260;
   const pad = { l: 46, r: 12, t: 12, b: 28 };
   const vals = stat.filter((v): v is number => v != null);
-  const lo = Math.min(crit - 0.5, ...vals);
+  const lo = Math.min(...lines.map((l) => l.value - 0.5), ...vals);
   const hi = Math.max(1, ...vals);
   const x = scaleLinear(0, dates.length - 1, pad.l, W - pad.r);
   const y = scaleLinear(lo, hi, H - pad.b, pad.t);
@@ -403,25 +416,31 @@ export function GateChart({ dates, stat, mode, crit, label }: { dates: string[];
     });
     return d;
   }, [stat, x, y]);
-  const bands = useMemo(() => {
-    const out: [number, number][] = [];
-    let s: number | null = null;
-    mode.forEach((m, i) => {
-      if (m && s == null) s = i;
-      if (!m && s != null) {
-        out.push([s, i]);
-        s = null;
-      }
-    });
-    if (s != null) out.push([s, mode.length]);
-    return out;
-  }, [mode]);
+  const spans = useMemo(
+    () =>
+      layers.map(({ mode, opacity }) => {
+        const out: [number, number][] = [];
+        let s: number | null = null;
+        mode.forEach((m, i) => {
+          if (m && s == null) s = i;
+          if (!m && s != null) {
+            out.push([s, i]);
+            s = null;
+          }
+        });
+        if (s != null) out.push([s, mode.length]);
+        return { out, opacity };
+      }),
+    [layers],
+  );
   const step = (W - pad.l - pad.r) / Math.max(dates.length - 1, 1);
   return (
     <svg className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label}>
-      {bands.map(([a, b]) => (
-        <rect key={a} x={x(a) - step / 2} y={pad.t} width={Math.max((b - a) * step, 1)} height={H - pad.t - pad.b} fill="var(--primary)" opacity={0.14} />
-      ))}
+      {spans.map(({ out, opacity }, k) =>
+        out.map(([a, b]) => (
+          <rect key={`${k}-${a}`} x={x(a) - step / 2} y={pad.t} width={Math.max((b - a) * step, 1)} height={H - pad.t - pad.b} fill="var(--primary)" opacity={opacity} />
+        )),
+      )}
       {ticks(lo, hi, 5).map((t) => (
         <g key={t}>
           <path d={`M${pad.l} ${y(t)}H${W - pad.r}`} stroke="var(--border)" />
@@ -436,10 +455,15 @@ export function GateChart({ dates, stat, mode, crit, label }: { dates: string[];
         </text>
       ))}
       <path d={path} fill="none" stroke="var(--foreground)" strokeOpacity={0.75} strokeWidth={1} />
-      <path d={`M${pad.l} ${y(crit)}H${W - pad.r}`} stroke="var(--negative)" strokeDasharray="4 4" />
-      <text x={W - pad.r} y={y(crit) + 13} textAnchor="end" fill="var(--negative)">
-        holds below {crit}
-      </text>
+      {lines.map((l, k) => (
+        <g key={l.value}>
+          <path d={`M${pad.l} ${y(l.value)}H${W - pad.r}`} stroke="var(--negative)" strokeDasharray={k ? "2 3" : "5 4"} />
+          <text x={pad.l + 6} y={y(l.value) + (k ? 13 : -5)} textAnchor="start" fill="var(--negative)" stroke="var(--background)" strokeWidth={4} paintOrder="stroke">
+            {l.label}
+          </text>
+        </g>
+      ))}
+      {vals.length > 0 && <circle cx={x(stat.length - 1)} cy={y(vals[vals.length - 1])} r={3} fill="var(--foreground)" />}
     </svg>
   );
 }

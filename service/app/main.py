@@ -47,6 +47,7 @@ VOL_WINDOW = walkforward["vol_window"]
 FINAL_ID = final["id"]
 SHADOW = json.loads((DATA / "pair_shadow.json").read_text())
 SWITCH = json.loads((DATA / "pair_switch.json").read_text())
+SPREAD_GATE = json.loads((DATA / "pair_spread_gate.json").read_text())
 _switch_cache: dict = {}
 
 
@@ -199,13 +200,16 @@ def api_shadow():
 
 
 def switch_state(pair: dict) -> dict:
-    """H14 (research/PROTOCOL.md): the rolling Engle-Granger gate, today's method and the live record of the
-    switch beside the copula rule alone, scored on trades opened from 12 November 2026."""
+    """H14 and H16 (research/PROTOCOL.md): the rolling Engle-Granger statistic, today's method and the live records
+    of the switch, the copula rule alone and the gated spread trade, each scored on trades opened from 12 November
+    2026, with the position each carries into the next session."""
     as_of = pair["date"][-1]
     if _switch_cache.get("as_of") != as_of:
-        r = switch.record(pair["date"], pair["r_sbk"], pair["r_ned"], pair["h"], date.fromisoformat(SWITCH["score_from"]))
-        mode, eg, b = r["mode"], r["eg"], r["b"]
+        frm = {"switch": SWITCH["score_from"], "copula_alone": SWITCH["score_from"], "spread_gate": SPREAD_GATE["score_from"]}
+        r = switch.record(pair["date"], pair["r_sbk"], pair["r_ned"], pair["h"], {k: date.fromisoformat(v) for k, v in frm.items()})
+        mode, eg, b, gate = r["mode"], r["eg"], r["b"], r["gate"]
         spread_days = np.flatnonzero(mode)
+        gate_days = np.flatnonzero(gate)
         seg = SWITCH["bai_perron"]["segments"][-1]
         _switch_cache.clear()
         _switch_cache.update(as_of=as_of, body={
@@ -218,15 +222,20 @@ def switch_state(pair: dict) -> dict:
             "as_of": as_of,
             "today": {"eg": float(eg[-1]), "hedge_ratio": float(b[-1]), "z": float(r["z"][-1]), "holds": bool(eg[-1] < switch.EG_CRIT),
                       "mode": "spread" if mode[-1] else "copula",
-                      "last_spread_day": pair["date"][spread_days[-1]] if len(spread_days) else None},
+                      "last_spread_day": pair["date"][spread_days[-1]] if len(spread_days) else None,
+                      "gate_open": bool(eg[-1] < switch.GATE_CRIT),
+                      "last_gate_day": pair["date"][gate_days[-1]] if len(gate_days) else None},
             "segment": seg,
             "reference": SWITCH["reference"],
-            "series": {"date": pair["date"], "eg": eg, "mode": mode},
+            "series": {"date": pair["date"], "eg": eg, "mode": mode, "gate": gate},
             # The service's record starts in 2010, so its window first fills in mid-2010; that year comes from research.
             "spread_share_by_year": {str(y): (SWITCH["spread_mode_share_by_year"]["2010"] if y == 2010 else float(mode[[d.year == y for d in pair["date"]]].mean()))
                                      for y in sorted({d.year for d in pair["date"]})},
             "switch": r["switch"],
             "copula_alone": r["copula_alone"],
+            "spread_gate": {**r["spread_gate"], "crit": switch.GATE_CRIT, "frozen_on": SPREAD_GATE["frozen_on"], "score_from": SPREAD_GATE["score_from"],
+                            "verdict_at": SPREAD_GATE["verdict"], "development": SPREAD_GATE["development"],
+                            "expected_live_bps": SPREAD_GATE["expected_live_bps"]},
         })
     return _switch_cache["body"]
 

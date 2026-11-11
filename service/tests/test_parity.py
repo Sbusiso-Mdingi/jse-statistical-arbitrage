@@ -101,3 +101,6 @@ def test_switch_gate_matches_research():
     assert max(abs(e - float(r["eg126"])) for e, m, r in common) < 6e-5  # the csv keeps four decimals
     assert all(("spread" if m else "copula") == r["mode"] for e, m, r in common)
     assert body["switch"]["complete"] == body["copula_alone"]["complete"] == 0
+    g = body["spread_gate"]
+    assert all(bool(m) == (e is not None and e < switch.GATE_CRIT) for e, m in zip(s["eg"], s["gate"]))
+    assert g["complete"] == 0 and g["development"]["trades"] == 79

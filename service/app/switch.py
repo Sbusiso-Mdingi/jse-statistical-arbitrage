@@ -17,6 +17,7 @@ import numpy as np
 
 L = 126
 EG_CRIT = -3.34
+GATE_CRIT = -2.8  # H16: H4b's trade while the statistic is below this, flat otherwise
 ENTRY, EXIT, STOP, MAX_HOLD = 1.5, 0.0, 4.0, 60
 LEVEL, HOLD = 0.45, 5
 TRIM = 0.15
@@ -253,15 +254,28 @@ def live_score(rows: list[dict], dates: list[dt.date], score_from: dt.date) -> d
 
 def record(dates: list[dt.date], r_sbk: np.ndarray, r_ned: np.ndarray, h: np.ndarray, score_from: dt.date) -> dict:
     """The switch on a record of simple returns and the copula's h: gate, mode, and the live scores of the
-    switch and of the copula rule alone."""
+    switch, the copula rule alone and the gated spread trade (H16), with the position each carries into the next
+    session. score_from is one date or a dict of dates by key."""
     x, y = np.cumsum(np.log1p(r_sbk)), np.cumsum(np.log1p(r_ned))
     b, z, eg = rolling(x, y)
     mode = modes(x, y, eg, "E", None)
-    out = {"b": b, "z": z, "eg": eg, "mode": mode}
-    for key, trs in (("switch", trades(mode, h, b, z)), ("copula_alone", trades(np.zeros(len(h), np.int8), h, b, z, spread_on=False))):
+    gate = (eg < GATE_CRIT).astype(np.int8)
+    out = {"b": b, "z": z, "eg": eg, "mode": mode, "gate": gate}
+    for key, trs in (("switch", trades(mode, h, b, z)), ("copula_alone", trades(np.zeros(len(h), np.int8), h, b, z, spread_on=False)),
+                     ("spread_gate", trades(gate, h, b, z, copula_on=False, hold_through=True))):
         rows = None
         for k in SCHEDULES:
             _, rk = daily_returns(trs, dates, r_sbk, r_ned, k)
             rows = [dict(r, **{f"net_{k}": rk[i]["net"]}) for i, r in enumerate(rows or rk)]
-        out[key] = live_score(rows, dates, score_from)
+        out[key] = live_score(rows, dates, score_from[key] if isinstance(score_from, dict) else score_from)
+        out[key]["position"] = position(trs, dates)
     return out
+
+
+def position(trs: list[dict], dates: list[dt.date]) -> dict:
+    """The position carried into the next session: the open trade, if any, and when it opened."""
+    cur = trs[-1] if trs and trs[-1]["close"] is None else None
+    if cur is None:
+        return {"open": False}
+    return {"open": True, "method": cur["method"], "opened": dates[cur["open"]],
+            "side": "Long SBK / short NED" if cur["w_sbk"] > 0 else "Short SBK / long NED"}
