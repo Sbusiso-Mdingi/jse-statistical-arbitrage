@@ -4,7 +4,8 @@
 
 Yahoo Finance daily closes: the two banks and two other large SA banks (FirstRand, Absa; a sector reference for the
 decomposition only, never traded), and the dollar against the rand, naira, Kenyan shilling, kwanza and cedi.
-Dividend events for SBK and NED from the same chart endpoint. Writes data/raw/h15_px.csv and data/raw/h15_div.csv.
+Dividend events for SBK and NED from the same chart endpoint. The OECD South African immediate rate from FRED
+(IRSTCI01ZAM156N, monthly). Writes data/raw/h15_px.csv, h15_div.csv and h15_rate.csv.
 """
 import csv, sys, time
 from datetime import date, datetime, timezone, timedelta
@@ -45,6 +46,9 @@ def main():
             w.writerow([d.isoformat(), *[px[d].get(k, "") for k in SYMBOLS]])
     with open("data/raw/h15_div.csv", "w", newline="") as f:
         w = csv.writer(f); w.writerow(["ex_date", "bank", "amount"]); w.writerows(sorted(divs))
+    r = httpx.get("https://fred.stlouisfed.org/graph/fredgraph.csv", params={"id": "IRSTCI01ZAM156N"}, timeout=30)
+    r.raise_for_status()
+    open("data/raw/h15_rate.csv", "w").write(r.text)
 
 
 if __name__ == "__main__":

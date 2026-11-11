@@ -220,6 +220,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 16. **H14.** Registered 11 November 2026, detector rule written before the simulation. `select` was run once; `run` was rerun after the first, and the reruns only added the frozen export and its reference figures, every other output identical. The first parity check read the wrong key for the futures Sharpe; it was a lookup error, fixed before any H14 figure was reported. Ran in under a minute on the Mac.
 
+17. **H15.** Registered 11 November 2026 before any label or fit; the forecast script was run once. Yahoo has no kwanza history, as the registration noted before the run. A dividend skipped (Nedbank in 2020) is compared with the dividend before it; the registration had not covered that case, and the rule was set before the run.
+
 ## H11: a direct repair to the Nedbank margin
 
 Stopped at the design stage, as the protocol requires: no edit qualified, so nothing was frozen and no edited instrument runs live. The harness reproduces the stored walk-forward Nedbank transforms to 1e-10.
@@ -318,6 +320,31 @@ Spread-mode share by year: 2010 3%, 2011 30%, 2012 57%, 2013 38%, 2014 1%, 2015 
 
 Frozen 11 November 2026 (`data/pair_switch.json`), served at `/api/switch` from dashboard v11, scored on trades opened from 12 November 2026 at institutional futures with cash reported and H8's trades beside it. Verdict at 225 completed trades or 31 December 2030: pass if mean net a trade is above zero with one-sided t > 1.65. If the gate stays closed, the switch is the copula rule, and no spread trade by the verdict means no evidence on the switch. Outputs: `research/results/h14_select.json`, `h14.json`, `h14_daily.csv` (statistic, hedge ratio, mode and daily net by date), `h14_by_year.csv`.
 
+## H15: will the gap close from here? Stopped at the forecast test
+
+Registered 11 November 2026 before any label or fit (`research/h15_forecast.py`, inputs from `research/h15_data.py`). For H15 only, all data to 31 March 2026 is development data and no figure on it is a test. Step 4, descriptive (`research/h15_decompose.py`): the 126-session hedge ratio to 10 November 2026 is −0.0004 while daily-return correlation is 0.65. Nedbank's own move net of the sector is +9.8%, most of it in August, and Standard Bank's −1.5%; removing Nedbank's own part would put the hedge ratio at 0.62. African currencies explain 4% of Standard Bank's own move.
+
+Development: 5,094 closes from 3 January 2006 to 6 January 2026 (the last whose 60-session horizon ends by 31 March 2026), 1,342 event closes with |z| > 1.5. The frozen gap closed within 60 sessions, before the stop, on 44.8% of them (median 21 sessions when it did). Five purged folds, out of fold:
+
+| Model | Log score | Brier |
+| --- | --- | --- |
+| Z, \|z\| only | −0.675 | 0.242 |
+| G, H14's gate statistic and \|z\| | −0.609 | 0.208 |
+| M, Markov-switching baseline | −0.679 | 0.244 |
+| X, baseline plus five external inputs | −0.721 | 0.260 |
+
+| Comparison | Mean log-score gain | Newey-West t |
+| --- | --- | --- |
+| X against M (the gate) | −0.041 | −2.97 |
+| M against Z | −0.004 | −0.71 |
+| G against Z | +0.066 | 1.82 |
+| M against G | −0.071 | −2.02 |
+| XN against M, from April 2015 (767 events) | −0.440 | −2.39 |
+
+X does not beat the baseline, so H15 stops at (a): no trading rule was chosen, nothing is frozen, and there is no live record. The expectation was right on X and wrong on M, which did not beat |z| alone. The Markov fit is stable across folds (φ 0.970 to 0.975, σ 1.0% against 2.4 to 2.7%, persistence 0.97 to 0.98 and 0.85 to 0.95), but its two states separate calm from turbulent days rather than reverting from wandering spreads, and its filtered probability is uncorrelated with the label (−0.02). The external inputs add noise across eras; only results-ahead has a visible correlation with the label (0.16). News made the fit much worse. The one input that forecasts the gap closing is the 126-session Engle-Granger statistic itself (correlation −0.41 with the label, G beating Z at t 1.82): on development data the gate the brief called reactive carries more forward information than the daily model. That is a development figure, not a test, and H15 does not trade on it.
+
+Outputs: `research/results/h15.json`, `h15_daily.csv` (label, inputs, the baseline's filtered probability and every model's out-of-fold probability by date), `h15_events.csv` (ex-dividend dates and results months), `h15_decompose.json`.
+
 ## Run order
 
 ```sh
@@ -352,5 +379,8 @@ service/.venv/bin/python research/h10_sizing.py            # leg sizing test; wr
 service/.venv/bin/python research/redteam.py all           # the red team; writes research/results/redteam.json (run on Azure, 3 seconds of compute)
 service/.venv/bin/python research/h14_switch.py select   # about a minute on eight cores; writes research/results/h14_select.json
 service/.venv/bin/python research/h14_switch.py run      # seconds; writes h14.json, h14_daily.csv, h14_by_year.csv and data/pair_switch.json
+service/.venv/bin/python research/h15_data.py       # downloads data/raw/h15_px.csv, h15_div.csv, h15_rate.csv (Yahoo, FRED); not committed
+service/.venv/bin/python research/h15_decompose.py  # seconds; descriptive
+service/.venv/bin/python research/h15_forecast.py   # about 25 seconds; writes h15.json, h15_daily.csv, h15_events.csv
 service/.venv/bin/python research/export_research.py
 ```
