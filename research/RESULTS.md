@@ -378,6 +378,26 @@ At −2.8: median trade 145 bps, 81% of trades win, 78 bps a trade without the t
 
 **Chosen and frozen 11 November 2026** (PROTOCOL.md, H16): the −2.8 gate, flat when shut, scored on trades opened from 12 November 2026.
 
+## H17: when the models refit
+
+A history check on development data only (`research/h17_fits.R`, `research/h17_refit.py`). Every price after 31 March 2026 is deleted before any fit. The scored period runs from the first session of 2010 to 31 March 2026, 4,143 sessions. Yearly refits reproduce the record's GAS h to 5e-9 (the parity check), and the year-end margin refits match the walk-forward's coefficients to 4e-11. All 392 margin fits converged.
+
+Gains are in thousandths of a nat a session against Y, with the Newey-West t (21 lags) in brackets. The bar was a mean gain above zero with t above 2.33. Copula rule trades are those opened from 2010 and completed by 31 March 2026, net per trade in bps at the institutional schedules. The KS p-values are for h, the SBK PITs and the NED PITs over the scored period.
+
+| Refits | Count | Joint gain | Margins | Copula | Rule trades | Futures | Cash | Inside H14, futures | KS p (h / SBK / NED) |
+|---|---|---|---|---|---|---|---|---|---|
+| Y, year ends only | 17 | — | — | — | 292 | −20.5 | −46.3 | −19.0 | 0.004 / 0.047 / 0.103 |
+| Q, plus quarter ends | 65 | +2.81 (3.08) | +0.76 (1.45) | +2.05 (2.78) | 298 | −20.3 | −46.2 | −19.4 | 0.007 / 0.054 / 0.159 |
+| M, every month end | 195 | +3.09 (2.93) | +1.59 (2.45) | +1.50 (1.77) | 295 | −19.5 | −45.4 | −17.6 | 0.011 / 0.066 / 0.161 |
+| K, PIT drift | 24 | +0.35 (1.23) | +0.12 (0.51) | +0.23 (1.04) | 292 | −21.2 | −47.1 | −19.8 | 0.003 / 0.056 / 0.106 |
+| E, Engle-Granger crossings | 102 | +2.31 (2.65) | +0.93 (2.00) | +1.38 (1.85) | 294 | −18.7 | −44.5 | −16.7 | 0.007 / 0.067 / 0.143 |
+| **R, end of March and August** | 49 | +2.42 (3.30) | +0.90 (1.88) | +1.52 (2.55) | 296 | −20.2 | −46.1 | −19.2 | 0.005 / 0.057 / 0.156 |
+
+- **What passed.** Q, M, E and R all beat yearly refits on the joint score, and none of them lowers the copula rule's net per trade at futures. M has the largest gain, but Q, E and R are within one standard error of it, so the tie rule picks the one with the fewest refits: **R, refits at the end of March and August plus the year-end reselection**. That is a calendar procedure. The data-driven triggers did not earn their place. PIT drift (K) fired only 7 times between year ends and barely moved the score (t 1.23). Engle-Granger crossings (E) needed 102 refits to do about as well as R's 49.
+- **What it means for trading.** Very little. The gain is about 0.002 nats a session, around 0.04% of the joint log density. Under every candidate the copula rule loses about 19 to 21 bps a trade at futures and 45 to 47 at cash on development data, so the timing of refits does not rescue it. The spread strategy has no fitted parameters and is unaffected.
+- **Against the stated expectation.** The expectation was Y or Q. R was chosen instead, and the trading figures moved by under 2 bps a trade, as expected.
+- **Live.** Under the registration, R runs from the first session after it is switched on, never retroactively. So the record from 1 April 2026 stays on the fit of 31 March 2026, and the 31 August 2026 refit is not made after the fact. The next refit would be the year-end reselection on the close of 31 December 2026.
+
 ## Run order
 
 ```sh
@@ -416,5 +436,7 @@ service/.venv/bin/python research/h15_data.py       # downloads data/raw/h15_px.
 service/.venv/bin/python research/h15_decompose.py  # seconds; descriptive
 service/.venv/bin/python research/h15_forecast.py   # about 25 seconds; writes h15.json, h15_daily.csv, h15_events.csv
 service/.venv/bin/python research/explore_gap.py    # seconds; the H16 search, writes explore_gap.json
+Rscript research/h17_fits.R                    # about two minutes on seven cores; writes research/results/h17_fits.json
+service/.venv/bin/python research/h17_refit.py   # about six minutes on seven cores; writes research/results/h17.json
 service/.venv/bin/python research/export_research.py
 ```
