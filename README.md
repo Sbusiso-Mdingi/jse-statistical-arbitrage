@@ -28,7 +28,7 @@ The validation years are spent: every trading rule tried on the pair, from the g
 - `research/` R pipeline (`00_data.R`, `clean.R`, `lib.R`, `02_basket.R`) and Python evaluation. `h1_evaluate.py` scores the rule, `pair.py` measures the instrument (edge per signal by year, costs, red team, sizing), `export_research.py` collects everything into `data/research.json`. `models/` holds the margin and dependence model comparison; `models/export_pair_gas.py` writes `data/pair_gas.json`, the score-driven copula the service runs. `01_walkforward.R` fits the pair; `02_basket.R` and the scripts named for the basket are the earlier stage. The other scripts are the tests in `RESULTS.md`; `h5_weights.py` re-filters any month from the stored coefficients and matches the R record to 1e-9.
 - `service/` FastAPI app for the pair only. `app/model.py` reimplements the rugarch filters and copula h-functions in NumPy, `app/pair.py` filters new sessions through the score-driven copula, `app/rule.py` holds the measurement rule and the JSE cost schedule, and `app/data.py` fetches Standard Bank and Nedbank after each close. `tests/test_parity.py` checks the filters against R, the copula against the research filter, and the rule's Sharpe ratios at every cost tier against `research/results/pair.json`.
 - `dashboard/` React and Vite front end, themed to match mdingi.co.za and designed to be embedded.
-- `deploy/azure.sh` builds the image in Azure Container Registry and deploys it to App Service. `deploy/cloudrun/` is the monthly refit of the earlier basket stage; its schedule is paused because the pair is frozen.
+- `deploy/azure.sh` builds the image in Azure Container Registry and deploys it to App Service. `deploy/cloudrun/` is the scheduled refit (research/PROTOCOL.md, H17): a Cloud Run job on 1 January, 1 April and 1 September refits the margins and the copula to the month end just passed and pushes a `refit/<date>` branch. It never deploys and never touches main.
 
 ## Running locally
 
@@ -48,7 +48,7 @@ Live prices refresh every 30 minutes (`REFRESH_SECONDS`); if Yahoo is unreachabl
 AZ_SUBSCRIPTION=<subscription id> TAG=v10 deploy/azure.sh
 ```
 
-Resource group `rg-mdingi-previews`: an App Service F1 (free) Linux plan pulling from ACR Basic through a managed identity. Response headers allow framing only from mdingi.co.za and localhost. The pair's final fit is frozen on 31 March 2026 and is not refitted. The service filters each new session forward from that fit, so nothing scheduled is needed; the old monthly Cloud Run refit (`jse-pairs-refit-monthly`) is paused.
+Resource group `rg-mdingi-previews`: an App Service F1 (free) Linux plan pulling from ACR Basic through a managed identity. Response headers allow framing only from mdingi.co.za and localhost. The pair's models refit at the end of March, August and December on data to that date only (`data/refits.json`). The service filters each new session forward from the refit in force, and a refit is used only from the session after it is deployed. To take a refit branch live: review and merge it, run `python3 research/refit_apply.py`, deploy, and commit the stamped `data/refits.json`.
 
 ## Data
 

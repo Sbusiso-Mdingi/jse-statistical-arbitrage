@@ -1076,6 +1076,15 @@ export function App({ embedded }: { embedded: boolean }) {
             is the test, and the deadlines and pass marks were set in advance.
           </li>
           <li>
+            <strong>Refits</strong>
+            The models refit at the end of March, August and December, each time
+            using only the data to that date; each refit is used only from the
+            session after it is made.
+            {pnl?.last_refit
+              ? ` Last refit on ${fmtDate(pnl.last_refit, { day: "numeric", month: "long", year: "numeric" })}.`
+              : ""}
+          </li>
+          <li>
             <strong>What did not work</strong>
             Many other rules were tried on the pair and failed: a five-day hold,
             news filters, an intraday rule, volatility gauges, a forecast of

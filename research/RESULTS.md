@@ -398,6 +398,26 @@ Gains are in thousandths of a nat a session against Y, with the Newey-West t (21
 - **Against the stated expectation.** The expectation was Y or Q. R was chosen instead, and the trading figures moved by under 2 bps a trade, as expected.
 - **Live.** Under the registration, R runs from the first session after it is switched on, never retroactively. So the record from 1 April 2026 stays on the fit of 31 March 2026, and the 31 August 2026 refit is not made after the fact. The next refit would be the year-end reselection on the close of 31 December 2026.
 
+## H17 catch-up: the refit due on 31 August 2026 (PROTOCOL.md, amendment of 11 November 2026)
+
+Run 11 November 2026 on sessions to 31 August 2026 only (5,517 sessions; `research/refit.R`, `research/refit_export.py`), the specification of 31 March 2026 kept, parameters re-estimated. Both margins converged. Written to `data/refits.json`; it is used from the first session after the deploy, and every session before that stays on the fit of 31 March 2026.
+
+| | 31 March 2026 | 31 August 2026 |
+|---|---|---|
+| SBK eGARCH(1,1) Student t: ar1, ma1 | 0.796, −0.847 | 0.800, −0.851 |
+| SBK omega, alpha1, beta1, gamma1 | −0.1006, −0.0361, 0.9876, 0.1119 | −0.0990, −0.0353, 0.9878, 0.1099 |
+| SBK shape | 6.34 | 6.36 |
+| NED sGARCH(1,1) Student t: ar1, ma1 | 0.821, −0.860 | 0.821, −0.860 |
+| NED omega, alpha1, beta1 | 6.99e-6, 0.0620, 0.9187 | 6.99e-6, 0.0619, 0.9186 |
+| NED shape | 6.71 | 6.68 |
+| GAS omega, beta, alpha, nu | 0.0259, 0.9713, 0.0361, 8.26 | 0.0291, 0.9678, 0.0376, 8.44 |
+| GAS long-run correlation, half-life | 0.717, 23.8 sessions | 0.717, 21.2 sessions |
+
+- **The state.** On 1 September 2026 the 31 March fit, filtered forward, gives a copula correlation of 0.6252; the refit gives 0.6262. Standard Bank's conditional volatility that day is 1.530% against 1.528%.
+- **The signal.** On the 28 sessions from 1 September to 9 October 2026 (filtered with the new parameters only to compare; none of them is re-scored), h moves by 0.0009 on average and 0.0032 at most. The same single session passes the copula rule's 0.45 cutoff under both fits. The refit's PITs to 31 August pass the uniformity test (KS p 0.75 Standard Bank, 0.16 Nedbank).
+- **H13.** Both of its variants were built on the fit of 31 March 2026, so `/api/shadow` keeps scoring them, and its H8 reference, on that fit; refits do not reach it.
+- **Next.** The year-end reselection on the close of 31 December 2026, made by the scheduled job on 1 January 2027 and pushed to a branch for review.
+
 ## Run order
 
 ```sh
@@ -438,5 +458,8 @@ service/.venv/bin/python research/h15_forecast.py   # about 25 seconds; writes h
 service/.venv/bin/python research/explore_gap.py    # seconds; the H16 search, writes explore_gap.json
 Rscript research/h17_fits.R                    # about two minutes on seven cores; writes research/results/h17_fits.json
 service/.venv/bin/python research/h17_refit.py   # about six minutes on seven cores; writes research/results/h17.json
+service/.venv/bin/python research/refit_export.py init                 # once: data/refits.json starts with the fit of 31 March 2026
+Rscript research/refit.R 2026-08-31 && service/.venv/bin/python research/refit_export.py 2026-08-31 catch-up   # seconds; the catch-up refit
+service/.venv/bin/python research/refit_apply.py                       # just before a deploy: refits pending apply from the next weekday
 service/.venv/bin/python research/export_research.py
 ```

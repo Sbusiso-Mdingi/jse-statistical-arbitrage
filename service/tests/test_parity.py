@@ -108,3 +108,44 @@ def test_switch_gate_matches_research():
     g = body["spread_gate"]
     assert all(bool(m) == (e is not None and e < switch.GATE_CRIT) for e, m in zip(s["eg"], s["gate"]))
     assert g["complete"] == 0 and g["development"]["trades"] == 79
+
+
+def test_refits_history():
+    """data/refits.json (H17): the first entry is the fit of 31 March 2026; each later refit, once it applies,
+    reproduces research/refit_export.py's filter on the sessions after its date and leaves earlier sessions alone."""
+    import copy
+    from datetime import date
+
+    from app import pair as pr
+    from app.main import PAIR, live_rows, snapshot_rows
+
+    book = json.loads((ROOT / "data" / "refits.json").read_text())["refits"]
+    base = book[0]
+    assert base["train_end"] == final["train_end"] and base["applies_from"] == final["trade_start"]
+    for b in ("sbk", "ned"):
+        assert base[b]["coef"] == final[b]["coef"]
+        assert all(base["state"][b][k] == final["state"][b][k] for k in ("r", "mu", "sigma", "z"))
+    assert [e["train_end"] for e in book] == sorted({e["train_end"] for e in book})
+    rows = live_rows(snapshot_rows())
+    frozen = PAIR.live(rows)
+    for k, e in enumerate(book[1:], 1):
+        ref = e.get("reference")
+        if not ref:
+            continue
+        # Apply refit k from its first reference session, as if deployed then.
+        trial = copy.deepcopy(book[: k + 1])
+        for x in trial[1:]:
+            x["applies_from"] = x["applies_from"] or ref["date"][0]
+        p = pr.Pair(PAIR.walkforward, PAIR.final, PAIR.gas, trial)
+        out = p.live(rows)
+        ds = [d.isoformat() for d in out["date"]]
+        got = {d: (u, v, h) for d, u, v, h in zip(ds, out["u"], out["v"], out["h"])}
+        both = [i for i, d in enumerate(ref["date"]) if d in got and d >= trial[k]["applies_from"]]
+        assert len(both) > 10
+        for name, j in (("u", 0), ("v", 1), ("h", 2)):
+            np.testing.assert_allclose([got[ref["date"][i]][j] for i in both], [ref[name][i] for i in both], atol=1e-8, err_msg=name)
+        before = [i for i, d in enumerate(ds) if d < trial[k]["applies_from"]]
+        np.testing.assert_array_equal(out["h"][before], frozen["h"][before])
+        np.testing.assert_array_equal(out["h0"], frozen["h0"])
+        assert (out["fit"][[i for i, d in enumerate(ds) if d >= trial[k]["applies_from"]]] == final["id"] + k).all()
+        assert p.in_force(date.fromisoformat(ds[-1]))["train_end"] == e["train_end"]

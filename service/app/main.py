@@ -41,7 +41,7 @@ FRAME_ANCESTORS = "'self' https://mdingi.co.za https://www.mdingi.co.za http://l
 
 walkforward = json.loads((DATA / "walkforward.json").read_text())
 final = json.loads((DATA / "model_final.json").read_text())
-PAIR = pr.Pair(walkforward, final, json.loads((DATA / "pair_gas.json").read_text()))
+PAIR = pr.Pair(walkforward, final, json.loads((DATA / "pair_gas.json").read_text()), json.loads((DATA / "refits.json").read_text())["refits"])
 FREEZE = date.fromisoformat(walkforward["freeze"])
 VOL_WINDOW = walkforward["vol_window"]
 FINAL_ID = final["id"]
@@ -194,8 +194,8 @@ def api_shadow():
         "round_trips_bps": rt,
         "as_of": rows["date"][-1],
         "own_vol_copula": shadow.score(rows["date"], a_h, rs, rn, None, rt),
-        "vix_gate": {"level": SHADOW["vix_gate"]["level"], **shadow.score(pair["date"], pair["h"], pair["r_sbk"], pair["r_ned"], gate, rt)},
-        "h8_reference": shadow.score(pair["date"], pair["h"], pair["r_sbk"], pair["r_ned"], None, rt),
+        "vix_gate": {"level": SHADOW["vix_gate"]["level"], **shadow.score(pair["date"], pair["h0"], pair["r_sbk"], pair["r_ned"], gate, rt)},
+        "h8_reference": shadow.score(pair["date"], pair["h0"], pair["r_sbk"], pair["r_ned"], None, rt),
     }))
 
 
@@ -256,7 +256,9 @@ def api_switch():
 def api_pnl():
     """Each strategy's cumulative net P&L over the service's record, at both institutional schedules, and its trades."""
     switch_state(PAIR.rows(PAIR.live(cache.get().rows)))
-    return JSONResponse(_clean(_switch_cache["pnl"]))
+    last = PAIR.refits[-1]
+    return JSONResponse(_clean({**_switch_cache["pnl"], "last_refit": last["train_end"] if len(PAIR.refits) > 1 else None,
+                                "last_refit_from": last["applies_from"] if len(PAIR.refits) > 1 else None}))
 
 
 @app.get("/api/research")

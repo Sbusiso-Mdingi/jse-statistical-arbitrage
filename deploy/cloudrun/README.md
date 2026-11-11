@@ -1,60 +1,44 @@
-# Monthly refit on Cloud Run
+# Scheduled refit on Cloud Run
 
-**Paused since 9 November 2026.** The project is now Standard Bank against Nedbank, frozen on 31 March 2026, and the service filters new sessions itself. This job refits the earlier basket stage and redeploys the dashboard, so it stays paused (`gcloud scheduler jobs pause jse-pairs-refit-monthly --location europe-west1`). `pipeline.sh` now exits at once, so a resumed schedule changes nothing.
-
-The code lives here on GitHub; only the **scheduled compute** runs on Google
-Cloud Run instead of GitHub Actions. Each month a Cloud Run job clones this repo
-fresh, downloads prices, refits the bank-basket model, runs the parity tests,
-pushes the new fits back to GitHub, and redeploys the Azure dashboard — exactly
-what the GitHub Actions workflow (removed) used to do.
+The models refit at the end of March, August and December on data to that date only (research/PROTOCOL.md, H17, and its amendment of 11 November 2026). A Cloud Run job does the fitting three times a year and stops at a branch: it never deploys and never touches main.
 
 ## How it fits together
 
 ```
-Cloud Scheduler ──monthly──> Cloud Run job
-                               ├─ git clone this repo @ main        (bootstrap.sh)
-                               ├─ Rscript research/00_data.R  (download prices)
-                               ├─ Rscript research/02_basket.R  (refit basket)
-                               ├─ pytest parity gate (service/)
-                               ├─ git push fits back to GitHub      (SSH deploy key from Secret Manager)
-                               └─ az login via GCP→Azure federation, then deploy/azure.sh
+Cloud Scheduler ── 1 Jan, 1 Apr, 1 Sep, 06:00 Johannesburg ──> Cloud Run job jse-pairs-refit
+   ├─ git clone this repo @ main                       (bootstrap.sh, SSH deploy key)
+   ├─ Rscript research/00_data.R                        (fresh prices)
+   ├─ Rscript research/refit.R <month end>              (margins; reselection at the year end)
+   ├─ python research/refit_export.py <month end>       (PITs, GAS copula, state; appends data/refits.json)
+   ├─ pytest parity gate (service/)
+   └─ git push refit/<month end>                        (nothing deployed)
 ```
 
-- **No Azure secret is stored.** Azure trusts the job's Google identity token
-  (workload identity federation) on the existing `gh-jse-pairs-refit` app, which
-  already holds Contributor on `rg-mdingi-previews`.
-- **The only secret** is a per-repo SSH deploy key (write access to this repo
-  only) in Secret Manager, mounted at `/secrets/deploy_key` and used to push
-  fits back — no GitHub token anywhere.
-- The heavy R packages (`rugarch`, `VineCopula`, `quantmod`, …) are baked into
-  the image; application code comes from the clone, so ordinary code changes
-  need no image rebuild. Rebuild only when the R dependency set changes.
+The new entry in `data/refits.json` has no `applies_from`, so even if the branch were deployed as it is, the service would not use it.
 
-## One-time setup
-
-Prerequisite: `deploy/github-identity.sh` has already run (creates the Azure
-app). Then:
+## Taking a refit live (a person, after review)
 
 ```bash
-AZ_SUBSCRIPTION=<Sequrin - Development subscription id> \
-  bash deploy/cloudrun/provision.sh
+git fetch origin && git merge origin/refit/2026-12-31          # after reading the diff
+python3 research/refit_apply.py                                # used from the next weekday
+AZ_SUBSCRIPTION=<Sequrin - Development id> TAG=<tag> bash deploy/azure.sh
+git commit -am "Refit to 2026-12-31 applies from <date>" && git push origin main
 ```
 
-The script generates the deploy key, registers its public half on this repo
-(needs `gh` authenticated with repo admin), and stores the private half in
-Secret Manager — no token to pass in.
+## Run it by hand
 
-Override `GCP_PROJECT` / `GCP_REGION` if needed (defaults: current gcloud
-project, `europe-west1`). The first build compiles the R packages and takes a
-while; later runs reuse the image.
-
-## Run it manually
+A test run on a non-refit month end, pushed under a throwaway prefix:
 
 ```bash
-gcloud run jobs execute jse-pairs-refit --region europe-west1
+gcloud run jobs execute jse-pairs-refit --region europe-west1 --wait \
+  --update-env-vars REFIT_DATE=2026-10-31,BRANCH_PREFIX=dryrun
+git push origin --delete dryrun/2026-10-31                     # afterwards
 ```
+
+## Setup
+
+`provision.sh` (one-off, already run) builds the image, creates the service account, the deploy key (write access to this repo only, private half in Secret Manager) and the job and scheduler. The R packages are baked into the image; application code comes from the clone, so code changes need no rebuild.
 
 ## Cost
 
-A monthly job plus one scheduler entry and a small image sit inside the Cloud
-Run / Scheduler / Artifact Registry free tiers — effectively zero.
+Three runs a year of a few minutes each, one scheduler entry and a small image: about $0.10 to $0.30 a month, mostly image storage.

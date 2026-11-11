@@ -1,41 +1,34 @@
 #!/usr/bin/env bash
-# One-off: stand up the monthly refit on Google Cloud Run instead of GitHub
-# Actions. GitHub stays the home of the code and where results are pushed; this
-# only moves the scheduled compute.
+# One-off: stand up the scheduled refit (research/PROTOCOL.md, H17) on Google Cloud Run.
+# GitHub stays the home of the code; the job pushes each refit to a refit/<date> branch.
 #
-# Run it like github-identity.sh:
-#   AZ_SUBSCRIPTION=<dev-subscription-id> bash deploy/cloudrun/provision.sh
+#   bash deploy/cloudrun/provision.sh
 #
-# No GitHub token and no Azure secret are stored. Pushes use a per-repo SSH
-# deploy key: generated here, the public half registered on this repo (write)
-# and the private half kept in Secret Manager and mounted into the job. Azure
-# trusts the job's Google identity token via federation, reusing the Contributor
-# grant the existing refit app already has on the previews group.
+# No GitHub token is stored, and the job holds no cloud credential beyond its own project: it never
+# deploys. Pushes use a per-repo SSH deploy key: generated here, the public half registered on this
+# repo (write) and the private half kept in Secret Manager and mounted into the job.
 set -euo pipefail
 
-SUB="${AZ_SUBSCRIPTION:?set AZ_SUBSCRIPTION to the Sequrin - Development subscription ID}"
 PROJECT="${GCP_PROJECT:-$(gcloud config get-value project 2>/dev/null)}"
 REGION="${GCP_REGION:-europe-west1}"
 
 REPO=Sbusiso-Mdingi/jse-statistical-arbitrage
-APP_NAME=gh-jse-pairs-refit           # existing app; reused, Contributor already granted
 AR_REPO=portfolio-refit               # Artifact Registry docker repo
 IMAGE_NAME=jse-pairs-refit
 JOB=jse-pairs-refit
 SA_NAME=jse-pairs-refit
 SECRET=jse-pairs-deploy-key
-SCHEDULE="0 4 5 * *"                  # same cron as the old workflow
-AUDIENCE="api://AzureADTokenExchange"
+SCHEDULE="0 6 1 1,4,9 *"              # 1 January, 1 April, 1 September, 06:00 Johannesburg
 
 SA="${SA_NAME}@${PROJECT}.iam.gserviceaccount.com"
 IMAGE="${REGION}-docker.pkg.dev/${PROJECT}/${AR_REPO}/${IMAGE_NAME}:latest"
 
-echo "Project ${PROJECT} / region ${REGION}; deploying to subscription ${SUB}."
+echo "Project ${PROJECT} / region ${REGION}."
 
 echo "==> Enabling APIs"
 gcloud services enable --project "$PROJECT" \
   run.googleapis.com artifactregistry.googleapis.com cloudbuild.googleapis.com \
-  cloudscheduler.googleapis.com secretmanager.googleapis.com iamcredentials.googleapis.com
+  cloudscheduler.googleapis.com secretmanager.googleapis.com
 
 echo "==> Artifact Registry"
 gcloud artifacts repositories describe "$AR_REPO" --project "$PROJECT" --location "$REGION" >/dev/null 2>&1 \
@@ -53,7 +46,7 @@ gcloud projects add-iam-policy-binding "$PROJECT" \
 echo "==> Service account"
 gcloud iam service-accounts describe "$SA" --project "$PROJECT" >/dev/null 2>&1 \
   || gcloud iam service-accounts create "$SA_NAME" --project "$PROJECT" \
-       --display-name="JSE pairs monthly refit (Cloud Run)"
+       --display-name="JSE pairs refit (Cloud Run)"
 # A freshly created SA is eventually consistent; wait for it to become visible.
 SA_SUBJECT=""
 for _ in 1 2 3 4 5 6; do
@@ -88,29 +81,14 @@ YAML
 gcloud builds submit --project "$PROJECT" --region "$REGION" --config "$cfg" .
 rm -f "$cfg"
 
-echo "==> Azure identity details (not written to any tracked file)"
-TENANT="$(az account show --subscription "$SUB" --query tenantId -o tsv)"
-APP="$(az ad app list --display-name "$APP_NAME" --query '[0].appId' -o tsv)"
-[ -n "$APP" ] || { echo "ERROR: run deploy/github-identity.sh first; app $APP_NAME not found." >&2; exit 1; }
-
-echo "==> Azure federated credential for this job's Google identity"
-if ! az ad app federated-credential list --id "$APP" --query "[?name=='gcp-cloud-run'] | [0].name" -o tsv | grep -q gcp-cloud-run; then
-  az ad app federated-credential create --id "$APP" -o none --parameters "{
-    \"name\": \"gcp-cloud-run\",
-    \"issuer\": \"https://accounts.google.com\",
-    \"subject\": \"${SA_SUBJECT}\",
-    \"audiences\": [\"${AUDIENCE}\"]
-  }"
-fi
-
 echo "==> Cloud Run job"
 gcloud run jobs deploy "$JOB" --project "$PROJECT" --region "$REGION" \
   --image "$IMAGE" --service-account "$SA" \
   --max-retries 1 --task-timeout 9000 --cpu 2 --memory 4Gi \
-  --set-env-vars "GH_REPO=${REPO},GH_REF=main,AZURE_CLIENT_ID=${APP},AZURE_TENANT_ID=${TENANT},AZ_SUBSCRIPTION=${SUB},AZURE_AUDIENCE=${AUDIENCE}" \
+  --set-env-vars "GH_REPO=${REPO},GH_REF=main" \
   --set-secrets "/secrets/deploy_key=${SECRET}:latest"
 
-echo "==> Cloud Scheduler (monthly)"
+echo "==> Cloud Scheduler (three runs a year; the name is kept from the old monthly job)"
 gcloud projects add-iam-policy-binding "$PROJECT" \
   --member="serviceAccount:${SA}" --role=roles/run.developer >/dev/null
 RUN_URL="https://${REGION}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${PROJECT}/jobs/${JOB}:run"

@@ -217,6 +217,8 @@ export type Pnl = {
   date: string[];
   score_from: string;
   development_end: string;
+  last_refit: string | null;
+  last_refit_from: string | null;
   strategies: Record<"spread_gate" | "switch" | "copula_alone", { cum: Record<Schedule, number[]>; trades: PnlTrade[] }>;
 };
 
