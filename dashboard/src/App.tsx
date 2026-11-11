@@ -363,7 +363,7 @@ function Records({ s }: { s: Switch }) {
       </div>
       <p className="note">
         {started ? "" : `Scoring starts on ${fmtDate(g.score_from)}. `}
-        All three rules were fixed on {fmtDate(g.frozen_on)} and nothing about them changes from here; only trades opened from{" "}
+        The spread and switching strategies were fixed on {fmtDate(g.frozen_on)}, and the copula signal on 31 March 2026; nothing about them changes from here. For all three, only trades opened from{" "}
         {fmtDate(g.score_from)} count. A strategy passes if its average trade after futures costs is above zero with a t-statistic above 1.65.
         If the relationship does not hold before the deadline, the spread strategy will have made few or no trades, and there is no evidence
         either way.
