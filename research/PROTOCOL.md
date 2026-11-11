@@ -237,3 +237,40 @@ Added 9 November 2026, after H12 and the closing-auction check and before either
 - Scored: every signal on a session from 10 November 2026, by its gross five-day return from the signal's close. Net at the institutional futures round trip (33.8 bps) and the institutional cash round trip (59.6 bps). The H8 rule's signals on the same sessions are reported alongside. Served at /api/shadow, kept off the dashboard and the page.
 - Verdict for each at 225 of its signals or on 31 December 2030, whichever comes first. Pass mark: net per signal at the futures round trip above zero with one-sided t above 1.65. The close-signal fill is not tradeable (RESULTS.md, "Closing auction"), so a pass would be followed by the same 16:00 check before anything is claimed.
 - Expectation stated now: neither passes. A generates about as many signals as H8, about 23 a year, so it is unlikely to have a verdict before 2030. B generates about eight a year, so its 2030 reading will rest on about 35 signals.
+
+## H14: trade the spread while the long-run relationship holds, the copula when it breaks
+
+Added 11 November 2026, before any H14 figure was computed. The user's idea, from the group poster (Mdingi and Makgopa, November 2026): Standard Bank and Nedbank are not cointegrated over the sample because the relationship breaks (six Bai-Perron breaks), but it holds in pieces (21% of two-year windows reject). So trade the spread the classic way while a cointegration relationship holds, and switch to the copula signal when a test says it is breaking. Already seen, and not rerun for effect: both halves have been scored on every period. H4b (the spread trade gated on Engle-Granger, 126 sessions, open past 1.5, close at 0) had a validation Sharpe of 0.45 on 10 trades. H8's rule (the score-driven copula, |h − 0.5| > 0.45, five-day hold) had a gross of −19.4 bps a signal in validation. The gate has been shut on every day since April 2026. A validation figure for the switch would recombine results already seen, so H14 is chosen on design, reported descriptively on validation, and judged only on live sessions.
+
+- **The two methods, reused as they are.** Spread mode is H4b's trade: a rolling 126-session OLS of log NED on log SBK, z the last residual over the window's residual sd. Open past ±1.5, NED weight 1 / (1 + |b|) and SBK |b| / (1 + |b|) with b fixed at entry. Close when z is back to 0 on its own side, past ±4, or after 60 sessions. Copula mode is H8's rule on the instrument: open when |h − 0.5| > 0.45, long SBK and short NED when h > 0.5, hold five sessions, a new signal restarts the count, half of capital a side.
+- **The switch.** Each close is in one mode. A spread spell starts at the first close on which the 126-session Engle-Granger statistic (H4b's: ADF on the window's residuals, one lagged difference, no constant) is below −3.34. It lasts until the detector below says the relationship has broken. Every other close is in copula mode. Only the current mode's method can open a position. On the close where the mode changes, the other method's open position is closed, and the new mode's method may open at that close. So there is at most one position at a time. A new spell needs a new rejection on a later close.
+- **Detectors, declared now:**
+  - E, H4b's gate: the spell ends on the first close the 126-session statistic is not below −3.34.
+  - C, a CUSUM monitor (Chu, Stinchcombe and White, 1996). At the spell's first close t0, take the intercept and slope from the 126-session window ending at t0. The long-run residual sd is ω = σ_e / (1 − φ), from an AR(1) fit to that window's residuals. On each later close t0 + k, with S_k the sum of y − a − b x over t0 + 1 to t0 + k, the spell ends when |S_k| / (ω √126) > √((1 + k/126)(c² + ln(1 + k/126))).
+  - B, Bai-Perron in real time: on each close s in a spell, the sup-F statistic for one break in intercept and slope on the anchored sample from t0 − 125 to s, with breaks searched over its middle 70%. The spell ends when sup-F > c.
+- **Thresholds by simulation, calibrated on design data only (2010 to 2019).**
+  - Calibration windows: every design close on which the 126-session test rejects.
+  - From those windows, the median slope b and the medians of the residual AR(1) coefficient φ and innovation sd σ_e. SBK's log increments are resampled from its design daily log returns.
+  - Stable DGP: y = b x + u with u an AR(1) at (φ, σ_e).
+  - c for C and B is set so that a share α of stable spells end within 252 sessions of t0, for α in {0.05, 0.10}. Calibration and evaluation use separate seeds.
+  - So there are five candidates: E, C05, C10, B05, B10.
+- **Choosing the detector: how early it sees a break.** Each candidate is run on 1,000 simulated paths per scenario, each starting at a simulated spell's first close. Re-entries on new rejections are allowed throughout. Scenarios:
+  - (s) stable for 252 sessions;
+  - (h) the hedge ratio shifts by ±Δ 21 sessions after t0, with the line continuous at the break and Δ the median absolute slope change between adjacent Bai-Perron segments in `research/results/cointegration.json` (descriptive, already known);
+  - (r) the residual becomes a random walk 21 sessions after t0 (cointegration lost);
+  - (n) spurious onset: u is a random walk throughout, so the rejection that started the spell was chance.
+
+  The score is the number of sessions in spread mode in the 252 after the break: from the break in (h) and (r), from t0 in (n). Eligible candidates keep spread mode on at least 90% of the 252 sessions in (s). The choice is the eligible candidate with the lowest mean of the three break-case scores. If none is eligible, E is used. Also reported: the median delay from the break to the first end of the spell.
+- **Reported on design, for the chosen detector only:**
+  - the share of sessions in spread mode by year;
+  - the spread-mode sessions in the 252 after each Bai-Perron break that falls in design;
+  - the switch's daily net returns, trades and Sharpe, with P&L by year split into spread-mode and copula-mode trades;
+  - beside them, H8's rule alone and H4b alone, all under `research/costs.py`'s institutional cash schedule and `research/derivative_costs.py`'s institutional single stock futures schedule, extended to unequal legs. Each leg pays execution on its own change in exposure, STT on purchases (cash), borrow or funding on its own notional, and futures rolls at expiry.
+
+  The same figures for 2020 to March 2026 are labelled "already seen" and are not a pass mark. The share of sessions in spread mode each year from 2010 to the latest session is reported for all five candidates.
+- **Live score.** H14 is frozen on 11 November 2026 with the chosen detector and the H8 instrument as served. A trade is a position spell from open to close; a restart on the same side extends it, and a flip starts a new one. Scored: every trade opened on a session from 12 November 2026, at its net return under the institutional futures schedule (and, reported, cash). The H8 rule's trades on the same sessions, under the same definition, are reported beside it.
+- **Verdict.** At 225 completed H14 trades or on 31 December 2030, whichever comes first. Pass mark: mean net return per trade at the institutional futures schedule above zero, with one-sided t above 1.65. The number of spread-mode trades is reported with the verdict. While no spell is running, H14 is H8, and a pass carried by copula-mode trades alone would be H8's result, not the switch's. If no spread-mode trade has been made by the verdict date, the verdict says there is no evidence on the switch.
+- **Expectation stated now.**
+  - C and B leave spread mode sooner than E after a break and stay longer in stable spells, so one of them is chosen.
+  - On design, the switch is in spread mode on 10% to 25% of sessions, most in 2010 and 2011, and it does no better than H8's rule alone after real costs.
+  - Today it is in copula mode, so live it is H8 and its verdict will take years.
