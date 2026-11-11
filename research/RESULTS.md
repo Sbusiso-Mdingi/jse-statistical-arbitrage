@@ -222,6 +222,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 17. **H15.** Registered 11 November 2026 before any label or fit; the forecast script was run once. Yahoo has no kwanza history, as the registration noted before the run. A dividend skipped (Nedbank in 2020) is compared with the dividend before it; the registration had not covered that case, and the rule was set before the run.
 
+18. **H16.** Registered 11 November 2026 after `research/explore_gap.py` was run, as the registration says. The script was rerun once to add the walk-forward, window, entry and sector checks to one record; the first run's figures were unchanged.
+
 ## H11: a direct repair to the Nedbank margin
 
 Stopped at the design stage, as the protocol requires: no edit qualified, so nothing was frozen and no edited instrument runs live. The harness reproduces the stored walk-forward Nedbank transforms to 1e-10.
@@ -345,6 +347,35 @@ X does not beat the baseline, so H15 stops at (a): no trading rule was chosen, n
 
 Outputs: `research/results/h15.json`, `h15_daily.csv` (label, inputs, the baseline's filtered probability and every model's out-of-fold probability by date), `h15_events.csv` (ex-dividend dates and results months), `h15_decompose.json`.
 
+## H16: H4b's spread trade under a looser long-run gate, flat otherwise
+
+An open search on development data (every session to 31 March 2026), `research/explore_gap.py`, 54 specifications. All figures are net at the institutional futures schedule, per completed trade, trades opened from 2006 (2009 for walk-forward). They are development figures and none is a test.
+
+**Forecasting the frozen gap (H15's label, out of fold).** Adding the 126-session Engle-Granger statistic to |z| gains on log score (t 1.62); adding the 63- and 252-session statistics as well does not help (t 1.35). Walk-forward logistic fits (refit each January on resolved labels only) used as a gate earn 75 bps a trade at p > 0.6 (74 trades, t 2.59), but range from 15 to 75 bps across thresholds. The logistic is close to a linear cutoff on the statistic, so the simpler rule was kept.
+
+**Exits.** Holding the regression line fixed from entry and closing when that frozen gap closes is worse than H4b's rolling-z exit in every gate tried (for example 56 against 91 bps at p > 0.6). Dead end.
+
+**Gate cutoffs, 126-session window, H4b's trade:**
+
+| Engle-Granger below | Trades | Per trade, bps | t | 2006–12 | 2013–19 | 2020–Mar 2026 |
+|---|---|---|---|---|---|---|
+| none | 137 | 4.6 | 0.17 | 84.0 | −19.1 | −63.4 |
+| −2.0 | 108 | 52.3 | 1.93 | 88.4 | 46.4 | 17.3 |
+| −2.4 | 95 | 81.3 | 3.02 | 91.3 | 76.6 | 72.7 |
+| −2.6 | 86 | 87.2 | 3.34 | 87.6 | 62.9 | 112.9 |
+| **−2.8** | **79** | **91.1** | **3.58** | **76.1** | **105.1** | **98.6** |
+| −3.0 | 65 | 79.7 | 2.85 | 84.2 | 70.5 | 81.7 |
+| −3.34 (H14's) | 48 | 81.6 | 2.72 | 85.0 | 46.3 | 118.9 |
+| −3.6 | 31 | 79.2 | 2.24 | 66.6 | 111.3 | 63.5 |
+
+At −2.8: median trade 145 bps, 81% of trades win, 78 bps a trade without the three best, mean hold 19 sessions, cash 83 bps a trade. Entry 1.0, 1.25, 1.75 and 2.0 give 68, 74, 80 and 64 bps. The gate is open on 36% of sessions since 2006: 22% in 2023, 39% in 2024, 19% in 2025, 5% in 2026 to October. Losing years: 2006, 2010, 2016, 2019, 2021, 2024, all with one to three trades.
+
+**Other windows.** 63 sessions: 29 to 31 bps (t ≤ 1.33) at −2.4 and −2.8, negative at −3.34. 252 sessions: −16 to 57 bps (t ≤ 1.02). Not chosen.
+
+**Sector-hedged spread, dead end.** Each bank less its trailing 126-session beta on the average of FirstRand and Absa, then H4b's trade on the two own parts (legs still SBK and NED only): −39 bps a trade ungated and −35, +4 and −7 bps at −2.4, −2.8 and −3.34. Removing the sector also removes what ties the two banks together.
+
+**Chosen and frozen 11 November 2026** (PROTOCOL.md, H16): the −2.8 gate, flat when shut, scored on trades opened from 12 November 2026.
+
 ## Run order
 
 ```sh
@@ -382,5 +413,6 @@ service/.venv/bin/python research/h14_switch.py run      # seconds; writes h14.j
 service/.venv/bin/python research/h15_data.py       # downloads data/raw/h15_px.csv, h15_div.csv, h15_rate.csv (Yahoo, FRED); not committed
 service/.venv/bin/python research/h15_decompose.py  # seconds; descriptive
 service/.venv/bin/python research/h15_forecast.py   # about 25 seconds; writes h15.json, h15_daily.csv, h15_events.csv
+service/.venv/bin/python research/explore_gap.py    # seconds; the H16 search, writes explore_gap.json
 service/.venv/bin/python research/export_research.py
 ```

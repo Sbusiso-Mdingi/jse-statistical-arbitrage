@@ -1,0 +1,1450 @@
+{
+ "label_base_rate": 0.448,
+ "events": 1342,
+ "forecasts": {
+  "absz": {
+   "log_score": -0.6748,
+   "brier": 0.2421
+  },
+  "absz_eg126": {
+   "log_score": -0.6086,
+   "brier": 0.2084,
+   "vs_absz": {
+    "mean_gain": 0.06622,
+    "se": 0.03644,
+    "t": 1.82,
+    "events": 1342
+   }
+  },
+  "absz_eg126_phi": {
+   "log_score": -0.6145,
+   "brier": 0.2109,
+   "vs_absz": {
+    "mean_gain": 0.06033,
+    "se": 0.03716,
+    "t": 1.62,
+    "events": 1342
+   }
+  },
+  "absz_eg_multi": {
+   "log_score": -0.6219,
+   "brier": 0.213,
+   "vs_absz": {
+    "mean_gain": 0.05284,
+    "se": 0.03901,
+    "t": 1.35,
+    "events": 1342
+   }
+  }
+ },
+ "trades": {
+  "fixed|always": {
+   "futures": {
+    "trades": 159,
+    "per_trade_bps": -23.0,
+    "t": -0.88
+   },
+   "eras": [
+    [
+     54,
+     44.2
+    ],
+    [
+     50,
+     -60.4
+    ],
+    [
+     55,
+     -54.9
+    ]
+   ],
+   "cash": {
+    "trades": 159,
+    "per_trade_bps": -28.6,
+    "t": -1.1
+   }
+  },
+  "rolling|always": {
+   "futures": {
+    "trades": 137,
+    "per_trade_bps": 4.6,
+    "t": 0.17
+   },
+   "eras": [
+    [
+     50,
+     84.0
+    ],
+    [
+     44,
+     -19.1
+    ],
+    [
+     43,
+     -63.4
+    ]
+   ],
+   "cash": {
+    "trades": 137,
+    "per_trade_bps": 1.3,
+    "t": 0.05
+   }
+  },
+  "fixed|eg126_below_crit": {
+   "futures": {
+    "trades": 47,
+    "per_trade_bps": 55.4,
+    "t": 1.33
+   },
+   "eras": [
+    [
+     24,
+     74.2
+    ],
+    [
+     12,
+     12.4
+    ],
+    [
+     11,
+     61.2
+    ]
+   ],
+   "cash": {
+    "trades": 47,
+    "per_trade_bps": 40.5,
+    "t": 0.98
+   }
+  },
+  "rolling|eg126_below_crit": {
+   "futures": {
+    "trades": 48,
+    "per_trade_bps": 81.6,
+    "t": 2.72
+   },
+   "eras": [
+    [
+     25,
+     85.0
+    ],
+    [
+     13,
+     46.3
+    ],
+    [
+     10,
+     118.9
+    ]
+   ],
+   "cash": {
+    "trades": 48,
+    "per_trade_bps": 74.1,
+    "t": 2.63
+   }
+  },
+  "fixed|p_absz_eg126>0.5": {
+   "futures": {
+    "trades": 114,
+    "per_trade_bps": 18.0,
+    "t": 0.55
+   },
+   "eras": [
+    [
+     43,
+     46.3
+    ],
+    [
+     36,
+     -57.9
+    ],
+    [
+     35,
+     61.2
+    ]
+   ],
+   "cash": {
+    "trades": 114,
+    "per_trade_bps": 9.9,
+    "t": 0.3
+   }
+  },
+  "rolling|p_absz_eg126>0.5": {
+   "futures": {
+    "trades": 106,
+    "per_trade_bps": 35.8,
+    "t": 1.25
+   },
+   "eras": [
+    [
+     40,
+     84.5
+    ],
+    [
+     35,
+     -14.8
+    ],
+    [
+     31,
+     29.9
+    ]
+   ],
+   "cash": {
+    "trades": 106,
+    "per_trade_bps": 33.3,
+    "t": 1.24
+   }
+  },
+  "fixed|p_absz_eg126>0.55": {
+   "futures": {
+    "trades": 99,
+    "per_trade_bps": 51.9,
+    "t": 1.52
+   },
+   "eras": [
+    [
+     39,
+     33.7
+    ],
+    [
+     29,
+     57.7
+    ],
+    [
+     31,
+     69.3
+    ]
+   ],
+   "cash": {
+    "trades": 99,
+    "per_trade_bps": 42.2,
+    "t": 1.23
+   }
+  },
+  "rolling|p_absz_eg126>0.55": {
+   "futures": {
+    "trades": 95,
+    "per_trade_bps": 69.8,
+    "t": 2.53
+   },
+   "eras": [
+    [
+     38,
+     79.4
+    ],
+    [
+     30,
+     68.4
+    ],
+    [
+     27,
+     57.9
+    ]
+   ],
+   "cash": {
+    "trades": 95,
+    "per_trade_bps": 63.7,
+    "t": 2.44
+   }
+  },
+  "fixed|p_absz_eg126>0.6": {
+   "futures": {
+    "trades": 85,
+    "per_trade_bps": 56.0,
+    "t": 1.53
+   },
+   "eras": [
+    [
+     35,
+     25.6
+    ],
+    [
+     27,
+     83.5
+    ],
+    [
+     23,
+     69.8
+    ]
+   ],
+   "cash": {
+    "trades": 85,
+    "per_trade_bps": 44.3,
+    "t": 1.21
+   }
+  },
+  "rolling|p_absz_eg126>0.6": {
+   "futures": {
+    "trades": 85,
+    "per_trade_bps": 91.0,
+    "t": 3.62
+   },
+   "eras": [
+    [
+     36,
+     70.6
+    ],
+    [
+     28,
+     104.8
+    ],
+    [
+     21,
+     107.8
+    ]
+   ],
+   "cash": {
+    "trades": 85,
+    "per_trade_bps": 84.4,
+    "t": 3.59
+   }
+  },
+  "fixed|p_absz_eg126>0.65": {
+   "futures": {
+    "trades": 76,
+    "per_trade_bps": 61.7,
+    "t": 1.65
+   },
+   "eras": [
+    [
+     32,
+     48.5
+    ],
+    [
+     26,
+     61.8
+    ],
+    [
+     18,
+     84.8
+    ]
+   ],
+   "cash": {
+    "trades": 76,
+    "per_trade_bps": 49.1,
+    "t": 1.32
+   }
+  },
+  "rolling|p_absz_eg126>0.65": {
+   "futures": {
+    "trades": 74,
+    "per_trade_bps": 89.0,
+    "t": 3.26
+   },
+   "eras": [
+    [
+     33,
+     77.5
+    ],
+    [
+     24,
+     75.1
+    ],
+    [
+     17,
+     130.8
+    ]
+   ],
+   "cash": {
+    "trades": 74,
+    "per_trade_bps": 81.6,
+    "t": 3.19
+   }
+  },
+  "fixed|p_absz_eg126>0.7": {
+   "futures": {
+    "trades": 61,
+    "per_trade_bps": 49.7,
+    "t": 1.09
+   },
+   "eras": [
+    [
+     27,
+     63.8
+    ],
+    [
+     21,
+     56.7
+    ],
+    [
+     13,
+     9.1
+    ]
+   ],
+   "cash": {
+    "trades": 61,
+    "per_trade_bps": 35.1,
+    "t": 0.76
+   }
+  },
+  "rolling|p_absz_eg126>0.7": {
+   "futures": {
+    "trades": 60,
+    "per_trade_bps": 90.3,
+    "t": 2.83
+   },
+   "eras": [
+    [
+     27,
+     88.3
+    ],
+    [
+     21,
+     85.4
+    ],
+    [
+     12,
+     103.2
+    ]
+   ],
+   "cash": {
+    "trades": 60,
+    "per_trade_bps": 81.3,
+    "t": 2.71
+   }
+  },
+  "fixed|p_absz_eg_multi>0.5": {
+   "futures": {
+    "trades": 116,
+    "per_trade_bps": 13.4,
+    "t": 0.41
+   },
+   "eras": [
+    [
+     45,
+     31.3
+    ],
+    [
+     35,
+     -42.7
+    ],
+    [
+     36,
+     45.6
+    ]
+   ],
+   "cash": {
+    "trades": 116,
+    "per_trade_bps": 6.5,
+    "t": 0.2
+   }
+  },
+  "rolling|p_absz_eg_multi>0.5": {
+   "futures": {
+    "trades": 107,
+    "per_trade_bps": 46.5,
+    "t": 1.66
+   },
+   "eras": [
+    [
+     41,
+     86.9
+    ],
+    [
+     35,
+     13.6
+    ],
+    [
+     31,
+     30.3
+    ]
+   ],
+   "cash": {
+    "trades": 107,
+    "per_trade_bps": 43.5,
+    "t": 1.65
+   }
+  },
+  "fixed|p_absz_eg_multi>0.55": {
+   "futures": {
+    "trades": 100,
+    "per_trade_bps": 42.3,
+    "t": 1.22
+   },
+   "eras": [
+    [
+     40,
+     21.5
+    ],
+    [
+     29,
+     59.9
+    ],
+    [
+     31,
+     52.7
+    ]
+   ],
+   "cash": {
+    "trades": 100,
+    "per_trade_bps": 31.7,
+    "t": 0.91
+   }
+  },
+  "rolling|p_absz_eg_multi>0.55": {
+   "futures": {
+    "trades": 94,
+    "per_trade_bps": 67.7,
+    "t": 2.44
+   },
+   "eras": [
+    [
+     37,
+     72.5
+    ],
+    [
+     30,
+     70.4
+    ],
+    [
+     27,
+     57.9
+    ]
+   ],
+   "cash": {
+    "trades": 94,
+    "per_trade_bps": 61.8,
+    "t": 2.36
+   }
+  },
+  "fixed|p_absz_eg_multi>0.6": {
+   "futures": {
+    "trades": 87,
+    "per_trade_bps": 59.2,
+    "t": 1.66
+   },
+   "eras": [
+    [
+     37,
+     32.9
+    ],
+    [
+     27,
+     84.5
+    ],
+    [
+     23,
+     71.9
+    ]
+   ],
+   "cash": {
+    "trades": 87,
+    "per_trade_bps": 47.6,
+    "t": 1.33
+   }
+  },
+  "rolling|p_absz_eg_multi>0.6": {
+   "futures": {
+    "trades": 86,
+    "per_trade_bps": 87.8,
+    "t": 3.48
+   },
+   "eras": [
+    [
+     36,
+     72.2
+    ],
+    [
+     28,
+     103.1
+    ],
+    [
+     22,
+     93.6
+    ]
+   ],
+   "cash": {
+    "trades": 86,
+    "per_trade_bps": 80.5,
+    "t": 3.39
+   }
+  },
+  "fixed|p_absz_eg_multi>0.65": {
+   "futures": {
+    "trades": 79,
+    "per_trade_bps": 58.0,
+    "t": 1.5
+   },
+   "eras": [
+    [
+     33,
+     24.8
+    ],
+    [
+     27,
+     80.1
+    ],
+    [
+     19,
+     84.2
+    ]
+   ],
+   "cash": {
+    "trades": 79,
+    "per_trade_bps": 43.7,
+    "t": 1.13
+   }
+  },
+  "rolling|p_absz_eg_multi>0.65": {
+   "futures": {
+    "trades": 76,
+    "per_trade_bps": 94.5,
+    "t": 3.51
+   },
+   "eras": [
+    [
+     33,
+     77.9
+    ],
+    [
+     25,
+     91.0
+    ],
+    [
+     18,
+     129.9
+    ]
+   ],
+   "cash": {
+    "trades": 76,
+    "per_trade_bps": 87.5,
+    "t": 3.5
+   }
+  },
+  "fixed|p_absz_eg_multi>0.7": {
+   "futures": {
+    "trades": 64,
+    "per_trade_bps": 52.0,
+    "t": 1.2
+   },
+   "eras": [
+    [
+     26,
+     56.3
+    ],
+    [
+     24,
+     61.9
+    ],
+    [
+     14,
+     26.9
+    ]
+   ],
+   "cash": {
+    "trades": 64,
+    "per_trade_bps": 36.3,
+    "t": 0.83
+   }
+  },
+  "rolling|p_absz_eg_multi>0.7": {
+   "futures": {
+    "trades": 62,
+    "per_trade_bps": 86.4,
+    "t": 2.83
+   },
+   "eras": [
+    [
+     26,
+     81.1
+    ],
+    [
+     23,
+     76.2
+    ],
+    [
+     13,
+     115.2
+    ]
+   ],
+   "cash": {
+    "trades": 62,
+    "per_trade_bps": 76.4,
+    "t": 2.68
+   }
+  },
+  "rolling|walk_forward_p>0.5|from_2009": {
+   "futures": {
+    "trades": 90,
+    "per_trade_bps": 14.9,
+    "t": 0.46
+   },
+   "eras": [
+    [
+     21,
+     20.4
+    ],
+    [
+     37,
+     -12.5
+    ],
+    [
+     32,
+     43.0
+    ]
+   ],
+   "cash": {
+    "trades": 90,
+    "per_trade_bps": 14.0,
+    "t": 0.46
+   }
+  },
+  "rolling|walk_forward_p>0.55|from_2009": {
+   "futures": {
+    "trades": 82,
+    "per_trade_bps": 51.0,
+    "t": 1.61
+   },
+   "eras": [
+    [
+     20,
+     18.5
+    ],
+    [
+     34,
+     26.5
+    ],
+    [
+     28,
+     103.8
+    ]
+   ],
+   "cash": {
+    "trades": 82,
+    "per_trade_bps": 44.9,
+    "t": 1.49
+   }
+  },
+  "rolling|walk_forward_p>0.6|from_2009": {
+   "futures": {
+    "trades": 74,
+    "per_trade_bps": 75.5,
+    "t": 2.59
+   },
+   "eras": [
+    [
+     19,
+     21.9
+    ],
+    [
+     32,
+     85.9
+    ],
+    [
+     23,
+     105.4
+    ]
+   ],
+   "cash": {
+    "trades": 74,
+    "per_trade_bps": 69.0,
+    "t": 2.53
+   }
+  },
+  "rolling|walk_forward_p>0.65|from_2009": {
+   "futures": {
+    "trades": 60,
+    "per_trade_bps": 63.4,
+    "t": 2.06
+   },
+   "eras": [
+    [
+     18,
+     5.7
+    ],
+    [
+     26,
+     93.4
+    ],
+    [
+     16,
+     79.7
+    ]
+   ],
+   "cash": {
+    "trades": 60,
+    "per_trade_bps": 57.7,
+    "t": 2.03
+   }
+  },
+  "rolling|walk_forward_p>0.7|from_2009": {
+   "futures": {
+    "trades": 42,
+    "per_trade_bps": 67.0,
+    "t": 2.24
+   },
+   "eras": [
+    [
+     16,
+     29.8
+    ],
+    [
+     18,
+     66.3
+    ],
+    [
+     8,
+     143.2
+    ]
+   ],
+   "cash": {
+    "trades": 42,
+    "per_trade_bps": 58.9,
+    "t": 2.17
+   }
+  },
+  "rolling|L63|eg<-2.4": {
+   "futures": {
+    "trades": 124,
+    "per_trade_bps": 29.0,
+    "t": 1.33
+   },
+   "eras": [
+    [
+     55,
+     74.0
+    ],
+    [
+     39,
+     -6.4
+    ],
+    [
+     30,
+     -7.3
+    ]
+   ],
+   "cash": {
+    "trades": 124,
+    "per_trade_bps": 12.1,
+    "t": 0.57
+   },
+   "detail": {
+    "median_bps": 94.3,
+    "win": 0.71,
+    "drop_top3_bps": 19.8,
+    "mean_days": 15.0
+   }
+  },
+  "rolling|L63|eg<-2.8": {
+   "futures": {
+    "trades": 81,
+    "per_trade_bps": 30.9,
+    "t": 1.17
+   },
+   "eras": [
+    [
+     34,
+     59.8
+    ],
+    [
+     27,
+     6.9
+    ],
+    [
+     20,
+     14.0
+    ]
+   ],
+   "cash": {
+    "trades": 81,
+    "per_trade_bps": 14.1,
+    "t": 0.56
+   },
+   "detail": {
+    "median_bps": 91.5,
+    "win": 0.75,
+    "drop_top3_bps": 18.6,
+    "mean_days": 14.5
+   }
+  },
+  "rolling|L63|eg<-3.34": {
+   "futures": {
+    "trades": 30,
+    "per_trade_bps": -12.6,
+    "t": -0.33
+   },
+   "eras": [
+    [
+     14,
+     0.6
+    ],
+    [
+     11,
+     -2.6
+    ],
+    [
+     5,
+     -71.8
+    ]
+   ],
+   "cash": {
+    "trades": 30,
+    "per_trade_bps": -25.5,
+    "t": -0.7
+   },
+   "detail": {
+    "median_bps": 80.9,
+    "win": 0.67,
+    "drop_top3_bps": -34.5,
+    "mean_days": 15.0
+   }
+  },
+  "rolling|L126|eg<-2.0": {
+   "futures": {
+    "trades": 108,
+    "per_trade_bps": 52.3,
+    "t": 1.93
+   },
+   "eras": [
+    [
+     40,
+     88.4
+    ],
+    [
+     32,
+     46.4
+    ],
+    [
+     36,
+     17.3
+    ]
+   ],
+   "cash": {
+    "trades": 108,
+    "per_trade_bps": 48.7,
+    "t": 1.89
+   },
+   "detail": {
+    "median_bps": 138.4,
+    "win": 0.74,
+    "drop_top3_bps": 40.7,
+    "mean_days": 22.0
+   }
+  },
+  "rolling|L126|eg<-2.4": {
+   "futures": {
+    "trades": 95,
+    "per_trade_bps": 81.3,
+    "t": 3.02
+   },
+   "eras": [
+    [
+     38,
+     91.3
+    ],
+    [
+     27,
+     76.6
+    ],
+    [
+     30,
+     72.7
+    ]
+   ],
+   "cash": {
+    "trades": 95,
+    "per_trade_bps": 74.6,
+    "t": 2.91
+   },
+   "detail": {
+    "median_bps": 141.6,
+    "win": 0.78,
+    "drop_top3_bps": 68.1,
+    "mean_days": 19.6
+   }
+  },
+  "rolling|L126|eg<-2.6": {
+   "futures": {
+    "trades": 86,
+    "per_trade_bps": 87.2,
+    "t": 3.34
+   },
+   "eras": [
+    [
+     36,
+     87.6
+    ],
+    [
+     26,
+     62.9
+    ],
+    [
+     24,
+     112.9
+    ]
+   ],
+   "cash": {
+    "trades": 86,
+    "per_trade_bps": 79.9,
+    "t": 3.23
+   },
+   "detail": {
+    "median_bps": 139.3,
+    "win": 0.8,
+    "drop_top3_bps": 74.5,
+    "mean_days": 19.6
+   }
+  },
+  "rolling|L126|eg<-2.8": {
+   "futures": {
+    "trades": 79,
+    "per_trade_bps": 91.1,
+    "t": 3.58
+   },
+   "eras": [
+    [
+     33,
+     76.1
+    ],
+    [
+     23,
+     105.1
+    ],
+    [
+     23,
+     98.6
+    ]
+   ],
+   "cash": {
+    "trades": 79,
+    "per_trade_bps": 82.6,
+    "t": 3.47
+   },
+   "detail": {
+    "median_bps": 144.9,
+    "win": 0.81,
+    "drop_top3_bps": 77.7,
+    "mean_days": 19.1
+   }
+  },
+  "rolling|L126|eg<-3.0": {
+   "futures": {
+    "trades": 65,
+    "per_trade_bps": 79.7,
+    "t": 2.85
+   },
+   "eras": [
+    [
+     29,
+     84.2
+    ],
+    [
+     18,
+     70.5
+    ],
+    [
+     18,
+     81.7
+    ]
+   ],
+   "cash": {
+    "trades": 65,
+    "per_trade_bps": 72.4,
+    "t": 2.77
+   },
+   "detail": {
+    "median_bps": 144.9,
+    "win": 0.82,
+    "drop_top3_bps": 66.5,
+    "mean_days": 19.0
+   }
+  },
+  "rolling|L126|eg<-3.34": {
+   "futures": {
+    "trades": 48,
+    "per_trade_bps": 81.6,
+    "t": 2.72
+   },
+   "eras": [
+    [
+     25,
+     85.0
+    ],
+    [
+     13,
+     46.3
+    ],
+    [
+     10,
+     118.9
+    ]
+   ],
+   "cash": {
+    "trades": 48,
+    "per_trade_bps": 74.1,
+    "t": 2.63
+   },
+   "detail": {
+    "median_bps": 134.8,
+    "win": 0.81,
+    "drop_top3_bps": 64.3,
+    "mean_days": 18.5
+   }
+  },
+  "rolling|L126|eg<-3.6": {
+   "futures": {
+    "trades": 31,
+    "per_trade_bps": 79.2,
+    "t": 2.24
+   },
+   "eras": [
+    [
+     18,
+     66.6
+    ],
+    [
+     9,
+     111.3
+    ],
+    [
+     4,
+     63.5
+    ]
+   ],
+   "cash": {
+    "trades": 31,
+    "per_trade_bps": 71.2,
+    "t": 2.07
+   },
+   "detail": {
+    "median_bps": 133.6,
+    "win": 0.84,
+    "drop_top3_bps": 57.2,
+    "mean_days": 17.3
+   }
+  },
+  "rolling|L252|eg<-2.4": {
+   "futures": {
+    "trades": 67,
+    "per_trade_bps": -16.3,
+    "t": -0.34
+   },
+   "eras": [
+    [
+     29,
+     67.2
+    ],
+    [
+     12,
+     -137.7
+    ],
+    [
+     26,
+     -53.4
+    ]
+   ],
+   "cash": {
+    "trades": 67,
+    "per_trade_bps": -13.0,
+    "t": -0.28
+   },
+   "detail": {
+    "median_bps": 126.5,
+    "win": 0.58,
+    "drop_top3_bps": -42.0,
+    "mean_days": 28.5
+   }
+  },
+  "rolling|L252|eg<-2.8": {
+   "futures": {
+    "trades": 57,
+    "per_trade_bps": 27.3,
+    "t": 0.59
+   },
+   "eras": [
+    [
+     25,
+     103.8
+    ],
+    [
+     10,
+     -47.9
+    ],
+    [
+     22,
+     -25.5
+    ]
+   ],
+   "cash": {
+    "trades": 57,
+    "per_trade_bps": 26.0,
+    "t": 0.58
+   },
+   "detail": {
+    "median_bps": 150.2,
+    "win": 0.65,
+    "drop_top3_bps": 1.7,
+    "mean_days": 25.4
+   }
+  },
+  "rolling|L252|eg<-3.34": {
+   "futures": {
+    "trades": 35,
+    "per_trade_bps": 57.4,
+    "t": 1.02
+   },
+   "eras": [
+    [
+     19,
+     149.7
+    ],
+    [
+     6,
+     41.2
+    ],
+    [
+     10,
+     -108.1
+    ]
+   ],
+   "cash": {
+    "trades": 35,
+    "per_trade_bps": 53.2,
+    "t": 0.97
+   },
+   "detail": {
+    "median_bps": 172.8,
+    "win": 0.77,
+    "drop_top3_bps": 27.4,
+    "mean_days": 21.7
+   }
+  },
+  "rolling|L126|eg<-2.8|entry1.0": {
+   "futures": {
+    "trades": 123,
+    "per_trade_bps": 67.8,
+    "t": 3.09
+   },
+   "eras": [
+    [
+     55,
+     68.6
+    ],
+    [
+     35,
+     49.5
+    ],
+    [
+     33,
+     86.0
+    ]
+   ],
+   "cash": {
+    "trades": 123,
+    "per_trade_bps": 57.6,
+    "t": 2.78
+   },
+   "detail": {
+    "median_bps": 103.7,
+    "win": 0.82,
+    "drop_top3_bps": 57.5,
+    "mean_days": 17.0
+   }
+  },
+  "rolling|L126|eg<-2.8|entry1.25": {
+   "futures": {
+    "trades": 98,
+    "per_trade_bps": 73.5,
+    "t": 3.0
+   },
+   "eras": [
+    [
+     43,
+     81.6
+    ],
+    [
+     28,
+     43.1
+    ],
+    [
+     27,
+     92.2
+    ]
+   ],
+   "cash": {
+    "trades": 98,
+    "per_trade_bps": 63.6,
+    "t": 2.74
+   },
+   "detail": {
+    "median_bps": 116.1,
+    "win": 0.82,
+    "drop_top3_bps": 61.2,
+    "mean_days": 18.1
+   }
+  },
+  "rolling|L126|eg<-2.8|entry1.75": {
+   "futures": {
+    "trades": 59,
+    "per_trade_bps": 80.2,
+    "t": 2.34
+   },
+   "eras": [
+    [
+     23,
+     75.3
+    ],
+    [
+     19,
+     83.6
+    ],
+    [
+     17,
+     82.9
+    ]
+   ],
+   "cash": {
+    "trades": 59,
+    "per_trade_bps": 76.3,
+    "t": 2.37
+   },
+   "detail": {
+    "median_bps": 159.2,
+    "win": 0.76,
+    "drop_top3_bps": 63.9,
+    "mean_days": 21.6
+   }
+  },
+  "rolling|L126|eg<-2.8|entry2.0": {
+   "futures": {
+    "trades": 42,
+    "per_trade_bps": 64.3,
+    "t": 1.44
+   },
+   "eras": [
+    [
+     16,
+     83.0
+    ],
+    [
+     13,
+     62.4
+    ],
+    [
+     13,
+     43.2
+    ]
+   ],
+   "cash": {
+    "trades": 42,
+    "per_trade_bps": 63.8,
+    "t": 1.52
+   },
+   "detail": {
+    "median_bps": 179.5,
+    "win": 0.71,
+    "drop_top3_bps": 40.7,
+    "mean_days": 24.3
+   }
+  },
+  "sector_hedged|eg<None": {
+   "futures": {
+    "trades": 123,
+    "per_trade_bps": -39.0,
+    "t": -0.67
+   },
+   "eras": [
+    [
+     38,
+     34.1
+    ],
+    [
+     42,
+     -105.9
+    ],
+    [
+     43,
+     -38.3
+    ]
+   ],
+   "cash": {
+    "trades": 123,
+    "per_trade_bps": -39.6,
+    "t": -0.69
+   }
+  },
+  "sector_hedged|eg<-2.4": {
+   "futures": {
+    "trades": 79,
+    "per_trade_bps": -34.9,
+    "t": -0.61
+   },
+   "eras": [
+    [
+     28,
+     61.2
+    ],
+    [
+     33,
+     -124.0
+    ],
+    [
+     18,
+     -21.0
+    ]
+   ],
+   "cash": {
+    "trades": 79,
+    "per_trade_bps": -35.0,
+    "t": -0.63
+   }
+  },
+  "sector_hedged|eg<-2.8": {
+   "futures": {
+    "trades": 58,
+    "per_trade_bps": 3.8,
+    "t": 0.07
+   },
+   "eras": [
+    [
+     22,
+     8.3
+    ],
+    [
+     20,
+     -4.4
+    ],
+    [
+     16,
+     8.0
+    ]
+   ],
+   "cash": {
+    "trades": 58,
+    "per_trade_bps": 1.6,
+    "t": 0.03
+   }
+  },
+  "sector_hedged|eg<-3.34": {
+   "futures": {
+    "trades": 28,
+    "per_trade_bps": -7.2,
+    "t": -0.07
+   },
+   "eras": [
+    [
+     7,
+     94.8
+    ],
+    [
+     13,
+     -35.8
+    ],
+    [
+     8,
+     -49.8
+    ]
+   ],
+   "cash": {
+    "trades": 28,
+    "per_trade_bps": -13.7,
+    "t": -0.15
+   }
+  }
+ },
+ "logistic_full_sample": {
+  "absz": -0.656,
+  "eg": -0.852,
+  "intercept": -0.597
+ },
+ "specifications_tried": 54
+}
