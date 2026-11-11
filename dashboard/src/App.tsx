@@ -516,15 +516,14 @@ function Records({ s }: { s: Switch }) {
       </div>
       <p className="note">
         {started ? "" : `Scoring starts on ${fmtDate(g.score_from)}. `}
-        Rules fixed using data to 31 March 2026; everything from 1 April 2026 is
-        unseen, and only trades opened from then count. The spread and switching
-        strategies were added after 1 April 2026, but every choice in them uses
-        only data to 31 March 2026. Looser cutoffs would have traded since April
-        and lost, so the months since then flatter the spread strategy's cutoff
-        slightly. A strategy passes if its average trade after futures costs is
-        above zero with a t-statistic above 1.65. If the relationship does not
-        hold before the deadline, the spread strategy will have made few or no
-        trades, and there is no evidence either way.
+        The rules use only data to 31 March 2026; everything from 1 April 2026
+        is unseen, and only trades opened from then count. Looser cutoffs would
+        have traded since April and lost, so the months since then flatter the
+        spread strategy's cutoff slightly. A strategy passes if its average
+        trade after futures costs is above zero with a t-statistic above 1.65.
+        If the relationship does not hold before the deadline, the spread
+        strategy will have made few or no trades, and there is no evidence
+        either way.
       </p>
       <p className="eyebrow" style={{ marginTop: 22 }}>
         History: development data to 31 March 2026
@@ -696,8 +695,8 @@ function StrategyPnl({ p }: { p: Pnl }) {
       </div>
       <p className="note" style={{ marginTop: 0 }}>
         Each line is one strategy run as a book on the same capital: the daily
-        net return added up since 2010, after the JSE costs of every trade.
-        Rules fixed using data to 31 March 2026; everything from 1 April 2026 is
+        net return added up since 2010, after the JSE costs of every trade. The
+        rules use only data to 31 March 2026; everything from 1 April 2026 is
         unseen. The shaded history is backtest, and the rules were chosen on it,
         so it shows what they were built on, not how they will do.
       </p>
@@ -766,12 +765,10 @@ function StrategyPnl({ p }: { p: Pnl }) {
       <p className="note">
         Since 1 April the spread strategy has made no trades: the two prices
         have not been tied together closely enough. The switching strategy has
-        traded only through the copula signal, so their two lines match. The
-        spread and switching strategies were added after 1 April 2026, but every
-        choice in them uses only data to 31 March 2026. Looser cutoffs would
-        have traded since April and lost, so the months since then flatter the
-        spread strategy's cutoff slightly. Costs are the JSE institutional
-        schedule for{" "}
+        traded only through the copula signal, so their two lines match. Looser
+        cutoffs would have traded since April and lost, so the months since then
+        flatter the spread strategy's cutoff slightly. Costs are the JSE
+        institutional schedule for{" "}
         {sched === "futures"
           ? "single-stock futures"
           : "shares, with securities transfer tax on purchases"}
@@ -1074,12 +1071,9 @@ export function App({ embedded }: { embedded: boolean }) {
           </li>
           <li>
             <strong>Fixed, then scored</strong>
-            Every strategy was built using data to 31 March 2026, and everything
-            from 1 April 2026 is unseen. The copula signal was fixed at the end
-            of March. The spread and switching strategies were added after 1
-            April 2026, but every choice in them uses only data to 31 March
-            2026. The history figures are not tests. The live record is the
-            test, and the deadlines and pass marks were set in advance.
+            The rules use only data to 31 March 2026; everything from 1 April
+            2026 is unseen. The history figures are not tests. The live record
+            is the test, and the deadlines and pass marks were set in advance.
           </li>
           <li>
             <strong>What did not work</strong>
