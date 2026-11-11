@@ -314,3 +314,26 @@ Added 11 November 2026, before any H15 label, forecast or return was computed. H
 - **Live scoring.** Every trade opened on a session from 12 November 2026, at the institutional single stock futures schedule (cash reported), from `service/app/switch.py`'s SCHEDULES. H14's switch and the copula rule alone are reported beside it on the same sessions.
 - **Verdict.** At 40 completed trades or on 31 December 2036, whichever comes first. Pass if mean net per trade at futures is above zero with one-sided t above 1.65. 40 trades gives about 80% power if the true mean is the development 91 bps with sd 226 bps. Development opened about four trades a year, and none while the gate stays shut: on 9 October 2026 the statistic was −0.98, and it was last below −2.8 on 6 May 2026. Figures are reported each year until the verdict, with no verdict before it.
 - **Expectation stated now.** Development figures overstate the rule: 54 specifications were tried, and the multiple-testing allowance alone takes the one-sided 5% bar to about t 2.9. A live mean nearer 40 to 60 bps per trade would not be a surprise.
+
+## Amendment, 11 November 2026: one unseen date for H14 and H16
+
+At the user's request, H14 and H16 are scored on every trade opened on a session from 1 April 2026, not from 12 November 2026. One date now marks unseen data for all three strategies on the dashboard, and the copula rule (H8) was already scored from 1 April. The freezes stand as recorded: H14 and H16 were frozen on 11 November 2026, and nothing in either rule changes. The verdict rules are unchanged. H14 still stops at 225 completed trades or 31 December 2030, and H16 at 40 or 31 December 2036. Trades opened from 1 April count towards those totals.
+
+**What the earlier start costs.** Both rules were chosen using data only to 31 March 2026. But they were written in November, after April to November had happened, and parts of that period had been looked at. So April to November is unseen by the fitting and the selection, but not by the researcher. Checked before this amendment was written, on prices to 10 November 2026:
+
+- **What was seen.**
+  - H14's registration states that the gate had been shut on every day since April 2026.
+  - H14's run reported its April to November figures after the detector was chosen. The detector was chosen by simulation on design data. The switch was in copula mode throughout, at −56.4 bps a trade at futures.
+  - H15's step 4 described the 126-session hedge ratio to 10 November and Nedbank's own move net of the sector. The move was +9.8%, most of it in August.
+  - H16's registration states that the statistic was last below −2.8 on 6 May 2026.
+- **What H16 did in the window.** The gate was open on one session, 6 May 2026 (statistic −2.91), and the rolling z that day was −0.82. H16 opened no trade.
+- **Could the window have steered −2.8?** The cutoff was chosen as the highest t at futures in `research/explore_gap.py`. That script scored only trades closed by 31 March 2026, and no cutoff's April to November trades were computed before the freeze. Computed now, the looser cutoffs would have traded in the window and lost:
+  - −2.6: one trade, opened 21 April, −52.7 bps at futures.
+  - −2.4: two trades, opened 10 April (−80.5 bps) and 28 August (still open, −203.5 bps).
+  - −2.0: the 28 August trade.
+  - −3.0 and below: no trades, the same as −2.8.
+
+  So the window flatters the chosen cutoff against the looser ones. That was not the reason for the choice, but it cannot be ruled out entirely, because the gate's state in the window was known.
+- **What H14 did in the window.** The statistic never went below −3.34, so the switch never entered spread mode. Its 7 trades from 1 April are the copula rule's own trades, so its record there adds nothing beyond the copula rule's.
+
+For these reasons, any live result from April to 11 November 2026 is reported with this caveat. A verdict that hinges on those months should be read as weaker than one carried by trades opened after the freeze.

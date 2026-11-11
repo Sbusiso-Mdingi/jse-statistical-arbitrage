@@ -209,9 +209,9 @@ def main():
         print(f"{k:44s}", v["futures"], v["cash"]["per_trade_bps"], v["eras"], v.get("detail", ""))
     json.dump(log, open("research/results/explore_gap.json", "w"), indent=1)
     # The frozen record the service serves (PROTOCOL.md, H16): the rule has no fitted parameter, so this is its
-    # identity, dates and development figures.
+    # identity, dates and development figures. Scoring from 1 April 2026: PROTOCOL.md, amendment of 11 November 2026.
     ch = log["trades"]["rolling|L126|eg<-2.8"]
-    json.dump({"protocol": "research/PROTOCOL.md, H16", "frozen_on": "2026-11-11", "score_from": "2026-11-12", "window": 126, "crit": sw.GATE_CRIT,
+    json.dump({"protocol": "research/PROTOCOL.md, H16", "frozen_on": "2026-11-11", "score_from": "2026-04-01", "window": 126, "crit": sw.GATE_CRIT,
                "verdict": "40 completed trades or 31 December 2036; mean net per trade at the institutional futures schedule above zero, one-sided t > 1.65",
                "development": {"from": "2006-01-03", "to": "2026-03-31", "specifications_searched": log["specifications_tried"],
                                "trades": ch["futures"]["trades"], "futures_bps": ch["futures"]["per_trade_bps"], "cash_bps": ch["cash"]["per_trade_bps"],

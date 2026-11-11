@@ -271,8 +271,9 @@ def run():
     out["transitions"] = int(np.abs(np.diff(mode.astype(int))).sum())
     json.dump(out, open("research/results/h14.json", "w"), indent=1)
     # The frozen record the service serves: the chosen detector carries no fitted parameter, so this is the
-    # rule's identity, the dates and the reference figures the dashboard shows.
-    json.dump({"protocol": "research/PROTOCOL.md, H14", "frozen_on": "2026-11-11", "score_from": "2026-11-12", "detector": chosen,
+    # rule's identity, the dates and the reference figures the dashboard shows. Scoring from 1 April 2026: PROTOCOL.md,
+    # amendment of 11 November 2026.
+    json.dump({"protocol": "research/PROTOCOL.md, H14", "frozen_on": "2026-11-11", "score_from": "2026-04-01", "detector": chosen,
                "threshold": crit.get(chosen), "window": sw.L, "crit": sw.EG_CRIT,
                "verdict": "225 completed trades or 31 December 2030; mean net per trade at the institutional futures schedule above zero, one-sided t > 1.65",
                "bai_perron": json.load(open("research/results/cointegration.json"))["bai_perron"],

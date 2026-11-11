@@ -224,6 +224,8 @@ Every one of these was made before the affected verdict was known, or changed no
 
 18. **H16.** Registered 11 November 2026 after `research/explore_gap.py` was run, as the registration says. The script was rerun once to add the walk-forward, window, entry and sector checks to one record; the first run's figures were unchanged.
 
+19. **H14 and H16 scored from 1 April 2026.** At the user's request on 11 November 2026, both are scored on trades opened from 1 April 2026, not 12 November, so one date marks unseen data for all three strategies. The freezes, the rules and the verdict rules are unchanged. The months from April to 11 November were unseen by the fitting and selection but not by the researcher; `research/PROTOCOL.md` (amendment of 11 November 2026) lists what was seen. On prices to 10 November, H16 opened no trade in that window. Looser cutoffs (−2.4, −2.6) would have opened trades there and lost, which flatters −2.8.
+
 ## H11: a direct repair to the Nedbank margin
 
 Stopped at the design stage, as the protocol requires: no edit qualified, so nothing was frozen and no edited instrument runs live. The harness reproduces the stored walk-forward Nedbank transforms to 1e-10.

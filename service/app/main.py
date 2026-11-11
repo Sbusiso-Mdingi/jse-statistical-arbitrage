@@ -201,8 +201,8 @@ def api_shadow():
 
 def switch_state(pair: dict) -> dict:
     """H14 and H16 (research/PROTOCOL.md): the rolling Engle-Granger statistic, today's method and the live records
-    of the switch, the copula rule alone and the gated spread trade, each scored on trades opened from 12 November
-    2026, with the position each carries into the next session."""
+    of the switch, the copula rule alone and the gated spread trade, each scored on trades opened from 1 April
+    2026 (PROTOCOL.md, amendment of 11 November 2026), with the position each carries into the next session."""
     as_of = pair["date"][-1]
     if _switch_cache.get("as_of") != as_of:
         frm = {"switch": SWITCH["score_from"], "copula_alone": SWITCH["score_from"], "spread_gate": SPREAD_GATE["score_from"]}
@@ -239,7 +239,7 @@ def switch_state(pair: dict) -> dict:
         })
         # Each strategy as a book: cumulative net P&L in % of capital (daily net returns summed, no compounding).
         _switch_cache["pnl"] = {
-            "as_of": as_of, "date": pair["date"], "score_from": SPREAD_GATE["score_from"], "development_end": "2026-03-31",
+            "as_of": as_of, "date": pair["date"], "score_from": SPREAD_GATE["score_from"], "development_end": "2026-03-31", "frozen_on": SPREAD_GATE["frozen_on"],
             "strategies": {k: {"cum": {sch: np.round(np.cumsum(r[k]["daily"][sch]) * 100, 4) for sch in switch.SCHEDULES},
                                "trades": r[k]["history"]}
                            for k in ("spread_gate", "switch", "copula_alone")},

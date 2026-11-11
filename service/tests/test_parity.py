@@ -100,7 +100,11 @@ def test_switch_gate_matches_research():
     assert len(common) > 3900
     assert max(abs(e - float(r["eg126"])) for e, m, r in common) < 6e-5  # the csv keeps four decimals
     assert all(("spread" if m else "copula") == r["mode"] for e, m, r in common)
-    assert body["switch"]["complete"] == body["copula_alone"]["complete"] == 0
+    # Scored from 1 April 2026 (PROTOCOL.md, amendment of 11 November 2026): every live trade opened on or after it.
+    assert body["score_from"] == body["spread_gate"]["score_from"] == "2026-04-01"
+    for k in ("switch", "copula_alone"):
+        assert all(t["opened"].isoformat() >= "2026-04-01" for t in body[k]["trades"])
+    assert body["switch"]["complete"] == body["copula_alone"]["complete"]  # no spread mode since April
     g = body["spread_gate"]
     assert all(bool(m) == (e is not None and e < switch.GATE_CRIT) for e, m in zip(s["eg"], s["gate"]))
     assert g["complete"] == 0 and g["development"]["trades"] == 79

@@ -516,10 +516,10 @@ function Records({ s }: { s: Switch }) {
       </div>
       <p className="note">
         {started ? "" : `Scoring starts on ${fmtDate(g.score_from)}. `}
-        The spread and switching strategies were fixed on {fmtDate(g.frozen_on)}
-        , and the copula signal on 31 March 2026; nothing about them changes
-        from here. For all three, only trades opened from{" "}
-        {fmtDate(g.score_from)} count. A strategy passes if its average trade
+        Rules fixed using data to 31 March 2026; everything from 1 April 2026 is
+        unseen, and only trades opened from then count. The spread and switching
+        strategies were written in November, after those months had happened,
+        but using only data to March. A strategy passes if its average trade
         after futures costs is above zero with a t-statistic above 1.65. If the
         relationship does not hold before the deadline, the spread strategy will
         have made few or no trades, and there is no evidence either way.
@@ -695,9 +695,9 @@ function StrategyPnl({ p }: { p: Pnl }) {
       <p className="note" style={{ marginTop: 0 }}>
         Each line is one strategy run as a book on the same capital: the daily
         net return added up since 2010, after the JSE costs of every trade.
-        Everything before {fmtDate(p.score_from)} is backtest, and the rules
-        were chosen on this data, so the history shows what they were built on,
-        not how they will do.
+        Rules fixed using data to 31 March 2026; everything from 1 April 2026 is
+        unseen. The shaded history is backtest, and the rules were chosen on it,
+        so it shows what they were built on, not how they will do.
       </p>
       <div className="tabs" role="tablist">
         {WINDOWS.map((w) => (
@@ -762,10 +762,11 @@ function StrategyPnl({ p }: { p: Pnl }) {
         ))}
       </section>
       <p className="note">
-        The spread and switching strategies have no live trades yet: their
-        record starts with trades opened from {fmtDate(p.score_from)}. The
-        copula signal was fixed on 31 March 2026, so its line since then is its
-        live record. Costs are the JSE institutional schedule for{" "}
+        Since 1 April the spread strategy has made no trades: the two prices
+        have not been tied together closely enough. The switching strategy has
+        traded only through the copula signal, so their two lines match. The
+        spread and switching strategies were written in November using only data
+        to March. Costs are the JSE institutional schedule for{" "}
         {sched === "futures"
           ? "single-stock futures"
           : "shares, with securities transfer tax on purchases"}
@@ -1068,12 +1069,12 @@ export function App({ embedded }: { embedded: boolean }) {
           </li>
           <li>
             <strong>Fixed, then scored</strong>
-            Each strategy was written down and fixed before the sessions it is
-            scored on: the copula signal on 31 March 2026, the switching and
-            spread strategies on 11 November 2026. Everything before those dates
-            was used to build them, so the history figures are not tests. The
-            live record is the test, and the deadlines and pass marks were set
-            in advance.
+            Every strategy was built using data to 31 March 2026, and everything
+            from 1 April 2026 is unseen. The copula signal was fixed at the end
+            of March; the switching and spread strategies were written in
+            November, using only data to March. The history figures are not
+            tests. The live record is the test, and the deadlines and pass marks
+            were set in advance.
           </li>
           <li>
             <strong>What did not work</strong>

@@ -838,17 +838,18 @@ export function PnlChart({
           strokeDasharray="3 3"
         />
         <text
-          x={(liveIndex >= 0 ? x(liveIndex) : W - pad.r) - 6}
+          x={
+            (liveIndex >= 0 ? x(liveIndex) : W - pad.r) +
+            (liveIndex === 0 ? 6 : -6)
+          }
           y={pad.t + 12}
-          textAnchor="end"
+          textAnchor={liveIndex === 0 ? "start" : "end"}
           style={{ fill: "var(--foreground)" }}
           stroke="var(--background)"
           strokeWidth={4}
           paintOrder="stroke"
         >
-          {liveIndex >= 0
-            ? `LIVE FROM ${fmtDate(liveFrom).toUpperCase()}`
-            : `LIVE FROM ${fmtDate(liveFrom).toUpperCase()} →`}
+          {`UNSEEN FROM ${fmtDate(liveFrom).toUpperCase()}`}
         </text>
       </g>
       {hover && (
