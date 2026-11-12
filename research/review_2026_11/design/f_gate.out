@@ -1,0 +1,32 @@
+half-life (sessions)         terciles cut [2.63 3.84]: mean net [116.9, 46.5, 111.5] n [26, 27, 26] spearman 0.06
+VR(10)                       terciles cut [0.36 0.52]: mean net [85.1, 137.5, 48.8] n [26, 27, 26] spearman 0.09
+sessions since gate opened   terciles cut [14.97 40.03]: mean net [59.5, 141.3, 70.4] n [26, 27, 26] spearman -0.04
+EG change over 10            terciles cut [-0.22  0.11]: mean net [54.9, 122.6, 94.5] n [26, 27, 26] spearman 0.00
+EG at entry                  terciles cut [-3.63 -3.09]: mean net [76.6, 73.8, 123.5] n [26, 27, 26] spearman 0.12
+|z| at entry                 terciles cut [1.66 1.88]: mean net [126.3, 69.0, 78.7] n [26, 27, 26] spearman 0.08
+EG 10 sessions before        terciles cut [-3.58 -2.96]: mean net [74.3, 120.8, 76.9] n [26, 27, 26] spearman 0.04
+half-life at entry: median 3.3
+BASE gate EG<-2.8                          n= 79 fut=91.1 t=3.58 cash=82.6 sum=7194 SR=0.49 mdd=-1107 win=0.81 eras=[(33, 76.1), (23, 105.1), (23, 98.6)] 
+gate AND half-life < 10                    n= 78 fut=85.3 t=3.4 cash=77.1 sum=6657 SR=0.46 mdd=-1107 win=0.81 eras=[(33, 76.1), (22, 85.4), (23, 98.6)] 
+gate AND half-life < 15                    n= 79 fut=91.1 t=3.58 cash=82.6 sum=7194 SR=0.49 mdd=-1107 win=0.81 eras=[(33, 76.1), (23, 105.1), (23, 98.6)] 
+gate AND VR(10) < 0.8                      n= 78 fut=86.9 t=3.5 cash=78.6 sum=6776 SR=0.47 mdd=-1107 win=0.81 eras=[(33, 75.8), (22, 91.3), (23, 98.6)] 
+half-life < 10 alone (no EG)               n=121 fut=44.4 t=1.64 cash=39.8 sum=5372 SR=0.28 mdd=-2813 win=0.71 eras=[(44, 90.8), (40, 47.3), (37, -13.9)] 
+gate on EG of window ending 5 sessions back n= 98 fut=78.4 t=3.12 cash=70.4 sum=7685 SR=0.45 mdd=-1294 win=0.73 eras=[(39, 78.3), (28, 81.7), (31, 75.6)] 
+EG now OR EG 5 back below -2.8             n= 98 fut=67.7 t=2.78 cash=60.1 sum=6638 SR=0.39 mdd=-1294 win=0.72 eras=[(39, 67.3), (28, 69.8), (31, 66.4)] 
+gate on EG of window ending 10 sessions back n=100 fut=68.2 t=2.65 cash=60.9 sum=6817 SR=0.41 mdd=-1673 win=0.69 eras=[(40, 80.8), (29, 53.4), (31, 65.6)] 
+EG now OR EG 10 back below -2.8            n=107 fut=71.7 t=3.15 cash=63.8 sum=7667 SR=0.44 mdd=-1718 win=0.7 eras=[(42, 71.3), (31, 64.2), (34, 78.9)] 
+gate on EG of window ending 20 sessions back n= 95 fut=47.1 t=1.91 cash=42.4 sum=4471 SR=0.28 mdd=-1765 win=0.68 eras=[(41, 84.6), (26, 20.7), (28, 16.6)] 
+EG now OR EG 20 back below -2.8            n=107 fut=63.1 t=2.67 cash=56.8 sum=6756 SR=0.39 mdd=-1588 win=0.71 eras=[(42, 83.8), (31, 56.6), (34, 43.6)] 
+gate AND open >= 5 sessions                n= 68 fut=84.8 t=3.17 cash=76.3 sum=5765 SR=0.46 mdd=-1285 win=0.82 eras=[(30, 83.3), (18, 73.3), (20, 97.3)] 
+hysteresis gate: open < -2.8, shut > -2.0  n= 98 fut=65.9 t=2.35 cash=60.9 sum=6458 SR=0.37 mdd=-1733 win=0.77 eras=[(39, 93.9), (27, 69.1), (32, 29.0)] 
+H14 CUSUM spell (C05) as gate              n=117 fut=24.4 t=0.88 cash=17.6 sum=2854 SR=0.14 mdd=-3950 win=0.66 eras=[(43, 88.9), (30, -9.6), (44, -15.5)] 
+SPECS gate 14
+window map, own gate -2.8:
+  window 90                                n= 75 fut=7.8 t=0.25 cash=-2.8 sum=588 SR=0.05 mdd=-2706 win=0.75 eras=[(34, 65.8), (21, -31.3), (20, -49.6)] 
+  window 110                               n= 84 fut=69.3 t=2.93 cash=60.2 sum=5825 SR=0.41 mdd=-1213 win=0.79 eras=[(36, 56.1), (25, 38.1), (23, 124.0)] 
+  window 120                               n= 78 fut=72.0 t=2.67 cash=64.9 sum=5614 SR=0.36 mdd=-1398 win=0.82 eras=[(35, 77.5), (19, 52.4), (24, 79.5)] 
+  window 132                               n= 81 fut=99.4 t=3.91 cash=90.8 sum=8053 SR=0.53 mdd=-1063 win=0.79 eras=[(35, 95.2), (23, 92.3), (23, 112.9)] 
+  window 140                               n= 72 fut=63.2 t=2.28 cash=55.7 sum=4548 SR=0.32 mdd=-1148 win=0.76 eras=[(32, 62.2), (20, 58.8), (20, 69.1)] 
+  window 150                               n= 63 fut=55.5 t=1.66 cash=49.8 sum=3494 SR=0.26 mdd=-2038 win=0.76 eras=[(28, 107.5), (16, 52.2), (19, -18.5)] 
+  window 180                               n= 63 fut=-4.8 t=-0.09 cash=-9.5 sum=-302 SR=-0.02 mdd=-5972 win=0.7 eras=[(25, 110.0), (17, -152.8), (21, -21.7)] 
+SPECS total 21

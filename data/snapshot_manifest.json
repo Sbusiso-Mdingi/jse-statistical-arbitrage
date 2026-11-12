@@ -1,0 +1,35 @@
+{
+ "snapshots": [
+  {
+   "date": "2026-11-12",
+   "folder": "data/snapshots/2026-11-12",
+   "files": {
+    "sbk.csv": {
+     "sha256": "f3cbd174035feaa04046b87805568e2ac2f17adbf0892b3eda559e2040317aae",
+     "rows": 5568,
+     "last": "2026-11-10"
+    },
+    "ned.csv": {
+     "sha256": "fe0068631a2a151f5a0e0401f5b05be770f45d5a93a0ae9ea244642e7ee0572c",
+     "rows": 5568,
+     "last": "2026-11-10"
+    },
+    "vix.csv": {
+     "sha256": "2b2d6a025a426f01920d043bb2cef6442cb789ae3a1606da949652fad61cc73f",
+     "rows": 9615,
+     "last": "2026-11-09"
+    },
+    "h15_div.csv": {
+     "sha256": "0b9fd783f8abb2a22daf624cc52446f30c7582165aeb4917b8b8b3a9ba958ca7",
+     "rows": 85,
+     "last": "2026-09-09"
+    },
+    "live_fetch.json": {
+     "sha256": "61415ee21178a2487e510f177659c2a9fe0926632278200b401b6092ad442874",
+     "rows": 152,
+     "last": "2026-11-10"
+    }
+   }
+  }
+ ]
+}

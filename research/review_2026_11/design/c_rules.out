@@ -1,0 +1,28 @@
+BASE                                       n= 79 fut=91.1 t=3.58 cash=82.6 sum=7194 SR=0.49 mdd=-1107 win=0.81 eras=[(33, 76.1), (23, 105.1), (23, 98.6)] 
+stop 3.0                                   n= 90 fut=42.8 t=1.55 cash=24.6 sum=3850 SR=0.31 mdd=-2114 win=0.68 eras=[(36, 13.8), (26, 97.9), (28, 28.8)] 
+stop 3.5                                   n= 83 fut=52.6 t=1.73 cash=38.5 sum=4363 SR=0.32 mdd=-2322 win=0.75 eras=[(33, 60.6), (23, 81.7), (27, 17.9)] 
+stop 5.0                                   n= 79 fut=92.7 t=3.71 cash=84.6 sum=7322 SR=0.5 mdd=-1107 win=0.81 eras=[(33, 79.9), (23, 105.1), (23, 98.6)] 
+stop 99                                    n= 79 fut=87.8 t=3.31 cash=80.6 sum=6935 SR=0.46 mdd=-1107 win=0.81 eras=[(33, 79.9), (23, 105.1), (23, 81.8)] 
+hold 20                                    n= 88 fut=46.1 t=1.83 cash=28.4 sum=4057 SR=0.31 mdd=-1962 win=0.65 eras=[(37, 49.2), (26, 64.9), (25, 22.0)] 
+hold 30                                    n= 82 fut=71.3 t=2.63 cash=57.8 sum=5847 SR=0.42 mdd=-2070 win=0.74 eras=[(33, 70.8), (25, 105.7), (24, 36.1)] 
+hold 40                                    n= 79 fut=86.8 t=3.52 cash=76.3 sum=6859 SR=0.49 mdd=-1065 win=0.77 eras=[(33, 79.2), (23, 91.7), (23, 92.9)] 
+hold 90                                    n= 79 fut=85.8 t=2.93 cash=79.0 sum=6779 SR=0.45 mdd=-1603 win=0.81 eras=[(33, 77.8), (23, 106.1), (23, 77.0)] 
+hold 120                                   n= 79 fut=88.8 t=3.25 cash=83.2 sum=7018 SR=0.47 mdd=-1595 win=0.81 eras=[(33, 77.8), (23, 96.8), (23, 96.7)] 
+exit at z 0.5 (neg = overshoot)            n= 89 fut=71.1 t=3.55 cash=54.1 sum=6325 SR=0.5 mdd=-1107 win=0.8 eras=[(39, 79.3), (26, 70.1), (24, 58.8)] 
+exit at z 0.25 (neg = overshoot)           n= 81 fut=78.7 t=3.38 cash=65.7 sum=6372 SR=0.47 mdd=-1107 win=0.79 eras=[(35, 69.9), (23, 85.9), (23, 84.8)] 
+exit at z -0.25 (neg = overshoot)          n= 77 fut=102.4 t=3.83 cash=96.1 sum=7887 SR=0.52 mdd=-1107 win=0.82 eras=[(33, 99.3), (22, 115.7), (22, 93.9)] 
+exit at z -0.5 (neg = overshoot)           n= 70 fut=112.9 t=3.76 cash=111.4 sum=7903 SR=0.5 mdd=-1107 win=0.8 eras=[(27, 90.8), (21, 137.2), (22, 116.9)] 
+exit when gate shuts                       n= 94 fut=19.1 t=0.97 cash=-2.9 sum=1798 SR=0.18 mdd=-1327 win=0.51 eras=[(40, 13.7), (26, 29.1), (28, 17.7)] 
+exit if EG rises above -2.0                n= 81 fut=48.7 t=1.89 cash=32.2 sum=3948 SR=0.33 mdd=-1284 win=0.72 eras=[(33, 44.4), (23, 27.9), (25, 73.7)] 
+exit if EG rises above -1.5                n= 80 fut=85.9 t=3.52 cash=72.8 sum=6871 SR=0.5 mdd=-1143 win=0.79 eras=[(33, 67.5), (23, 104.9), (24, 93.0)] 
+exit if |b - b_entry| > 0.2                n= 86 fut=68.2 t=2.52 cash=53.4 sum=5861 SR=0.44 mdd=-1346 win=0.77 eras=[(34, 50.6), (26, 97.2), (26, 62.1)] 
+exit if |b - b_entry| > 0.3                n= 86 fut=64.5 t=2.0 cash=51.9 sum=5545 SR=0.37 mdd=-2860 win=0.79 eras=[(34, 64.2), (26, 117.2), (26, 12.1)] 
+exit if |b - b_entry| > 0.4                n= 82 fut=96.1 t=3.95 cash=83.8 sum=7877 SR=0.56 mdd=-1110 win=0.8 eras=[(34, 85.9), (24, 112.2), (24, 94.3)] 
+exit if |b - b_entry| > 0.5                n= 80 fut=94.0 t=3.73 cash=83.7 sum=7522 SR=0.53 mdd=-1096 win=0.81 eras=[(33, 84.7), (23, 106.1), (24, 95.3)] 
+entry 1.25                                 n= 98 fut=73.5 t=3.0 cash=63.6 sum=7205 SR=0.44 mdd=-1487 win=0.82 eras=[(43, 81.6), (28, 43.1), (27, 92.2)] 
+entry 1.75                                 n= 59 fut=80.2 t=2.34 cash=76.3 sum=4730 SR=0.36 mdd=-1637 win=0.76 eras=[(23, 75.3), (19, 83.6), (17, 82.9)] 
+entry 2.0                                  n= 42 fut=64.3 t=1.44 cash=63.8 sum=2701 SR=0.23 mdd=-1637 win=0.71 eras=[(16, 83.0), (13, 62.4), (13, 43.2)] 
+scale-in half@1.5 + half@2.0: total sum=5650 (vs BASE 7194) SR=0.43 mdd=-967 | first halves n=79 mean/half=45.5 | adds n=44 mean/half=46.7
+scale-in half@1.5 + half@2.5: total sum=5533 (vs BASE 7194) SR=0.46 mdd=-915 | first halves n=79 mean/half=45.5 | adds n=33 mean/half=58.7
+partial: half exit at 0.5, half at 0 (books run independently) sum=6759 SR=0.51 mdd=-1107
+SPECS 27

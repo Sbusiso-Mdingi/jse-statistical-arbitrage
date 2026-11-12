@@ -13,3 +13,5 @@ data/raw/*.csv
 research/reference/
 # Derived from the TradingView bars; not redistributed.
 data/rv_daily.csv
+# Dated copies of third-party data (research/snapshot.py); not redistributed.
+data/snapshots/

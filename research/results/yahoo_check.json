@@ -1,0 +1,30 @@
+{
+ "checked": "2026-11-12",
+ "banks": {
+  "sbk": {
+   "ex_dates": 43,
+   "recent_step_over_yield": [
+    0.01,
+    0.01,
+    0.01,
+    0.01
+   ],
+   "fixed_by_yahoo": false,
+   "snapshot": "2026-11-12",
+   "max_abs_return_change": 0.0
+  },
+  "ned": {
+   "ex_dates": 42,
+   "recent_step_over_yield": [
+    0.01,
+    0.01,
+    0.01,
+    0.01
+   ],
+   "fixed_by_yahoo": false,
+   "snapshot": "2026-11-12",
+   "max_abs_return_change": 0.0
+  }
+ },
+ "changed": false
+}

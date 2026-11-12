@@ -1,0 +1,19 @@
+BASE OLS NED on SBK                        n= 79 fut=91.1 t=3.58 cash=82.6 sum=7194 SR=0.49 mdd=-1107 win=0.81 eras=[(33, 76.1), (23, 105.1), (23, 98.6)] 
+OLS signal, 1:1 legs (b=1 weights)         n= 79 fut=71.0 t=2.5 cash=62.5 sum=5605 SR=0.42 mdd=-1377 win=0.77 eras=[(33, 60.5), (23, 63.5), (23, 93.4)] 
+TLS spread, OLS gate                       n= 82 fut=81.3 t=3.19 cash=71.5 sum=6664 SR=0.47 mdd=-1079 win=0.83 eras=[(38, 83.3), (23, 75.9), (21, 83.4)] 
+TLS spread, TLS gate                       n= 88 fut=78.8 t=3.06 cash=68.7 sum=6935 SR=0.47 mdd=-1122 win=0.8 eras=[(41, 77.8), (22, 79.2), (25, 80.1)] 
+reverse (SBK on NED), OLS gate             n= 74 fut=59.6 t=1.82 cash=52.3 sum=4411 SR=0.33 mdd=-2050 win=0.74 eras=[(32, 100.9), (21, 66.7), (21, -10.3)] 
+reverse (SBK on NED), own gate             n= 73 fut=41.8 t=1.25 cash=34.1 sum=3049 SR=0.21 mdd=-2143 win=0.75 eras=[(33, 81.3), (20, 75.0), (20, -56.7)] 
+fixed 1:1 log ratio, OLS gate              n= 66 fut=73.5 t=1.8 cash=74.9 sum=4848 SR=0.36 mdd=-1872 win=0.77 eras=[(27, 104.9), (20, 82.4), (19, 19.3)] 
+fixed 1:1 log ratio, own ADF gate          n= 34 fut=94.8 t=2.27 cash=93.0 sum=3222 SR=0.35 mdd=-832 win=0.85 eras=[(20, 104.9), (8, 1.0), (6, 186.0)] 
+corr b OLS vs TLS 0.013 median b OLS/TLS/rev 0.82 1.04 1.28
+kalman delta 1e-05: b median 0.76, sd of daily db 0.0056 (OLS126 0.0158)
+Kalman b (delta 1e-05), level z on 126, OLS gate n= 60 fut=45.0 t=0.97 cash=50.8 sum=2700 SR=0.2 mdd=-2680 win=0.67 eras=[(21, 105.6), (17, 32.4), (22, -3.1)] 
+kalman delta 0.0001: b median 0.74, sd of daily db 0.0091 (OLS126 0.0158)
+Kalman b (delta 0.0001), level z on 126, OLS gate n= 59 fut=39.7 t=0.81 cash=47.7 sum=2341 SR=0.17 mdd=-2705 win=0.64 eras=[(20, 92.5), (19, 40.6), (20, -14.0)] 
+window 100 (own gate -2.8)                 n= 82 fut=30.7 t=0.93 cash=21.2 sum=2520 SR=0.19 mdd=-2159 win=0.78 eras=[(37, 72.9), (21, -53.4), (24, 39.3)] 
+window 100 spread, 126 gate                n= 92 fut=80.3 t=3.4 cash=68.0 sum=7386 SR=0.53 mdd=-1237 win=0.82 eras=[(37, 79.5), (28, 69.2), (27, 92.9)] 
+window 160 (own gate -2.8)                 n= 66 fut=50.9 t=1.52 cash=43.8 sum=3359 SR=0.24 mdd=-1996 win=0.73 eras=[(27, 107.0), (20, 65.6), (19, -44.4)] 
+window 160 spread, 126 gate                n= 62 fut=47.6 t=1.32 cash=45.5 sum=2953 SR=0.21 mdd=-2170 win=0.71 eras=[(24, 56.7), (18, 97.3), (20, -7.9)] 
+daily re-hedge to rolling b: n=79 fut=75.3 t=2.09
+SPECS 15

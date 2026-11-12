@@ -418,6 +418,28 @@ Run 11 November 2026 on sessions to 31 August 2026 only (5,517 sessions; `resear
 - **H13.** Both of its variants were built on the fit of 31 March 2026, so `/api/shadow` keeps scoring them, and its H8 reference, on that fit; refits do not reach it.
 - **Next.** The year-end reselection on the close of 31 December 2026, made by the scheduled job on 1 January 2027 and pushed to a branch for review.
 
+## Review, 12 November 2026 (development data only)
+
+Four independent reviews, each with every series truncated at 31 March 2026: overfitting, execution and costs, design, and the copula signal. Scripts as run are in `research/review_2026_11/`; the figures in the first table are rebuilt by `research/h19_total_return.py`, `research/h18_auction.py` and `research/verdict_episodes.py`. Every review reproduced H16 exactly (79 trades, +91.1 bps a trade at futures, t 3.58). Nothing frozen changes (PROTOCOL.md, amendment of 12 November 2026).
+
+| H16, development, bps a trade at futures | Trades | Mean | t |
+|---|---|---|---|
+| As scored (decided and filled at the same close) | 79 | +91.1 | 3.58 |
+| The same trades filled one close late | 79 | +49.0 | 1.93 |
+| P&L including dividends | 79 | +88.9 | 3.55 |
+| Held as fixed contracts from entry | 79 | +86.3 | 3.33 |
+| On dividend-correct prices (H19) | 81 | +58.8 | 1.76 |
+| Decided at 16:00, filled in the closing auction (H18; from February 2009) | 57 | +83.0 | 2.57 |
+| H16 over the same sessions as H18 | 60 | +81.9 | 2.69 |
+
+- **The dividend data.** Yahoo's "adjusted" closes for both banks carry about a hundredth of each dividend: on all 41 Standard Bank and 40 Nedbank ex-dividend sessions to March 2026, the adjustment step is 0.01 of the dividend yield (median yield 2.4%). Example: on 10 April 2024 Standard Bank went ex a 733c dividend, about 4% of the price; the close fell from 18,386 to 17,767 (−3.4%) and the adjusted close by the same. So every frozen rule, and the live service, runs on a price-only series. On a dividend-correct series the same spread rule earns +58.8 bps (t 1.76), and only +9.4 since 2020 (23 trades), against H16's +98.6 in the same years. The copula rule fires on 22 of the 50 ex-dividend sessions since 2010 (44%, against 10% expected); those 22 are 6% of its 358 signals. Correcting the P&L alone (frozen signals, dividends paid and received) moves H16 by only −2.2 bps; it is the signal that leans on the dividend drops. The separate jse-risk-management dashboard reads the same Yahoo series: across its 255 shares with enough history, the adjusted closes carry a median 0.04% a year of dividends.
+- **The fill.** H16 decides on the close and fills at that close. A quarter of its gross is earned in the first session after the signal (+35 of 145 bps, se 8), much of it overnight, so a fill one close late leaves +49 bps (t 1.93), and one at the next open about +48. A decision on the 16:00 price filled in the closing auction keeps +83 bps over the hourly bars' years, and it barely depends on the closing print: filled one close later still, it keeps +73.7 where H16 falls to +39.8 over the same sessions. Holding fixed contracts instead of the engine's constant weights costs about 5 bps. Registered as H18.
+- **Selection.** The 50 trade rules `research/explore_gap.py` searched are highly correlated (mean pairwise correlation of daily P&L 0.53). Combinatorially symmetric cross-validation over them (10 blocks, 252 splits, choosing by in-sample t) gives the chosen rule +44 bps a trade out of sample (median 54; probability of backtest overfitting 0.53). White's reality check on the 50: p 0.08 to 0.10. The cutoff is a genuine plateau (every cutoff from −2.1 to −3.6 earns 62 to 91 bps at the 126 window), but the window is a narrow peak: 105 sessions earns 53, 147 earns 75, 189 earns −7. A placebo that shifts the gate in time against prices averages +11 bps and reaches 91 on 0.2% of shifts, so the gate's timing carries real information.
+- **The verdict test.** The 79 H16 trades are about 20 episodes (runs of trades within 21 sessions of each other); the top 5 episodes carry 83% of the P&L. Trade nets are left-skewed (median +145, sd 226, skew −1.66; five 60-session time-outs average −486 bps). With 40 trades the registered one-sided t > 1.65 passes a rule with no edge about 9% of the time, and passes 40% of the time at a true 45 bps, 54% at 60, 78% at 91. H18 and H19 use an episode-grouped statistic with a critical value set to a 5% false-pass rate (PROTOCOL.md).
+- **The design.** Of about 80 rule variants tried on development data (all listed in `research/review_2026_11/design/`), none is distinguishable from H16 (best paired daily t 1.25). Exiting when the gate shuts collapses it to 19 bps: the gate shuts because the spread has moved further against the trade, so it filters entries rather than measuring the relationship during a trade. Tighter stops (3, 3.5) lose; other spread definitions (total least squares, a Kalman slope, 1:1, the reverse regression) and other "holding now" measures (half-life, variance ratio, hysteresis, CUSUM) add nothing. Not registered: a blend of the 110, 126 and 140 windows (dev +74.8 a full unit, Sharpe 0.45 against 0.49, books 0.7 correlated), kept as a written idea.
+- **The copula signal.** The day-to-day reversal it traded has gone from the pair: the lag-1 autocorrelation of the daily relative return was −0.18 in 2010–14 and is −0.02 to −0.03 since 2021 (five-day variance ratio 0.62 then, about 1.0 now). Before 2015 its h was serially correlated and under-dispersed, because the margins have no cross-bank term; the rule traded that misspecification, and as h became calibrated (KS p 0.31 from 2020) the edge went. About half of its 2010–19 edge is the closing print reversing (+23 bps from the close, +11.5 from the last hourly bar). No slice of 18 examined clears the 33.8 bps futures round trip on a tradeable fill in both eras. Inside the spread strategy it agrees with the entry 91% of the time and adds nothing as a timer, and as a veto it would cut trades that went on to earn +36 bps. The code has no look-ahead. It is not worth trading on its own or as a timer or veto; its live records stand as frozen.
+- **Expectation for H16's live record.** About +45 bps a trade as scored (range 25 to 60, 10 to 15% chance of zero or less), and about 0 to 20 bps on a fill one session late.
+
 ## Run order
 
 ```sh
@@ -461,5 +483,10 @@ service/.venv/bin/python research/h17_refit.py   # about six minutes on seven co
 service/.venv/bin/python research/refit_export.py init                 # once: data/refits.json starts with the fit of 31 March 2026
 Rscript research/refit.R 2026-08-31 && service/.venv/bin/python research/refit_export.py 2026-08-31 catch-up   # seconds; the catch-up refit
 service/.venv/bin/python research/refit_apply.py                       # just before a deploy: refits pending apply from the next weekday
+service/.venv/bin/python research/h19_total_return.py   # seconds; H19's development record, data/pair_dividends.json, H16's reporting figures
+service/.venv/bin/python research/h18_auction.py        # seconds; H18's development record (needs the local hourly bars)
+service/.venv/bin/python research/verdict_episodes.py   # about 15 seconds; the episode-grouped critical values for H18 and H19
+service/.venv/bin/python research/snapshot.py           # a dated local copy of the data the frozen rules read
+service/.venv/bin/python research/yahoo_check.py        # has Yahoo changed its adjustment? (the refit job runs it)
 service/.venv/bin/python research/export_research.py
 ```

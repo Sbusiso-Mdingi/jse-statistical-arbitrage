@@ -1,0 +1,12 @@
+sessions with 16:00 bars 4244 first 2009-02-02
+sd of log(close/16:00) spread y-x (bps) 59.67086626134258
+A close signal, close fill (from 2009-06)  n= 60 fut=81.9 t=2.69 cash=73.0 sum=4916 SR=0.41 mdd=-1107 win=0.78 eras=[(14, 16.6), (23, 105.1), (23, 98.6)] 
+B 16:00 signal (z, b, gate), close fill    n= 57 fut=83.0 t=2.57 cash=76.0 sum=4730 SR=0.4 mdd=-1106 win=0.75 eras=[(13, -14.5), (23, 100.6), (21, 124.1)] 
+C fill at next 10:00 bar  on entry: n=60 fut=57.1 t=1.88
+C fill at next 10:00 bar  on exit : n=57 fut=57.8 t=1.79
+C fill at next 10:00 bar  on both : n=57 fut=33.8 t=1.03
+C fill at next close      on entry: n=60 fut=48.6 t=1.76
+C fill at next close      on exit : n=60 fut=71.5 t=2.21
+C fill at next close      on both : n=60 fut=38.1 t=1.27
+first held session: close->10:00 24.8 bps (se 7.6), 10:00->close 8.5 (se 8.0), n=60
+entries whose 16:00 z was already past 1.5 on the same side: 37 of 60

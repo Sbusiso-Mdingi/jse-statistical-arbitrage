@@ -28,12 +28,15 @@ Rscript research/refit.R "$T"
 python3 -m venv /tmp/parity
 /tmp/parity/bin/pip install --no-cache-dir -q -r service/requirements.txt pytest
 /tmp/parity/bin/python research/refit_export.py "$T" "$KIND"
+# Has Yahoo changed the adjusted closes the frozen rules read? Reports only (PROTOCOL.md, amendment of 12 November 2026).
+/tmp/parity/bin/python research/h15_data.py
+/tmp/parity/bin/python research/yahoo_check.py "$T" || true
 
 # Parity tests, including the new refit against its own reference sessions.
 ( cd service && PATH=/tmp/parity/bin:$PATH python -m pytest -q tests )
 
 git checkout -b "$BRANCH"
-git add data/refits.json "research/results/refit_$T.json"
+git add data/refits.json "research/results/refit_$T.json" "research/results/yahoo_check_$T.json" 2>/dev/null || git add data/refits.json "research/results/refit_$T.json"
 git commit -m "Refit to $T ($KIND), waiting for review and deploy"
 git push origin "HEAD:refs/heads/$BRANCH"
 echo "pushed $BRANCH; nothing deployed"

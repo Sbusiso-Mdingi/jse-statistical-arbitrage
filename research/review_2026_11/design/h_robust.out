@@ -1,0 +1,20 @@
+overshoot exit -0.25 minus BASE: 34 bps a year, block-bootstrap t 1.25
+overshoot exit -0.5 minus BASE: 35 bps a year, block-bootstrap t 0.65
+lag 1, exit 0.0                            n= 79 fut=49.0 t=1.93 cash=39.7 sum=3869 SR=0.26 mdd=-1568 win=0.68 eras=[(33, 16.9), (23, 71.1), (23, 72.9)] 
+lag 1, exit -0.25                          n= 77 fut=57.5 t=2.14 cash=50.8 sum=4428 SR=0.29 mdd=-1700 win=0.69 eras=[(33, 20.2), (22, 91.9), (22, 79.1)] 
+lag 1, exit -0.5                           n= 70 fut=78.9 t=2.5 cash=76.9 sum=5520 SR=0.34 mdd=-1305 win=0.71 eras=[(27, 16.8), (21, 132.6), (22, 103.7)] 
+16:00 decision, close fill, exit 0.0       n= 57 fut=83.0 t=2.57 cash=76.0 sum=4730 SR=0.4 mdd=-1106 win=0.75 eras=[(13, -14.5), (23, 100.6), (21, 124.1)] 
+16:00 decision, close fill, exit -0.25     n= 52 fut=75.6 t=2.09 cash=75.6 sum=3933 SR=0.31 mdd=-1106 win=0.71 eras=[(10, -56.7), (22, 89.5), (20, 126.5)] 
+16:00 decision, close fill, exit -0.5      n= 51 fut=101.9 t=2.67 cash=105.7 sum=5199 SR=0.4 mdd=-1127 win=0.71 eras=[(9, -75.9), (22, 126.6), (20, 154.8)] 
+window 110, exit 0.0                       n= 84 fut=69.3 t=2.93 cash=60.2 sum=5825 SR=0.41 mdd=-1213 win=0.79 eras=[(36, 56.1), (25, 38.1), (23, 124.0)] 
+window 110, exit -0.5                      n= 74 fut=80.6 t=2.72 cash=79.1 sum=5964 SR=0.37 mdd=-1290 win=0.77 eras=[(30, 60.0), (22, 57.1), (22, 132.2)] 
+window 140, exit 0.0                       n= 72 fut=63.2 t=2.28 cash=55.7 sum=4548 SR=0.32 mdd=-1148 win=0.76 eras=[(32, 62.2), (20, 58.8), (20, 69.1)] 
+window 140, exit -0.5                      n= 64 fut=65.2 t=1.92 cash=65.6 sum=4174 SR=0.27 mdd=-1194 win=0.72 eras=[(27, 73.7), (19, 51.7), (18, 66.7)] 
+exit -0.5, hold 40                         n= 70 fut=93.8 t=3.26 cash=87.6 sum=6564 SR=0.44 mdd=-1065 win=0.74 eras=[(27, 71.2), (21, 100.1), (22, 115.4)] 
+gate first shuts inside 40 trades: median |z| then 2.35 vs entry 1.77; same side as entry 1.00
+  gate open, |z| in [0,0.5): P(shut next close) 0.051  n=605
+  gate open, |z| in [0.5,1): P(shut next close) 0.053  n=581
+  gate open, |z| in [1,1.5): P(shut next close) 0.092  n=371
+  gate open, |z| in [1.5,2): P(shut next close) 0.096  n=209
+  gate open, |z| in [2,9): P(shut next close) 0.138  n=116
+SPECS 11

@@ -1,0 +1,34 @@
+{
+ "gap_sessions": 21,
+ "trades": 40,
+ "draws": 20000,
+ "seed": 20261112,
+ "h18": {
+  "development_trades": 57,
+  "episodes": 27,
+  "development_statistic": 2.55,
+  "development_mean_bps": 83.0,
+  "critical_value": 1.942,
+  "plain_t_false_pass_at_1.65": 0.077,
+  "power_by_true_mean_bps": {
+   "20": 0.114,
+   "40": 0.235,
+   "60": 0.389,
+   "80": 0.558
+  }
+ },
+ "h19": {
+  "development_trades": 81,
+  "episodes": 32,
+  "development_statistic": 1.8,
+  "development_mean_bps": 58.8,
+  "critical_value": 2.303,
+  "plain_t_false_pass_at_1.65": 0.097,
+  "power_by_true_mean_bps": {
+   "20": 0.116,
+   "40": 0.186,
+   "60": 0.279,
+   "80": 0.4
+  }
+ }
+}
