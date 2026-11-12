@@ -48,6 +48,8 @@ FINAL_ID = final["id"]
 SHADOW = json.loads((DATA / "pair_shadow.json").read_text())
 SWITCH = json.loads((DATA / "pair_switch.json").read_text())
 SPREAD_GATE = json.loads((DATA / "pair_spread_gate.json").read_text())
+H19 = json.loads((DATA / "pair_h19.json").read_text())
+DIVIDENDS = json.loads((DATA / "pair_dividends.json").read_text())
 _switch_cache: dict = {}
 
 
@@ -81,6 +83,9 @@ def live_rows(rows: list[dict]) -> dict:
         "sigma_sbk": fs["sigma"],
         "sigma_ned": fn["sigma"],
         "vix": vix,
+        # The dividend-correct series (H19, reporting): None where the live feed did not provide it.
+        "div_sbk": [r.get("div_sbk") for r in rows],
+        "div_ned": [r.get("div_ned") for r in rows],
     }
 
 
@@ -199,14 +204,49 @@ def api_shadow():
     }))
 
 
+def dividend_series(pair: dict):
+    """Dividend-correct simple returns for the whole record (H19 and the reporting figures; PROTOCOL.md, amendment
+    of 12 November 2026): the frozen returns plus, on ex-dividend sessions, the correction from research to 31 March
+    2026 and from the live feed after it. Also the ex-dividend sessions and the live feed's state."""
+    rows = cache.get().rows
+    live = {d: (a, b) for d, a, b in zip(rows["date"], rows["div_sbk"], rows["div_ned"])}
+    hist = DIVIDENDS["corrections"]
+    n = len(pair["date"])
+    corr = {"sbk": np.zeros(n), "ned": np.zeros(n)}
+    ex_day = np.zeros(n, bool)
+    missing, events = 0, []
+    for i, d in enumerate(pair["date"]):
+        if d.isoformat() <= DIVIDENDS["to"]:
+            for k in corr:
+                c = hist[k].get(d.isoformat())
+                if c is not None:
+                    corr[k][i] = c; ex_day[i] = True
+            continue
+        got = live.get(d)
+        if got is None or got[0] is None or got[1] is None:
+            missing += 1
+            continue
+        for k, g in zip(("sbk", "ned"), got):
+            corr[k][i] = g["corr"]
+            if g["dividend"]:
+                ex_day[i] = True
+                events.append({"date": d, "bank": k, "dividend_cents": g["dividend"], "yield": round(g["yield"], 5), "bad": g["bad"],
+                               "yahoo_step_over_yield": None if g["yahoo_step_over_yield"] is None else round(g["yahoo_step_over_yield"], 4)})
+    total = tuple(np.expm1(np.log1p(pair[f"r_{k}"]) + corr[k]) for k in ("sbk", "ned"))
+    return total, ex_day, {"sessions_without_dividend_data": missing, "live_ex_dividend": events}
+
+
 def switch_state(pair: dict) -> dict:
     """H14 and H16 (research/PROTOCOL.md): the rolling Engle-Granger statistic, today's method and the live records
     of the switch, the copula rule alone and the gated spread trade, each scored on trades opened from 1 April
     2026 (PROTOCOL.md, amendment of 11 November 2026), with the position each carries into the next session."""
     as_of = pair["date"][-1]
     if _switch_cache.get("as_of") != as_of:
-        frm = {"switch": SWITCH["score_from"], "copula_alone": SWITCH["score_from"], "spread_gate": SPREAD_GATE["score_from"]}
-        r = switch.record(pair["date"], pair["r_sbk"], pair["r_ned"], pair["h"], {k: date.fromisoformat(v) for k, v in frm.items()})
+        frm = {"switch": SWITCH["score_from"], "copula_alone": SWITCH["score_from"], "spread_gate": SPREAD_GATE["score_from"],
+               "spread_gate_dividends": H19["score_from"]}
+        total, ex_day, div_live = dividend_series(pair)
+        r = switch.record(pair["date"], pair["r_sbk"], pair["r_ned"], pair["h"], {k: date.fromisoformat(v) for k, v in frm.items()},
+                          total=total, ex_day=ex_day)
         mode, eg, b, gate = r["mode"], r["eg"], r["b"], r["gate"]
         spread_days = np.flatnonzero(mode)
         gate_days = np.flatnonzero(gate)
@@ -236,6 +276,10 @@ def switch_state(pair: dict) -> dict:
             "spread_gate": {**{k: v for k, v in r["spread_gate"].items() if k not in ("daily", "history")}, "crit": switch.GATE_CRIT, "frozen_on": SPREAD_GATE["frozen_on"], "score_from": SPREAD_GATE["score_from"],
                             "verdict_at": SPREAD_GATE["verdict"], "development": SPREAD_GATE["development"],
                             "expected_live_bps": SPREAD_GATE["expected_live_bps"]},
+            "spread_gate_dividends": {**{k: v for k, v in r["spread_gate_dividends"].items() if k not in ("daily", "history")},
+                                      **{k: H19[k] for k in ("protocol", "frozen_on", "score_from", "verdict", "critical_value", "development", "expected_live_bps")},
+                                      "today": {"eg": float(r["dividends"]["eg"][-1]), "z": float(r["dividends"]["z"][-1]), "gate_open": bool(r["dividends"]["eg"][-1] < switch.GATE_CRIT)},
+                                      "data": div_live},
         })
         # Each strategy as a book: cumulative net P&L in % of capital (daily net returns summed, no compounding).
         _switch_cache["pnl"] = {

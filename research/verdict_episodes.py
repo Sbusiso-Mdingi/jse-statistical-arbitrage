@@ -82,6 +82,20 @@ def main():
                     "development_mean_bps": round(float(v.mean()), 1), **calibrate(v, ep)}
         print(key, out[key])
     json.dump(out, open("research/results/verdict_episodes.json", "w"), indent=1)
+    # The frozen records the service serves: identity, dates, the verdict and the development reference.
+    h18 = json.load(open("research/results/h18.json")); h19 = json.load(open("research/results/h19.json"))
+    common = {"frozen_on": "2026-11-12", "window": 126, "crit": -2.8, "episode_gap_sessions": GAP}
+    json.dump({"protocol": "research/PROTOCOL.md, H18", **common, "score_from": None,
+               "score_from_note": "the first session for which the live 16:00 record holds a price for both banks",
+               "verdict": f"40 completed trades or 31 December 2036; mean net per trade at the institutional futures schedule above zero and the episode-clustered statistic above {out['h18']['critical_value']}",
+               "critical_value": out["h18"]["critical_value"], "expected_live_bps": [30, 55],
+               "development": {k: h18[k] for k in ("development", "h16_same_span", "h16_same_span_next_close", "h18_next_close")} | {"h18": {s_: {a: b for a, b in v.items()} for s_, v in h18["h18"].items() if s_ in ("futures", "cash")}}},
+              open("data/pair_h18.json", "w"), indent=1)
+    json.dump({"protocol": "research/PROTOCOL.md, H19", **common, "score_from": "2026-04-01",
+               "verdict": f"40 completed trades or 31 December 2036; mean net per trade at the institutional futures schedule above zero and the episode-clustered statistic above {out['h19']['critical_value']}",
+               "critical_value": out["h19"]["critical_value"], "expected_live_bps": [-10, 30],
+               "development": {k: h19["h19"][k] for k in ("futures", "cash", "eras", "next_close_fill", "trades_per_year")}},
+              open("data/pair_h19.json", "w"), indent=1)
 
 
 if __name__ == "__main__":

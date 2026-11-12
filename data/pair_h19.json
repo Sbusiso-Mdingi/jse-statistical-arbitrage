@@ -1,0 +1,67 @@
+{
+ "protocol": "research/PROTOCOL.md, H19",
+ "frozen_on": "2026-11-12",
+ "window": 126,
+ "crit": -2.8,
+ "episode_gap_sessions": 21,
+ "score_from": "2026-04-01",
+ "verdict": "40 completed trades or 31 December 2036; mean net per trade at the institutional futures schedule above zero and the episode-clustered statistic above 2.303",
+ "critical_value": 2.303,
+ "expected_live_bps": [
+  -10,
+  30
+ ],
+ "development": {
+  "futures": {
+   "trades": 81,
+   "mean_bps": 58.8,
+   "median_bps": 129.3,
+   "t": 1.76,
+   "win": 0.79
+  },
+  "cash": {
+   "trades": 81,
+   "mean_bps": 50.5,
+   "median_bps": 106.7,
+   "t": 1.6,
+   "win": 0.8
+  },
+  "eras": [
+   {
+    "from": "2006-01-01",
+    "to": "2013-01-01",
+    "trades": 36,
+    "mean_bps": 98.4,
+    "median_bps": 118.4,
+    "t": 2.89,
+    "win": 0.86
+   },
+   {
+    "from": "2013-01-01",
+    "to": "2020-01-01",
+    "trades": 22,
+    "mean_bps": 45.6,
+    "median_bps": 130.9,
+    "t": 0.7,
+    "win": 0.77
+   },
+   {
+    "from": "2020-01-01",
+    "to": "2026-04-01",
+    "trades": 23,
+    "mean_bps": 9.4,
+    "median_bps": 134.2,
+    "t": 0.11,
+    "win": 0.7
+   }
+  ],
+  "next_close_fill": {
+   "trades": 81,
+   "mean_bps": 7.8,
+   "median_bps": 87.4,
+   "t": 0.24,
+   "win": 0.64
+  },
+  "trades_per_year": 4.0
+ }
+}

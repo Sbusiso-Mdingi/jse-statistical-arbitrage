@@ -236,39 +236,82 @@ def daily_returns(trs: list[dict], dates: list[dt.date], r_sbk: np.ndarray, r_ne
     return total, rows
 
 
-def live_score(rows: list[dict], dates: list[dt.date], score_from: dt.date) -> dict:
-    """Trades opened on sessions from score_from: count, mean net per trade and its t at each schedule."""
-    live = [r for r in rows if dates[r["open"]] >= score_from]
+REPORTING = ("next_close_fill", "with_dividends", "fixed_contracts")
+
+
+def reporting(trs: list[dict], dates: list[dt.date], r_sbk: np.ndarray, r_ned: np.ndarray, tr_sbk: np.ndarray, tr_ned: np.ndarray,
+              ex_day: np.ndarray) -> list[dict]:
+    """Reporting figures for each trade, at futures, with no pass mark (PROTOCOL.md, amendment of 12 November 2026):
+    the same trade filled one session late at both ends, its P&L on total returns (dividends included), and its P&L
+    held as fixed contracts from entry; and whether it opened on an ex-dividend session. None while incomplete."""
+    n = len(dates)
+    out = []
+    for t in trs:
+        o, c = t["open"], t["close"]
+        row = {"ex_dividend": bool(ex_day[o]), **{k: None for k in REPORTING}}
+        if c is not None:
+            if c + 1 < n:
+                late = dict(t, open=o + 1, close=c + 1)
+                row["next_close_fill"] = daily_returns([late], dates, r_sbk, r_ned, "futures")[1][0]["net"]
+            row["with_dividends"] = daily_returns([t], dates, tr_sbk, tr_ned, "futures")[1][0]["net"]
+            g = t["w_sbk"] * (np.prod(1 + r_sbk[o + 1:c + 1]) - 1) + t["w_ned"] * (np.prod(1 + r_ned[o + 1:c + 1]) - 1)
+            row["fixed_contracts"] = float(g - trade_costs(t, dates, "futures").sum())
+        out.append(row)
+    return out
+
+
+def live_score(rows: list[dict], dates: list[dt.date], score_from: dt.date, extra: list[dict] | None = None) -> dict:
+    """Trades opened on sessions from score_from: count, mean net per trade and its t at each schedule, and the
+    reporting figures (extra, aligned with rows) when given."""
+    keep = [i for i, r in enumerate(rows) if dates[r["open"]] >= score_from]
+    live = [rows[i] for i in keep]
+    ex = [extra[i] for i in keep] if extra else [{} for _ in keep]
     done = [r for r in live if r["complete"]]
     out = {"trades": [{"opened": dates[r["open"]], "closed": dates[r["close"]] if r["complete"] else None, "method": r["method"],
                        "side": "Long SBK / short NED" if r["w_sbk"] > 0 else "Short SBK / long NED",
-                       "gross_bps": round(r["gross"] * 1e4, 1), **{f"net_{k}_bps": round(r[f"net_{k}"] * 1e4, 1) for k in SCHEDULES}}
-                      for r in live],
+                       "gross_bps": round(r["gross"] * 1e4, 1), **{f"net_{k}_bps": round(r[f"net_{k}"] * 1e4, 1) for k in SCHEDULES},
+                       **{(f"{k}_futures_bps" if k in REPORTING else k): (round(v * 1e4, 1) if k in REPORTING and v is not None else v) for k, v in e.items()}}
+                      for r, e in zip(live, ex)],
            "complete": len(done), "spread_trades": sum(r["method"] == "spread" for r in done)}
     for k in SCHEDULES:
         v = np.array([r[f"net_{k}"] for r in done]) * 1e4
         out[f"net_{k}_bps"] = round(float(v.mean()), 1) if len(v) else None
         out[f"t_{k}"] = round(float(v.mean() / (v.std(ddof=1) / math.sqrt(len(v)))), 2) if len(v) > 1 and v.std() > 0 else None
+    if extra:
+        rep = {}
+        for k in REPORTING:
+            v = [e[k] for r, e in zip(live, ex) if r["complete"] and e[k] is not None]
+            rep[f"{k}_futures_bps"] = round(float(np.mean(v)) * 1e4, 1) if v else None
+        rep["opened_on_ex_dividend"] = sum(e["ex_dividend"] for e in ex)
+        out["reporting"] = rep
     return out
 
 
-def record(dates: list[dt.date], r_sbk: np.ndarray, r_ned: np.ndarray, h: np.ndarray, score_from: dt.date) -> dict:
+def record(dates: list[dt.date], r_sbk: np.ndarray, r_ned: np.ndarray, h: np.ndarray, score_from: dt.date,
+           total: tuple[np.ndarray, np.ndarray] | None = None, ex_day: np.ndarray | None = None) -> dict:
     """The switch on a record of simple returns and the copula's h: gate, mode, and the live scores of the
     switch, the copula rule alone and the gated spread trade (H16), with the position each carries into the next
-    session. score_from is one date or a dict of dates by key."""
+    session. score_from is one date or a dict of dates by key. With total (dividend-correct simple returns) and
+    ex_day, also H19 (H16 on total-return levels, P&L on total returns) and every trade's reporting figures."""
     x, y = np.cumsum(np.log1p(r_sbk)), np.cumsum(np.log1p(r_ned))
     b, z, eg = rolling(x, y)
     mode = modes(x, y, eg, "E", None)
     gate = (eg < GATE_CRIT).astype(np.int8)
     out = {"b": b, "z": z, "eg": eg, "mode": mode, "gate": gate}
-    for key, trs in (("switch", trades(mode, h, b, z)), ("copula_alone", trades(np.zeros(len(h), np.int8), h, b, z, spread_on=False)),
-                     ("spread_gate", trades(gate, h, b, z, copula_on=False, hold_through=True))):
+    books = [("switch", trades(mode, h, b, z), r_sbk, r_ned), ("copula_alone", trades(np.zeros(len(h), np.int8), h, b, z, spread_on=False), r_sbk, r_ned),
+             ("spread_gate", trades(gate, h, b, z, copula_on=False, hold_through=True), r_sbk, r_ned)]
+    if total is not None:
+        bt, zt, et = rolling(np.cumsum(np.log1p(total[0])), np.cumsum(np.log1p(total[1])))
+        out["dividends"] = {"b": bt, "z": zt, "eg": et}
+        books.append(("spread_gate_dividends", trades((et < GATE_CRIT).astype(np.int8), h, bt, zt, copula_on=False, hold_through=True), total[0], total[1]))
+    for key, trs, ra, rb in books:
         rows = None
         daily = {}
         for k in SCHEDULES:
-            daily[k], rk = daily_returns(trs, dates, r_sbk, r_ned, k)
+            daily[k], rk = daily_returns(trs, dates, ra, rb, k)
             rows = [dict(r, **{f"net_{k}": rk[i]["net"]}) for i, r in enumerate(rows or rk)]
-        out[key] = live_score(rows, dates, score_from[key] if isinstance(score_from, dict) else score_from)
+        extra = reporting(trs, dates, ra, rb, *total, ex_day) if total is not None else None
+        out[key] = live_score(rows, dates, score_from[key] if isinstance(score_from, dict) else score_from, extra)
         out[key]["position"] = position(trs, dates)
         # The whole record, for the P&L chart: net daily return by schedule and every trade's net.
         out[key]["daily"] = daily

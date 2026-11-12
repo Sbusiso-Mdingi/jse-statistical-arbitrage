@@ -1,6 +1,7 @@
 """The live filter must reproduce rugarch/VineCopula on the post-freeze window."""
 
 import json
+import math
 from pathlib import Path
 
 import numpy as np
@@ -157,3 +158,32 @@ def test_refits_history():
         np.testing.assert_array_equal(out["h0"], frozen["h0"])
         assert (out["fit"][[i for i, d in enumerate(ds) if d >= frm]] == final["id"] + k).all()
         assert p.in_force(date.fromisoformat(ds[-1]))["train_end"] == e["train_end"]
+
+
+def test_dividend_series_and_reporting():
+    """H19 and the reporting figures (PROTOCOL.md, amendment of 12 November 2026): the dividend corrections are
+    sane, and adding them leaves every frozen strategy's score exactly as it was."""
+    from datetime import date
+
+    from app import switch
+    from app.main import PAIR, dividend_series, live_rows, snapshot_rows
+
+    div = json.loads((ROOT / "data" / "pair_dividends.json").read_text())
+    for k in ("sbk", "ned"):
+        ev = {e["date"]: e for e in div["events"][k]}
+        assert len(div["corrections"][k]) == len(ev) >= 38
+        for d, c in div["corrections"][k].items():
+            assert 0 < ev[d]["yield"] < 0.15
+            # About log(1 + dividend / close) less Yahoo's one-hundredth adjustment; the yield here is on the previous
+            # close, so the day's own move scales it.
+            assert 0.8 < c / (0.99 * math.log1p(ev[d]["yield"])) < 1.3, (k, d, c, ev[d]["yield"])
+    pair = PAIR.rows(PAIR.live(live_rows(snapshot_rows())))
+    total, ex_day, info = dividend_series(pair)
+    frm = {k: date(2026, 4, 1) for k in ("switch", "copula_alone", "spread_gate", "spread_gate_dividends")}
+    a = switch.record(pair["date"], pair["r_sbk"], pair["r_ned"], pair["h"], frm)
+    b = switch.record(pair["date"], pair["r_sbk"], pair["r_ned"], pair["h"], frm, total=total, ex_day=ex_day)
+    for k in ("switch", "copula_alone", "spread_gate"):
+        for f in ("complete", "net_futures_bps", "net_cash_bps", "t_futures"):
+            assert a[k][f] == b[k][f]
+        assert "reporting" in b[k] and "reporting" not in a[k]
+    assert "spread_gate_dividends" in b and ex_day.sum() >= 50

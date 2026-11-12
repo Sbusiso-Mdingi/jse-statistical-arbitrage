@@ -45,6 +45,42 @@ def yahoo_daily(client: httpx.Client, symbol: str, start: date, local: bool = Tr
     return out
 
 
+def yahoo_total_return(client: httpx.Client, symbol: str, start: date) -> dict:
+    """Raw closes, adjusted closes and dividend events (all in cents), for the dividend-correct series (H19).
+    The frozen rules never read this; yahoo_daily stays their only source."""
+    period1 = int(datetime.combine(start, datetime.min.time(), timezone.utc).timestamp())
+    period2 = int(datetime.now(timezone.utc).timestamp()) + 86400
+    resp = client.get(YAHOO.format(symbol=symbol), params={"period1": period1, "period2": period2, "interval": "1d", "events": "div,split"})
+    resp.raise_for_status()
+    result = resp.json()["chart"]["result"][0]
+    close = result["indicators"]["quote"][0]["close"]
+    adj = result["indicators"]["adjclose"][0]["adjclose"]
+    px = {datetime.fromtimestamp(ts, SAST).date(): (float(c), float(a)) for ts, c, a in zip(result["timestamp"], close, adj)
+          if c is not None and a is not None and c > 0 and a > 0}
+    div = {datetime.fromtimestamp(ev["date"], SAST).date(): float(ev["amount"]) for ev in (result.get("events", {}).get("dividends", {}) or {}).values()}
+    return {"px": px, "div": div}
+
+
+def dividend_corrections(full: dict, days: list[date]) -> dict:
+    """Per session (from the second of `days`): the correction from the frozen (adjusted) log return to the total-return
+    one, and Yahoo's adjustment step as a share of the dividend yield on ex-dividend sessions (about 0.01 today)."""
+    out = {}
+    px, div = full["px"], full["div"]
+    for prev, day in zip(days, days[1:]):
+        if prev not in px or day not in px:
+            continue
+        (cp, ap), (c, a) = px[prev], px[day]
+        d = div.get(day, 0.0)
+        y = d / cp
+        bad = not 0.0 <= y < 0.15
+        corr = 0.0 if bad else math.log((c + d) / cp) - math.log(a / ap)
+        if abs(corr) < 1e-5 and not d:
+            corr = 0.0  # rounding in Yahoo's stored adjusted close
+        out[day] = {"corr": corr, "dividend": d, "yield": y, "bad": bad,
+                    "yahoo_step_over_yield": (((ap / cp) / (a / c)) - 1) / -y if d and not bad else None}
+    return out
+
+
 def fred_vix(start: date) -> dict[date, float]:
     # FRED rejects some custom user agents, so it gets a plain client.
     resp = httpx.get(FRED, params={"id": "VIXCLS", "cosd": start.isoformat()}, timeout=20)
@@ -83,6 +119,10 @@ def fetch_live(freeze: date) -> dict:
     with httpx.Client(headers=HEADERS, timeout=20, follow_redirects=True) as client:
         px = {k: drop_bad_prints(yahoo_daily(client, s, start)) for k, s in PAIR.items()}
         try:
+            full = {k: yahoo_total_return(client, s, start) for k, s in PAIR.items()}
+        except (httpx.HTTPError, KeyError, TypeError, ValueError):
+            full = None  # the dividend-correct series is unavailable; the frozen rules are unaffected
+        try:
             vix = fred_vix(start - timedelta(days=10))
         except httpx.HTTPError:
             # Same CBOE close, published by Yahoo.
@@ -97,6 +137,7 @@ def fetch_live(freeze: date) -> dict:
     if freeze not in days:
         raise RuntimeError(f"Prices for {freeze} missing from the live feed")
     days = [d for d in days if d >= freeze]
+    corr = {k: dividend_corrections(full[k], days) for k in PAIR} if full else None
     rows = []
     for prev, day in zip(days, days[1:]):
         vx = known_vix(day)
@@ -106,6 +147,7 @@ def fetch_live(freeze: date) -> dict:
                 "vix": vx,
                 "r_sbk": math.log(px["sbk"][day] / px["sbk"][prev]),
                 "r_ned": math.log(px["ned"][day] / px["ned"][prev]),
+                **({f"div_{k}": corr[k].get(day) for k in PAIR} if corr else {}),
             })
     last = max(r["date"] for r in rows)
     return {"rows": rows, "prices": {k: s[last] for k, s in px.items() if last in s}, "as_of": last}
