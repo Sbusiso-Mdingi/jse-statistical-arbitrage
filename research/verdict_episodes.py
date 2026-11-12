@@ -85,8 +85,8 @@ def main():
     # The frozen records the service serves: identity, dates, the verdict and the development reference.
     h18 = json.load(open("research/results/h18.json")); h19 = json.load(open("research/results/h19.json"))
     common = {"frozen_on": "2026-11-12", "window": 126, "crit": -2.8, "episode_gap_sessions": GAP}
-    json.dump({"protocol": "research/PROTOCOL.md, H18", **common, "score_from": None,
-               "score_from_note": "the first session for which the live 16:00 record holds a price for both banks",
+    json.dump({"protocol": "research/PROTOCOL.md, H18", **common, "score_from": "2026-04-01",
+               "score_from_note": "PROTOCOL.md, amendment of 12 November 2026: from 1 April 2026; decisions run from Yahoo's first hourly bar (7 December 2023)",
                "verdict": f"40 completed trades or 31 December 2036; mean net per trade at the institutional futures schedule above zero and the episode-clustered statistic above {out['h18']['critical_value']}",
                "critical_value": out["h18"]["critical_value"], "expected_live_bps": [30, 55],
                "development": {k: h18[k] for k in ("development", "h16_same_span", "h16_same_span_next_close", "h18_next_close")} | {"h18": {s_: {a: b for a, b in v.items()} for s_, v in h18["h18"].items() if s_ in ("futures", "cash")}}},

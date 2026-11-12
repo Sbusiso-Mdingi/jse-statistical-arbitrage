@@ -61,6 +61,18 @@ def window_stats(xi: np.ndarray, yi: np.ndarray) -> tuple[float, float, float]:
     return slope, float(u[-1] / sd), float(g / math.sqrt(s2 * s22 / det))
 
 
+def rolling_1600(x: np.ndarray, y: np.ndarray, x16: np.ndarray, y16: np.ndarray, L: int = L) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """H18: the rolling slope, z and Engle-Granger statistic with today's point replaced by its 16:00 level (the 125
+    earlier points are closes). NaN on sessions without a 16:00 level for both banks: no decision there."""
+    n = len(x)
+    b, z, eg = np.full(n, np.nan), np.full(n, np.nan), np.full(n, np.nan)
+    for t in range(L - 1, n):
+        if np.isnan(x16[t]) or np.isnan(y16[t]):
+            continue
+        b[t], z[t], eg[t] = window_stats(np.append(x[t - L + 1:t], x16[t]), np.append(y[t - L + 1:t], y16[t]))
+    return b, z, eg
+
+
 def cusum_start(x: np.ndarray, y: np.ndarray, t0: int) -> dict:
     """The spell's reference line and long-run residual sd, from the window ending at its first close."""
     xi, yi = x[t0 - L + 1 : t0 + 1], y[t0 - L + 1 : t0 + 1]
@@ -288,11 +300,14 @@ def live_score(rows: list[dict], dates: list[dt.date], score_from: dt.date, extr
 
 
 def record(dates: list[dt.date], r_sbk: np.ndarray, r_ned: np.ndarray, h: np.ndarray, score_from: dt.date,
-           total: tuple[np.ndarray, np.ndarray] | None = None, ex_day: np.ndarray | None = None) -> dict:
+           total: tuple[np.ndarray, np.ndarray] | None = None, ex_day: np.ndarray | None = None,
+           gap_1600: tuple[np.ndarray, np.ndarray] | None = None) -> dict:
     """The switch on a record of simple returns and the copula's h: gate, mode, and the live scores of the
     switch, the copula rule alone and the gated spread trade (H16), with the position each carries into the next
     session. score_from is one date or a dict of dates by key. With total (dividend-correct simple returns) and
-    ex_day, also H19 (H16 on total-return levels, P&L on total returns) and every trade's reporting figures."""
+    ex_day, also H19 (H16 on total-return levels, P&L on total returns) and every trade's reporting figures. With
+    gap_1600 (log of each bank's 16:00 price over its close, NaN where missing), also H18 (H16 decided at 16:00,
+    filled at the close)."""
     x, y = np.cumsum(np.log1p(r_sbk)), np.cumsum(np.log1p(r_ned))
     b, z, eg = rolling(x, y)
     mode = modes(x, y, eg, "E", None)
@@ -304,6 +319,11 @@ def record(dates: list[dt.date], r_sbk: np.ndarray, r_ned: np.ndarray, h: np.nda
         bt, zt, et = rolling(np.cumsum(np.log1p(total[0])), np.cumsum(np.log1p(total[1])))
         out["dividends"] = {"b": bt, "z": zt, "eg": et}
         books.append(("spread_gate_dividends", trades((et < GATE_CRIT).astype(np.int8), h, bt, zt, copula_on=False, hold_through=True), total[0], total[1]))
+    if gap_1600 is not None:
+        b16, z16, e16 = rolling_1600(x, y, x + gap_1600[0], y + gap_1600[1])
+        out["h18"] = {"b": b16, "z": z16, "eg": e16}
+        g16 = (np.nan_to_num(e16, nan=0.0) < GATE_CRIT) & ~np.isnan(e16)
+        books.append(("spread_gate_1600", trades(g16.astype(np.int8), h, b16, z16, copula_on=False, hold_through=True), r_sbk, r_ned))
     for key, trs, ra, rb in books:
         rows = None
         daily = {}

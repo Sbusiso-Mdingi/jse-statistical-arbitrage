@@ -5,6 +5,8 @@ for Standard Bank and Nedbank is written to the private bucket as 1600/<date>.js
 exist yet (so a missed run fills itself in on the next, and nothing captured is ever overwritten). The raw bars of
 the day are kept with it for audit. Standard library only; the job's own service account authenticates through the
 metadata server, so no key exists anywhere.
+
+  RANGE=730d FROM=2026-04-01   # a one-off back-save (gcloud run jobs execute ... --update-env-vars)
 """
 import datetime as dt
 import json
@@ -16,7 +18,9 @@ import urllib.request
 BUCKET = os.environ["BUCKET"]
 SYMBOLS = {"sbk": "SBK.JO", "ned": "NED.JO"}
 SAST = dt.timezone(dt.timedelta(hours=2))
-YAHOO = "https://query1.finance.yahoo.com/v8/finance/chart/{}?interval=60m&range=10d"
+RANGE = os.environ.get("RANGE", "10d")   # a back-save sets a longer range (Yahoo keeps about 730 days of hourly bars)
+FROM = os.environ.get("FROM", "")        # and the first session to save
+YAHOO = "https://query1.finance.yahoo.com/v8/finance/chart/{}?interval=60m&range=" + RANGE
 UA = {"User-Agent": "Mozilla/5.0 (compatible; mdingi-research/1.0)"}
 
 
@@ -61,7 +65,7 @@ def main():
     tok = token()
     written, skipped, missing = [], [], []
     for day in sorted(set(b["sbk"]) & set(b["ned"])):
-        if day == now.date().isoformat() and (now.hour, now.minute) < (17, 15):
+        if day < FROM or (day == now.date().isoformat() and (now.hour, now.minute) < (17, 15)):
             continue  # today's bars are not final yet
         p = {k: (b[k][day].get("15:00") or {}).get("close") for k in SYMBOLS}
         if any(v is None for v in p.values()):

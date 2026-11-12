@@ -4,8 +4,7 @@
  "window": 126,
  "crit": -2.8,
  "episode_gap_sessions": 21,
- "score_from": null,
- "score_from_note": "the first session for which the live 16:00 record holds a price for both banks",
+ "score_from": "2026-04-01",
  "verdict": "40 completed trades or 31 December 2036; mean net per trade at the institutional futures schedule above zero and the episode-clustered statistic above 1.942",
  "critical_value": 1.942,
  "expected_live_bps": [
@@ -65,5 +64,6 @@
     "win": 0.74
    }
   }
- }
+ },
+ "score_from_note": "PROTOCOL.md, amendment of 12 November 2026: from 1 April 2026; decisions run from Yahoo's first hourly bar (7 December 2023)"
 }

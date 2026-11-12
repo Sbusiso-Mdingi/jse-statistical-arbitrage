@@ -49,6 +49,7 @@ SHADOW = json.loads((DATA / "pair_shadow.json").read_text())
 SWITCH = json.loads((DATA / "pair_switch.json").read_text())
 SPREAD_GATE = json.loads((DATA / "pair_spread_gate.json").read_text())
 H19 = json.loads((DATA / "pair_h19.json").read_text())
+H18 = json.loads((DATA / "pair_h18.json").read_text())
 DIVIDENDS = json.loads((DATA / "pair_dividends.json").read_text())
 _switch_cache: dict = {}
 
@@ -103,6 +104,7 @@ class LiveCache:
         self.rows = live_rows(snapshot_rows())
         self.source = "snapshot"
         self.prices: dict | None = None
+        self.gaps_1600: dict | None = None
         self.fetched_at: float = 0.0
         self.error: str | None = None
 
@@ -113,6 +115,7 @@ class LiveCache:
                 if live["rows"]:
                     self.rows = live_rows(live["rows"])
                     self.prices = live["prices"]
+                    self.gaps_1600 = live.get("gaps_1600")
                     self.source = "live"
                     self.error = None
             except Exception as exc:  # keep serving the last good data
@@ -243,10 +246,14 @@ def switch_state(pair: dict) -> dict:
     as_of = pair["date"][-1]
     if _switch_cache.get("as_of") != as_of:
         frm = {"switch": SWITCH["score_from"], "copula_alone": SWITCH["score_from"], "spread_gate": SPREAD_GATE["score_from"],
-               "spread_gate_dividends": H19["score_from"]}
+               "spread_gate_dividends": H19["score_from"], "spread_gate_1600": H18["score_from"]}
         total, ex_day, div_live = dividend_series(pair)
+        g = cache.get().gaps_1600
+        gap = None
+        if g:
+            gap = tuple(np.array([g[d][j] if d in g else np.nan for d in pair["date"]]) for j in (0, 1))
         r = switch.record(pair["date"], pair["r_sbk"], pair["r_ned"], pair["h"], {k: date.fromisoformat(v) for k, v in frm.items()},
-                          total=total, ex_day=ex_day)
+                          total=total, ex_day=ex_day, gap_1600=gap)
         mode, eg, b, gate = r["mode"], r["eg"], r["b"], r["gate"]
         spread_days = np.flatnonzero(mode)
         gate_days = np.flatnonzero(gate)
@@ -280,6 +287,14 @@ def switch_state(pair: dict) -> dict:
                                       **{k: H19[k] for k in ("protocol", "frozen_on", "score_from", "verdict", "critical_value", "development", "expected_live_bps")},
                                       "today": {"eg": float(r["dividends"]["eg"][-1]), "z": float(r["dividends"]["z"][-1]), "gate_open": bool(r["dividends"]["eg"][-1] < switch.GATE_CRIT)},
                                       "data": div_live},
+            "spread_gate_1600": ({**{k: v for k, v in r["spread_gate_1600"].items() if k not in ("daily", "history")},
+                                  **{k: H18[k] for k in ("protocol", "frozen_on", "score_from", "verdict", "critical_value", "development", "expected_live_bps")},
+                                  "today": {"eg": float(r["h18"]["eg"][-1]) if not np.isnan(r["h18"]["eg"][-1]) else None,
+                                            "z": float(r["h18"]["z"][-1]) if not np.isnan(r["h18"]["z"][-1]) else None},
+                                  "data": {"first_1600": min(g).isoformat(), "sessions_with_1600": int(np.isfinite(gap[0]).sum()),
+                                           "sessions_without_1600_since_score_from": int(sum(1 for d, v in zip(pair["date"], gap[0])
+                                                                                            if d.isoformat() >= H18["score_from"] and np.isnan(v)))}}
+                                 if gap is not None else {"available": False}),
         })
         # Each strategy as a book: cumulative net P&L in % of capital (daily net returns summed, no compounding).
         _switch_cache["pnl"] = {

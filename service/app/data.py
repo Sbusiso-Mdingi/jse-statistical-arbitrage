@@ -61,6 +61,23 @@ def yahoo_total_return(client: httpx.Client, symbol: str, start: date) -> dict:
     return {"px": px, "div": div}
 
 
+def yahoo_1600(client: httpx.Client, symbol: str) -> dict[date, float]:
+    """H18's 16:00 price per session: the close of Yahoo's 15:00-16:00 SAST hourly bar (Yahoo keeps about 730 days;
+    the private capture bucket, deploy/capture/, keeps every session from 1 April 2026 whatever Yahoo drops)."""
+    resp = client.get(YAHOO.format(symbol=symbol), params={"interval": "60m", "range": "730d"})
+    resp.raise_for_status()
+    result = resp.json()["chart"]["result"][0]
+    out = {}
+    for ts, c in zip(result["timestamp"], result["indicators"]["quote"][0]["close"]):
+        t = datetime.fromtimestamp(ts, SAST)
+        if t.hour == 15 and t.minute == 0 and c is not None and c > 0:
+            out[t.date()] = float(c)
+    return out
+
+
+H1600_FROM = date(2023, 12, 1)  # Yahoo's hourly bars for these shares start on 7 December 2023
+
+
 def dividend_corrections(full: dict, days: list[date]) -> dict:
     """Per session (from the second of `days`): the correction from the frozen (adjusted) log return to the total-return
     one, and Yahoo's adjustment step as a share of the dividend yield on ex-dividend sessions (about 0.01 today)."""
@@ -119,9 +136,17 @@ def fetch_live(freeze: date) -> dict:
     with httpx.Client(headers=HEADERS, timeout=20, follow_redirects=True) as client:
         px = {k: drop_bad_prints(yahoo_daily(client, s, start)) for k, s in PAIR.items()}
         try:
-            full = {k: yahoo_total_return(client, s, start) for k, s in PAIR.items()}
+            full = {k: yahoo_total_return(client, s, min(start, H1600_FROM)) for k, s in PAIR.items()}
         except (httpx.HTTPError, KeyError, TypeError, ValueError):
             full = None  # the dividend-correct series is unavailable; the frozen rules are unaffected
+        gaps = None
+        if full:
+            try:
+                p16 = {k: yahoo_1600(client, s) for k, s in PAIR.items()}
+                gaps = {d: tuple(math.log(p16[k][d] / full[k]["px"][d][0]) for k in PAIR)
+                        for d in set(p16["sbk"]) & set(p16["ned"]) if all(d in full[k]["px"] for k in PAIR)}
+            except (httpx.HTTPError, KeyError, TypeError, ValueError):
+                gaps = None  # H18 is unavailable; nothing else is affected
         try:
             vix = fred_vix(start - timedelta(days=10))
         except httpx.HTTPError:
@@ -150,4 +175,4 @@ def fetch_live(freeze: date) -> dict:
                 **({f"div_{k}": corr[k].get(day) for k in PAIR} if corr else {}),
             })
     last = max(r["date"] for r in rows)
-    return {"rows": rows, "prices": {k: s[last] for k, s in px.items() if last in s}, "as_of": last}
+    return {"rows": rows, "prices": {k: s[last] for k, s in px.items() if last in s}, "as_of": last, "gaps_1600": gaps}

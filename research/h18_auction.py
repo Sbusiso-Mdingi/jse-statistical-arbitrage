@@ -35,15 +35,9 @@ def bar_close(name):
 
 
 def stats_at_1600(x, y, x16, y16):
-    """Rolling 126-session slope, z and Engle-Granger statistic with today's close replaced by its 16:00 level."""
-    n = len(x)
-    b, z, eg = np.full(n, np.nan), np.full(n, np.nan), np.full(n, np.nan)
-    for t in range(sw.L - 1, n):
-        if np.isnan(x16[t]) or np.isnan(y16[t]):
-            continue
-        xi = np.append(x[t - sw.L + 1:t], x16[t]); yi = np.append(y[t - sw.L + 1:t], y16[t])
-        b[t], z[t], eg[t] = sw.window_stats(xi, yi)
-    return b, z, eg
+    """Rolling 126-session slope, z and Engle-Granger statistic with today's close replaced by its 16:00 level
+    (service/app/switch.py's rolling_1600, shared with the live service)."""
+    return sw.rolling_1600(x, y, x16, y16)
 
 
 def main():
