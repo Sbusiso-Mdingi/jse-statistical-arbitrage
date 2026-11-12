@@ -184,6 +184,10 @@ export type Switch = {
   spread_share_by_year: Record<string, number>;
   switch: SwitchScore;
   copula_alone: SwitchScore;
+  /** The spread rule decided on the 16:00 price and filled in the closing auction. */
+  spread_gate_1600?: SwitchScore & { score_from: string } | { available: false };
+  /** The spread rule on prices corrected for dividends. */
+  spread_gate_dividends?: SwitchScore & { score_from: string };
   spread_gate: SwitchScore & {
     crit: number;
     frozen_on: string;

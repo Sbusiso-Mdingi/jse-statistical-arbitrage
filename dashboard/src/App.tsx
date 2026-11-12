@@ -468,8 +468,12 @@ function Records({ s }: { s: Switch }) {
   const d = s.reference.design;
   const v = s.reference.validation_already_seen;
   const started = new Date() >= new Date(`${g.score_from}T00:00:00Z`);
+  const at1600 = s.spread_gate_1600 && "complete" in s.spread_gate_1600 ? s.spread_gate_1600 : null;
+  const corrected = s.spread_gate_dividends ?? null;
   const live: [string, Score, string][] = [
     ["Spread strategy", g, "40 completed trades or the end of 2036"],
+    ...(at1600 ? [["Spread, decided at 16:00", at1600, "40 completed trades or the end of 2036"] as [string, Score, string]] : []),
+    ...(corrected ? [["Spread, dividend-corrected prices", corrected, "40 completed trades or the end of 2036"] as [string, Score, string]] : []),
     ["Switching strategy", s.switch, "225 completed trades or the end of 2030"],
     ["Copula signal", s.copula_alone, "Reported beside the other two"],
   ];
@@ -597,11 +601,29 @@ function Records({ s }: { s: Switch }) {
         not a lone lucky number. The median trade made {num(dv.median_bps, 0)}{" "}
         bps, {pct(dv.win, 0)} of trades made money, and without its three best
         trades the average is still {num(dv.drop_top3_bps, 0)} bps. A trade
-        lasts about {num(dv.mean_days, 0)} sessions. Expect less live: something
-        like {g.expected_live_bps[0]} to {g.expected_live_bps[1]} bps a trade
-        would be no surprise. The switching strategy and the copula signal were
-        designed on 2010 to 2019; 2020 to March 2026 had already been seen when
-        the switch was designed.
+        lasts about {num(dv.mean_days, 0)} sessions. Allowing for the search,
+        cross-validation gives about 44 bps a trade, and that is roughly what to
+        expect live at the closing price it is scored on. The switching
+        strategy and the copula signal were designed on 2010 to 2019; 2020 to
+        March 2026 had already been seen when the switch was designed.
+      </p>
+      <h3 className="serif">What the backtest leaves out</h3>
+      <p className="note">
+        The backtest buys and sells at the closing price that triggers each
+        trade, which no one can actually get. Filled at the next day’s close,
+        the {num(dv.futures_bps, 0)} bps a trade falls to about 49. A version
+        that decides on the 16:00 price and fills in the closing auction kept
+        about 83 over the same years. Allowing for how the rule was chosen,
+        roughly 30 to 55 bps a trade is what to expect from it live. Its 16:00
+        prices are saved each weekday, and it is scored on trades from 1 April
+        2026.
+      </p>
+      <p className="note">
+        The share prices also carry almost none of the dividends they should,
+        so each ex-dividend drop looks like a price move. On corrected prices
+        the same rule earns about 59 bps a trade, and only about 9 since 2020.
+        A version on corrected prices is scored from 1 April 2026 as well. Both
+        versions are in the table above.
       </p>
       <p className="note">
         Costs are institutional. Single stock futures carry commission, the
@@ -971,9 +993,9 @@ export function App({ embedded }: { embedded: boolean }) {
           </div>
           <p className="note" style={{ marginTop: 0 }}>
             The copula signal has the longest live record of the three: every
-            session since its models were frozen on 31 March 2026. Its signal is
-            real, but since 2021 it has been worth less than the cost of acting
-            on it.
+            session since 1 April 2026. The reversal it bets on was real before
+            2020, but it has gone since 2021, so the signal has no edge left to
+            trade, on its own or as a timer for the spread trade.
           </p>
           <div className="tabs" role="tablist">
             {PERIODS.map((p) => (
