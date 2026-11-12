@@ -58,7 +58,7 @@ def total_return(dates, raw, div):
         tr[i] = math.log((c + D) / prev[0])
         corr[i] = tr[i] - math.log(a / prev[1])
         if D:
-            ex.append({"date": d.isoformat(), "amount": D, "prev_close": prev[0], "yield": D / prev[0],
+            ex.append({"date": d.isoformat(), "amount": D, "yield": D / prev[0],
                        "yahoo_step": (prev[1] / prev[0]) / (a / c)})
         prev = (c, a)
     return tr, corr, ex
