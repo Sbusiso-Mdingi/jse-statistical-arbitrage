@@ -24,12 +24,34 @@ export type Status = {
   prices: { sbk: number; ned: number } | null;
 };
 
-type Spec = { model: string; arma: string; dist: string; vix: boolean; bic: number };
-type Copula = { family: number; name: string; par: number; par2: number; tau: number };
+type Spec = {
+  model: string;
+  arma: string;
+  dist: string;
+  vix: boolean;
+  bic: number;
+};
+type Copula = {
+  family: number;
+  name: string;
+  par: number;
+  par2: number;
+  tau: number;
+};
 
 export type CostTier = "protocol" | "institutional" | "retail";
-export type RuleParams = { entry: number; hold: number; cost_bps: number; costs: CostTier };
-export const RULE_DEFAULTS: RuleParams = { entry: 90, hold: 5, cost_bps: 10, costs: "protocol" };
+export type RuleParams = {
+  entry: number;
+  hold: number;
+  cost_bps: number;
+  costs: CostTier;
+};
+export const RULE_DEFAULTS: RuleParams = {
+  entry: 90,
+  hold: 5,
+  cost_bps: 10,
+  costs: "protocol",
+};
 
 /** The instrument: Standard Bank against Nedbank on the score-driven copula, five-day hold, half of capital a side. */
 export type PairBacktest = {
@@ -41,8 +63,20 @@ export type PairBacktest = {
   metrics: Metrics;
   benchmark: Metrics;
   latest: { date: string; position: number; h: number };
-  series: { date: string[]; equity: number[]; benchmark: number[]; position: number[]; h: number[]; level: number };
-  trades: { open: string; close: string | null; side: string; return: number }[];
+  series: {
+    date: string[];
+    equity: number[];
+    benchmark: number[];
+    position: number[];
+    h: number[];
+    level: number;
+  };
+  trades: {
+    open: string;
+    close: string | null;
+    side: string;
+    return: number;
+  }[];
 };
 
 export type PairModel = {
@@ -55,8 +89,19 @@ export type PairModel = {
     copula: Copula & { taildep: { lower: number; upper: number } };
     pit_ks: { sbk: number; ned: number };
   };
-  pit: { walkforward: { u: number[]; v: number[] }; live: { u: number[]; v: number[] } };
-  dependence: { model: "gas_t"; omega: number; beta: number; alpha: number; nu: number; rho_train_end: number; rho_live: number | null };
+  pit: {
+    walkforward: { u: number[]; v: number[] };
+    live: { u: number[]; v: number[] };
+  };
+  dependence: {
+    model: "gas_t";
+    omega: number;
+    beta: number;
+    alpha: number;
+    nu: number;
+    rho_train_end: number;
+    rho_live: number | null;
+  };
 };
 
 type Perf = { sharpe: number; sortino: number; cagr: number; mdd: number };
@@ -77,7 +122,11 @@ export type Research = {
     entries?: { design: number; validation: number; post_freeze: number };
   }[];
   cointegration: {
-    engle_granger: { full_levels: number; full_logs: number; design_logs: number };
+    engle_granger: {
+      full_levels: number;
+      full_logs: number;
+      design_logs: number;
+    };
     crit5: number;
     rolling_share_rejecting: number;
     gregory_hansen: { level: number; regime: number };
@@ -90,22 +139,48 @@ export type Research = {
     dates: string[];
     pairs: { a: string; b: string; acf: number[] }[];
     mean_acf: number[];
-    reversal_by_year: { year: number; n: number; bps: number; se: number | null }[];
+    reversal_by_year: {
+      year: number;
+      n: number;
+      bps: number;
+      se: number | null;
+    }[];
   };
   edge: {
     cost_round_trip_bps: number;
     hold: number;
     last_date: string;
-    by_year: { year: number; n: number; bps: number; se: number; next_bps: number; next_se: number; partial: boolean }[];
+    by_year: {
+      year: number;
+      n: number;
+      bps: number;
+      se: number;
+      next_bps: number;
+      next_se: number;
+      partial: boolean;
+    }[];
     "2010_2019": { n: number; bps: number; se: number; next_bps: number };
     "2020_2026": { n: number; bps: number; se: number; next_bps: number };
     "2021_2026": { n: number; bps: number; se: number; next_bps: number };
     copula?: string;
   };
   costs?: {
-    tiers: Record<CostTier, { label: string; round_trip_bps: number; design: Perf3; validation: Perf3; full: Perf3 }>;
+    tiers: Record<
+      CostTier,
+      {
+        label: string;
+        round_trip_bps: number;
+        design: Perf3;
+        validation: Perf3;
+        full: Perf3;
+      }
+    >;
     components_institutional: Record<string, number>;
-    hold_until_normal: { avg_days_held: number; trades: number; tiers: Record<CostTier, { full: Perf3 }> };
+    hold_until_normal: {
+      avg_days_held: number;
+      trades: number;
+      tiers: Record<CostTier, { full: Perf3 }>;
+    };
   };
   redteam?: {
     lag_next_close_2010_2019_bps: number;
@@ -122,9 +197,16 @@ export type Research = {
     dm_t: number;
     h_ks_p: number;
     static_h_ks_p: number;
-    margin_oos?: { years: number; sbk_fail_years: number[]; ned_fail_years: number[] };
+    margin_oos?: {
+      years: number;
+      sbk_fail_years: number[];
+      ned_fail_years: number[];
+    };
     fires: number;
-    rule: Record<"design" | "validation" | "post_freeze", { after: number; before: number }>;
+    rule: Record<
+      "design" | "validation" | "post_freeze",
+      { after: number; before: number }
+    >;
     benchmark_walkforward_cagr: number;
   };
 };
@@ -137,7 +219,11 @@ async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
   return res.json();
 }
 
-export const getPairBacktest = (period: Period, p: RuleParams, signal?: AbortSignal) =>
+export const getPairBacktest = (
+  period: Period,
+  p: RuleParams,
+  signal?: AbortSignal,
+) =>
   getJson<PairBacktest>(
     `/api/pair/backtest?${new URLSearchParams({ period, entry: String(p.entry), hold: String(p.hold), cost_bps: String(p.cost_bps), costs: p.costs })}`,
     signal,
@@ -146,14 +232,24 @@ export const getPairModel = () => getJson<PairModel>("/api/pair/model");
 export const getResearch = () => getJson<Research>("/api/research");
 
 type SwitchScore = {
-  trades: { opened: string; closed: string | null; method: "spread" | "copula"; side: string; gross_bps: number; net_cash_bps: number; net_futures_bps: number }[];
+  trades: {
+    opened: string;
+    closed: string | null;
+    method: "spread" | "copula";
+    side: string;
+    gross_bps: number;
+    net_cash_bps: number;
+    net_futures_bps: number;
+  }[];
   complete: number;
   spread_trades: number;
   net_cash_bps: number | null;
   net_futures_bps: number | null;
   t_cash: number | null;
   t_futures: number | null;
-  position: { open: false } | { open: true; method: "spread" | "copula"; opened: string; side: string };
+  position:
+    | { open: false }
+    | { open: true; method: "spread" | "copula"; opened: string; side: string };
 };
 
 /** The long-run relationship on a rolling half-year, which method the strategy uses, and both methods' live records. */
@@ -174,18 +270,27 @@ export type Switch = {
     last_gate_day: string | null;
   };
   segment: { from: string; to: string; slope: number; intercept: number };
-  reference: Record<"design" | "validation_already_seen", {
-    spread_mode_share: number;
-    switch_vs_copula_t: number;
-    switch: { cash: number; futures: number; trades: number };
-    copula_alone: { cash: number; futures: number; trades: number };
-  }>;
-  series: { date: string[]; eg: (number | null)[]; mode: number[]; gate: number[] };
+  reference: Record<
+    "design" | "validation_already_seen",
+    {
+      spread_mode_share: number;
+      switch_vs_copula_t: number;
+      switch: { cash: number; futures: number; trades: number };
+      copula_alone: { cash: number; futures: number; trades: number };
+    }
+  >;
+  series: {
+    date: string[];
+    eg: (number | null)[];
+    mode: number[];
+    gate: number[];
+  };
   spread_share_by_year: Record<string, number>;
   switch: SwitchScore;
   copula_alone: SwitchScore;
   /** The spread rule decided on the 16:00 price and filled in the closing auction. */
-  spread_gate_1600?: SwitchScore & { score_from: string } | { available: false };
+  spread_gate_1600?:
+    (SwitchScore & { score_from: string }) | { available: false };
   /** The spread rule on prices corrected for dividends. */
   spread_gate_dividends?: SwitchScore & { score_from: string };
   spread_gate: SwitchScore & {
@@ -215,7 +320,12 @@ export type Switch = {
 export const getSwitch = () => getJson<Switch>("/api/switch");
 
 export type Schedule = "futures" | "cash";
-export type PnlTrade = { opened: string; closed: string | null; net_futures_bps: number; net_cash_bps: number };
+export type PnlTrade = {
+  opened: string;
+  closed: string | null;
+  net_futures_bps: number;
+  net_cash_bps: number;
+};
 export type Pnl = {
   as_of: string;
   date: string[];
@@ -223,7 +333,60 @@ export type Pnl = {
   development_end: string;
   last_refit: string | null;
   last_refit_from: string | null;
-  strategies: Record<"spread_gate" | "switch" | "copula_alone", { cum: Record<Schedule, number[]>; trades: PnlTrade[] }>;
+  strategies: Record<
+    "spread_gate" | "switch" | "copula_alone",
+    { cum: Record<Schedule, number[]>; trades: PnlTrade[] }
+  >;
 };
 
 export const getPnl = () => getJson<Pnl>("/api/pnl");
+
+export type LabStats = {
+  n: number;
+  mean: number | null;
+  t?: number;
+  win?: number;
+};
+export type LabSpec = {
+  window: number;
+  gate: number | null;
+  entry: number;
+  fill: "same" | "next";
+  div: "price" | "total";
+  dev: LabStats & { sharpe: number; eras: (number | null)[] };
+  unseen: LabStats;
+  curve: number[];
+  pairs: {
+    n: number;
+    mean: number | null;
+    t: number | null;
+    positive: number;
+    of: number;
+  };
+};
+export type Lab = {
+  dev: { from: string; to: string };
+  unseen_from: string;
+  last: string;
+  quarters: string[];
+  dims: { window: number[]; gate: (number | null)[]; entry: number[] };
+  found: {
+    window: number;
+    gate: number;
+    entry: number;
+    fill: "same";
+    div: "price";
+  };
+  specs: LabSpec[];
+  luck: { n: number[]; p50: number[]; p95: number[] };
+};
+export type Timeline = {
+  dates: string[];
+  eg: (number | null)[];
+  z: (number | null)[];
+  gate: number;
+  entry: number;
+  trades: { open: string; close: string; net_bps: number }[];
+};
+export const getLab = () => getJson<Lab>("/api/lab");
+export const getTimeline = () => getJson<Timeline>("/api/timeline");

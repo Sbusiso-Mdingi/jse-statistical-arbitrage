@@ -1,1126 +1,233 @@
 import { useEffect, useState } from "react";
-import {
-  RULE_DEFAULTS,
-  getPairBacktest,
-  getPairModel,
-  getResearch,
-  getPnl,
-  getSwitch,
-  type PairBacktest,
-  type Pnl,
-  type Schedule,
-  type Switch,
-  type PairModel,
-  type RuleParams,
-  type CostTier,
-  type Period,
-  type Research,
-} from "./api";
-import {
-  EdgeBars,
-  EquityChart,
-  GateChart,
-  PitScatter,
-  PnlChart,
-} from "./charts";
-import { fmtDate, num, pct } from "./format";
+import { getSwitch, type Switch } from "./api";
+import { RuleLab } from "./Lab";
+import { WatchItTrade } from "./Timeline";
+import { fmtDate, num } from "./format";
 
-const PERIODS: { id: Period; label: string }[] = [
-  { id: "live", label: "Unseen since 1 April 2026" },
-  { id: "walkforward", label: "Walk-forward, 2010 to March 2026" },
-  { id: "all", label: "Full record" },
-];
-
-const MODEL_NAMES: Record<string, string> = {
-  sGARCH: "GARCH",
-  gjrGARCH: "GJR-GARCH",
-  eGARCH: "EGARCH",
-};
-const specLabel = (s: {
-  arma: string;
-  model: string;
-  dist: string;
-  vix: boolean;
-}) =>
-  `ARMA(${s.arma})-${MODEL_NAMES[s.model] ?? s.model}(1,1) ${s.dist === "std" ? "Student t" : "normal"}${s.vix ? " + VIX" : ""}`;
-
-function useDebounced<T>(value: T, ms: number) {
-  const [v, setV] = useState(value);
-  useEffect(() => {
-    const id = setTimeout(() => setV(value), ms);
-    return () => clearTimeout(id);
-  }, [value, ms]);
-  return v;
-}
-
-function Metric({
-  value,
-  label,
-  sub,
-  negative,
-}: {
-  value: string;
-  label: string;
-  sub?: string;
-  negative?: boolean;
-}) {
-  return (
-    <div className="metric">
-      <div className={`value${negative ? " neg" : ""}`}>{value}</div>
-      <div className="label">{label}</div>
-      {sub && <div className="sub">{sub}</div>}
-    </div>
-  );
-}
-
-function useBacktest(period: Period, params: RuleParams) {
-  const [bt, setBt] = useState<PairBacktest | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const debounced = useDebounced(params, 200);
-  useEffect(() => {
-    const ctl = new AbortController();
-    getPairBacktest(period, debounced, ctl.signal)
-      .then((r) => {
-        setBt(r);
-        setError(null);
-      })
-      .catch(
-        (e) => e.name !== "AbortError" && setError(String(e.message ?? e)),
-      );
-    return () => ctl.abort();
-  }, [period, debounced]);
-  return { bt, error };
-}
-
-/** What a signal was worth before costs, year by year, against the cost of acting on it. */
-const TIER_LABEL: Record<CostTier, string> = {
-  protocol: "Flat: 10 bps a leg, brokerage only",
-  institutional: "JSE, institutional",
-  retail: "JSE, retail brokerage",
-};
-
-function EdgePanel({ r, tier }: { r: Research; tier: CostTier }) {
-  const e = r.edge;
-  const cost = r.costs?.tiers[tier].round_trip_bps ?? e.cost_round_trip_bps;
-  const early = e["2010_2019"];
-  const late = e["2021_2026"];
-  return (
-    <section className="panel">
-      <div className="panel-head">
-        <h2 className="serif">
-          What a signal <em>was worth</em>
-        </h2>
-        <div className="legend">
-          <span style={{ color: "var(--primary)" }}>■ Above the cost</span>
-          <span style={{ color: "var(--border-strong)" }}>
-            ■ Positive, below the cost
-          </span>
-          <span style={{ color: "var(--negative)" }}>■ Negative</span>
-        </div>
-      </div>
-      <EdgeBars
-        rows={e.by_year}
-        cost={cost}
-        label="Gross return per signal over the five-day hold, by year, against the cost of a round trip"
-      />
-      <p className="note">
-        Each bar is the average return, in basis points of capital and before
-        costs, from taking the position the signal points to and holding it{" "}
-        {e.hold} sessions, for every day the signal fired that year. Whiskers
-        are two standard errors; {e.last_date.slice(0, 4)} is partial. From 2010
-        to 2019 a signal was worth {num(early.bps, 0)} bps on average ({early.n}{" "}
-        signals, standard error {num(early.se, 0)}); a round trip costs{" "}
-        {num(cost, 0)} bps under the cost schedule chosen below. Since 2021 it
-        has been worth {num(late.bps, 0)} bps ({late.n} signals, standard error{" "}
-        {num(late.se, 0)}). The first session after a signal was worth{" "}
-        {num(early.next_bps, 0)} bps before 2020 and {num(late.next_bps, 0)}{" "}
-        since.
-        {r.redteam
-          ? ` These figures assume a fill at the close that produced the signal. Filled at the next close, the 2010 to 2019 figure is ${num(r.redteam.lag_next_close_2010_2019_bps, 0)} bps, and filled at 10:00 the next morning, ${num(r.redteam.lag_next_10am_2010_2019_bps, 0)}. Against 10,000 random entry sets the 2010 to 2019 figure sits at the ${num(r.redteam.placebo_percentile_2010_2019, 1)}th percentile, and the 2021 onward figure at the ${num(r.redteam.placebo_percentile_2021_2026, 0)}th.`
-          : ""}
-      </p>
-    </section>
-  );
-}
-
-function LiveRecord({
-  bt,
-  tier,
-  roundTrip,
-  period,
-}: {
-  bt: PairBacktest;
-  tier: CostTier;
-  roundTrip: number;
-  period: Period;
-}) {
-  const m = bt.metrics;
-  const short = m.years < 1;
-  // Two standard deviations of the total return of a zero-mean strategy with this volatility, over this span.
-  const band = 2 * m.volatility * Math.sqrt(m.years);
-  const [showBench, setShowBench] = useState(false);
-  return (
-    <>
-      <section className="metrics" aria-label="Performance">
-        <Metric
-          value={pct(m.total_return)}
-          label="Total return"
-          negative={m.total_return < 0}
-          sub={`${fmtDate(bt.start)} to ${fmtDate(bt.end)}`}
-        />
-        <Metric
-          value={num(m.sharpe)}
-          label="Sharpe ratio"
-          negative={m.sharpe < 0}
-          sub={`Sortino ${num(m.sortino)} · annualised`}
-        />
-        <Metric value={pct(m.max_drawdown)} label="Max drawdown" negative />
-        <Metric
-          value={String(m.trades)}
-          label="Trades"
-          sub={
-            m.avg_hold_days != null
-              ? `Average ${m.avg_hold_days.toFixed(1)} sessions held; a new signal restarts the five`
-              : undefined
-          }
-        />
-        <Metric
-          value={pct(m.hit_rate, 0)}
-          label="Winning trades"
-          sub={`In the market ${pct(m.time_in_market, 0)} of days`}
-        />
-        <Metric
-          value={
-            bt.latest.position > 0
-              ? "Long SBK"
-              : bt.latest.position < 0
-                ? "Short SBK"
-                : "Flat"
-          }
-          label={`Position into the next session`}
-          sub={`P(NED | SBK) ${bt.latest.h.toFixed(3)} at ${fmtDate(bt.latest.date)}`}
-        />
-      </section>
-      <p className="note">
-        {short
-          ? `${Math.round(m.years * 12)} months of unseen sessions so far. At this volatility a strategy with no edge would end this many months between ${pct(-band)} and ${pct(band)} about 95% of the time, so the record cannot yet tell the signal from noise. `
-          : ""}
-        Net of costs ({TIER_LABEL[tier]}), about {num(roundTrip, 0)} bps of
-        capital a round trip, each side sized at half of capital. Holding half
-        Standard Bank and half Nedbank returned {pct(bt.benchmark.total_return)}{" "}
-        over the same dates.
-      </p>
-      <section className="panel">
-        <div className="panel-head">
-          <h2 className="serif">
-            Growth of <em>R1</em>
-          </h2>
-          <div className="legend">
-            <span style={{ color: "var(--primary)" }}>
-              <i />
-              Signal, after costs
-            </span>
-            <label
-              className="toggle"
-              style={{ fontFamily: "var(--font-mono)", fontSize: 11 }}
-            >
-              <input
-                type="checkbox"
-                checked={showBench}
-                onChange={(e) => setShowBench(e.target.checked)}
-              />
-              Buy and hold
-            </label>
-            <span style={{ color: "var(--primary)" }}>■ Long SBK</span>
-            <span style={{ color: "#b58b3c" }}>■ Long NED</span>
-          </div>
-        </div>
-        <EquityChart
-          dates={bt.series.date}
-          equity={bt.series.equity}
-          benchmark={bt.series.benchmark}
-          position={bt.series.position}
-          showBenchmark={showBench}
-          marker={period === "all" ? "2026-04-01" : undefined}
-        />
-      </section>
-    </>
-  );
-}
-
+type Tab = "lab" | "watch" | "live" | "how";
 type Score = Switch["switch"];
 
-const signed = (v: number | null | undefined, d = 1) =>
-  v == null ? "n/a" : `${v > 0 ? "+" : v < 0 ? "−" : ""}${num(Math.abs(v), d)}`;
-const bps = (v: number | null | undefined, d = 1) =>
-  v == null ? "n/a" : `${signed(v, d)} bps`;
+const bps = (v: number | null | undefined) =>
+  v == null
+    ? "n/a"
+    : `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(1)} bps`;
 
-/** Is the relationship holding: the rolling test against both rules' cutoffs. */
-function Relationship({ s }: { s: Switch }) {
-  const t = s.today;
-  const g = s.spread_gate;
+function LiveRecord({ s }: { s: Switch | null }) {
+  if (!s)
+    return (
+      <p className="loading">
+        Loading the live record (the server may need half a minute to wake)…
+      </p>
+    );
+  const real =
+    s.spread_gate_1600 && "complete" in s.spread_gate_1600
+      ? s.spread_gate_1600
+      : null;
+  const rows: [string, string, Score | null][] = [
+    [
+      "Decided at 16:00, filled in the closing auction",
+      "the version a person could trade",
+      real,
+    ],
+    [
+      "Decided and filled at the same close",
+      "the rule as first found",
+      s.spread_gate,
+    ],
+    ["The same, on prices with dividends", "", s.spread_gate_dividends ?? null],
+  ];
+  const lead = real ?? s.spread_gate;
   return (
-    <section className="panel">
-      <div className="panel-head">
+    <div className="live">
+      <section className="lab-intro">
         <h2 className="serif">
-          1. Are the two prices <em>tied together</em> right now?
+          Since <em>{fmtDate(s.spread_gate.score_from)}</em>
         </h2>
-        <div className="legend">
-          <span style={{ color: "var(--foreground)" }}>
-            — Test statistic, last {s.window} sessions
-          </span>
-          <span style={{ color: "var(--primary)", opacity: 0.5 }}>
-            ■ Below {num(g.crit, 1)}
-          </span>
-          <span style={{ color: "var(--primary)" }}>■ Below {num(s.crit)}</span>
+        <p className="lede">
+          Every choice behind the rule used prices only to 31 March 2026. From 1
+          April each trade is recorded as it happens and cannot be changed. The
+          rule trades only while the two prices are tied together, and they have
+          not been since{" "}
+          {s.today.last_gate_day
+            ? fmtDate(s.today.last_gate_day)
+            : "the spring"}
+          , so there is little to show yet. About four trades a year are
+          expected.
+        </p>
+      </section>
+      <div className="metrics">
+        <div className="metric">
+          <div className="value">{lead.complete}</div>
+          <div className="label">Completed trades</div>
+          <div className="sub">decided at 16:00</div>
+        </div>
+        <div className="metric">
+          <div className="value">
+            {lead.position.open ? "In a trade" : "Flat"}
+          </div>
+          <div className="label">Position today</div>
+          <div className="sub">
+            {lead.position.open
+              ? `${lead.position.side} since ${fmtDate(lead.position.opened)}`
+              : "waiting for the prices to tie"}
+          </div>
+        </div>
+        <div className="metric">
+          <div
+            className={`value${s.today.eg < s.spread_gate.crit ? "" : " muted"}`}
+          >
+            {num(s.today.eg)}
+          </div>
+          <div className="label">Statistic today</div>
+          <div className="sub">trades below {num(s.spread_gate.crit, 1)}</div>
+        </div>
+        <div className="metric">
+          <div className="value">
+            {lead.net_futures_bps == null ? "n/a" : bps(lead.net_futures_bps)}
+          </div>
+          <div className="label">Net a trade so far</div>
+          <div className="sub">institutional single-stock futures</div>
         </div>
       </div>
-      <section className="metrics" aria-label="The relationship today">
-        <Metric
-          value={
-            t.holds
-              ? "Holding"
-              : t.gate_open
-                ? "Holding, weakly"
-                : "Not holding"
-          }
-          label="Relationship today"
-          negative={!t.gate_open}
-          sub={`Statistic ${num(t.eg)} on ${fmtDate(s.as_of)}`}
-        />
-        <Metric
-          value={
-            t.gate_open
-              ? "Below now"
-              : t.last_gate_day
-                ? fmtDate(t.last_gate_day, {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })
-                : "Never"
-          }
-          label={`Last below ${num(g.crit, 1)}`}
-          sub="The spread strategy trades only below this"
-        />
-        <Metric
-          value={
-            t.holds
-              ? "Below now"
-              : t.last_spread_day
-                ? fmtDate(t.last_spread_day, {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })
-                : "Never"
-          }
-          label={`Last below ${num(s.crit)}`}
-          sub="The switching strategy trades the spread only below this"
-        />
-        <Metric
-          value={num(Math.abs(t.hedge_ratio) < 0.005 ? 0 : t.hedge_ratio)}
-          label={`Hedge ratio, last ${s.window} sessions`}
-          sub={`Long-run segment since ${fmtDate(s.segment.from, { month: "short", year: "numeric" })}: ${num(s.segment.slope)}`}
-        />
-      </section>
-      <GateChart
-        dates={s.series.date}
-        stat={s.series.eg}
-        lines={[
-          {
-            value: g.crit,
-            label: `spread strategy trades below ${num(g.crit, 1)}`,
-          },
-          {
-            value: s.crit,
-            label: `switching strategy uses the spread below ${num(s.crit)}`,
-          },
-        ]}
-        bands={[
-          { mode: s.series.gate, opacity: 0.1 },
-          { mode: s.series.mode, opacity: 0.14 },
-        ]}
-        label="Rolling Engle-Granger statistic for log Nedbank on log Standard Bank, with the two cutoffs and the sessions below each shaded"
-      />
-      <p className="note">
-        Each session, log Nedbank is regressed on log Standard Bank over the
-        last {s.window} sessions, about six months, and the gap left over is
-        tested for whether it drifts back to zero (an Engle-Granger test). The
-        more negative the statistic, the stronger the evidence that the two
-        prices are tied together and a gap between them closes. {num(s.crit)} is
-        the textbook 5% critical value. {num(g.crit, 1)} is a looser cutoff that
-        worked better on the history. Over the whole record since 2005 the two
-        prices are not tied together; the relationship comes and goes in
-        stretches, such as 2011 to 2013, 2018, 2022 and 2024. Today the
-        statistic is {num(t.eg)}, so{" "}
-        {t.gate_open
-          ? "the relationship is holding."
-          : "the relationship is not holding, and neither spread rule will open a trade."}
-      </p>
-    </section>
-  );
-}
-
-function stateText(p: Score["position"]) {
-  if (!p.open) return "Flat";
-  return `${p.side}, since ${fmtDate(p.opened, { day: "numeric", month: "short" })}`;
-}
-
-/** What each strategy is doing today, and why. */
-function Strategies({ s, h }: { s: Switch; h: number | null }) {
-  const t = s.today;
-  const g = s.spread_gate;
-  const cop = s.copula_alone.position;
-  const fired = h != null && Math.abs(h - 0.5) > 0.45;
-  const rows = [
-    {
-      name: "Spread strategy",
-      best: true,
-      how: `Trades the gap between the two prices while the statistic is below ${num(g.crit, 1)}: opens when the gap is 1.5 standard deviations wide, closes when it is back to zero, at 4 standard deviations or after 60 sessions. Holds nothing otherwise.`,
-      today: stateText(g.position),
-      why: g.position.open
-        ? "The trade stays open until its own exit, even if the relationship weakens."
-        : t.gate_open
-          ? `The relationship is holding, but the gap is ${num(Math.abs(t.z), 1)} standard deviations, inside the 1.5 needed to open.`
-          : `The statistic is ${num(t.eg)}, above ${num(g.crit, 1)}, so it waits.${t.last_gate_day ? ` It was last below on ${fmtDate(t.last_gate_day)}.` : ""}`,
-    },
-    {
-      name: "Switching strategy",
-      best: false,
-      how: `The same spread trade while the statistic is below ${num(s.crit)}; otherwise it follows the copula signal.`,
-      today: s.switch.position.open
-        ? `${stateText(s.switch.position)} (${s.switch.position.method === "spread" ? "spread" : "copula"})`
-        : "Flat",
-      why: t.holds
-        ? "The relationship is holding at 5%, so it trades the spread."
-        : `The statistic is above ${num(s.crit)}, so it is following the copula signal and makes the same trades as the copula signal.`,
-    },
-    {
-      name: "Copula signal",
-      best: false,
-      how: "Each day asks how unusual Nedbank's move was given Standard Bank's, from a copula on top of each bank's own volatility model. Beyond 5% in either tail it takes the side that bets on the move reversing, for five sessions.",
-      today: stateText(cop),
-      why: cop.open
-        ? "A signal fired in the last five sessions."
-        : h == null
-          ? "No signal in the last five sessions."
-          : `No signal in the last five sessions. Today's reading is ${num(h, 3)}; it fires below 0.05 or above 0.95${fired ? "." : ", so it is quiet."}`,
-    },
-  ];
-  return (
-    <section className="panel">
-      <div className="panel-head">
-        <h2 className="serif">
-          2. What each strategy is <em>doing</em> today
-        </h2>
-        <span className="legend">
-          Positions carried into the session after {fmtDate(s.as_of)}
-        </span>
-      </div>
-      <div className="table-wrap">
-        <table className="strategies">
-          <thead>
-            <tr>
-              <th>Strategy</th>
-              <th>How it trades</th>
-              <th>Today</th>
-              <th>Why</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.name}>
-                <td>
-                  <strong>{r.name}</strong>
-                  {r.best && (
-                    <span className="tag">Best record on the history</span>
-                  )}
-                </td>
-                <td>{r.how}</td>
-                <td className="state">{r.today}</td>
-                <td>{r.why}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <p className="note">
-        The three share one question. When the two prices are tied together, a
-        gap between them tends to close, and the spread trade bets on that. When
-        they are not, there is no gap to trade, and the copula signal looks
-        instead for single days when one bank moved unusually far against the
-        other. On the history to March 2026, the spread strategy is the only one
-        of the three that made money after institutional costs, which is why it
-        is the current best bet. It is also the slowest: about{" "}
-        {num(g.development.trades_per_year, 0)} trades a year, and none while
-        the relationship is not holding. None of the three has a live record
-        long enough to judge yet.
-      </p>
-    </section>
-  );
-}
-
-/** What each has earned live, and what the history suggested. */
-function Records({ s }: { s: Switch }) {
-  const g = s.spread_gate;
-  const dv = g.development;
-  const d = s.reference.design;
-  const v = s.reference.validation_already_seen;
-  const started = new Date() >= new Date(`${g.score_from}T00:00:00Z`);
-  const at1600 = s.spread_gate_1600 && "complete" in s.spread_gate_1600 ? s.spread_gate_1600 : null;
-  const corrected = s.spread_gate_dividends ?? null;
-  const live: [string, Score, string][] = [
-    ["Spread strategy", g, "40 completed trades or the end of 2036"],
-    ...(at1600 ? [["Spread, decided at 16:00", at1600, "40 completed trades or the end of 2036"] as [string, Score, string]] : []),
-    ...(corrected ? [["Spread, dividend-corrected prices", corrected, "40 completed trades or the end of 2036"] as [string, Score, string]] : []),
-    ["Switching strategy", s.switch, "225 completed trades or the end of 2030"],
-    ["Copula signal", s.copula_alone, "Reported beside the other two"],
-  ];
-  const open = (r: Score) => (r.position.open ? 1 : 0);
-  return (
-    <section className="panel">
-      <div className="panel-head">
-        <h2 className="serif">
-          3. What they have <em>earned</em>, and what the history suggested
-        </h2>
-      </div>
-      <p className="eyebrow">
-        Live: trades opened from {fmtDate(g.score_from)}
-      </p>
       <div className="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Strategy</th>
+              <th>Version</th>
               <th className="num">Completed</th>
               <th className="num">Open</th>
               <th className="num">Net a trade, futures</th>
               <th className="num">Net a trade, shares</th>
-              <th className="num">t, futures</th>
-              <th>Judged at</th>
             </tr>
           </thead>
           <tbody>
-            {live.map(([name, r, when]) => (
-              <tr key={name}>
-                <td>{name}</td>
-                <td className="num">{r.complete}</td>
-                <td className="num">{open(r)}</td>
-                <td className="num">{bps(r.net_futures_bps)}</td>
-                <td className="num">{bps(r.net_cash_bps)}</td>
-                <td className="num">
-                  {r.t_futures == null ? "n/a" : num(r.t_futures)}
-                </td>
-                <td>{when}</td>
-              </tr>
-            ))}
+            {rows
+              .filter(([, , r]) => r)
+              .map(([name, sub, r]) => (
+                <tr key={name}>
+                  <td>
+                    {name}
+                    {sub && <span className="muted small"> · {sub}</span>}
+                  </td>
+                  <td className="num">{r!.complete}</td>
+                  <td className="num">{r!.position.open ? 1 : 0}</td>
+                  <td className="num">{bps(r!.net_futures_bps)}</td>
+                  <td className="num">{bps(r!.net_cash_bps)}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
       <p className="note">
-        {started ? "" : `Scoring starts on ${fmtDate(g.score_from)}. `}
-        The rules use only data to 31 March 2026; everything from 1 April 2026
-        is unseen, and only trades opened from then count. Looser cutoffs would
-        have traded since April and lost, so the months since then flatter the
-        spread strategy's cutoff slightly. A strategy passes if its average
-        trade after futures costs is above zero with a t-statistic above 1.65.
-        If the relationship does not hold before the deadline, the spread
-        strategy will have made few or no trades, and there is no evidence
-        either way.
+        The judgement comes at 40 completed trades or at the end of 2036,
+        whichever is first. The two copula strategies the project also followed
+        are still recorded ({s.switch.complete} and {s.copula_alone.complete}{" "}
+        trades since 1 April, {bps(s.copula_alone.net_futures_bps)} a trade) and
+        are no longer the project&apos;s focus.
       </p>
-      <p className="eyebrow" style={{ marginTop: 22 }}>
-        History: development data to 31 March 2026
-      </p>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Strategy</th>
-              <th>Period</th>
-              <th className="num">Trades</th>
-              <th className="num">Net a trade, futures</th>
-              <th className="num">Net a trade, shares</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Spread strategy</td>
-              <td>{dv.from.slice(0, 4)} to March 2026</td>
-              <td className="num">{dv.trades}</td>
-              <td className="num">{bps(dv.futures_bps)}</td>
-              <td className="num">{bps(dv.cash_bps)}</td>
-            </tr>
-            {dv.eras.map((e) => (
-              <tr key={e.from} className="sub-row">
-                <td />
-                <td>
-                  {e.from.slice(0, 4)} to{" "}
-                  {e.to < "2026-04-01"
-                    ? Number(e.to.slice(0, 4)) - 1
-                    : "March 2026"}
-                </td>
-                <td className="num">{e.trades}</td>
-                <td className="num">{bps(e.futures_bps)}</td>
-                <td />
-              </tr>
-            ))}
-            {(
-              [
-                ["Switching strategy", "switch"],
-                ["Copula signal", "copula_alone"],
-              ] as const
-            ).map(([name, k]) =>
-              [
-                ["2010 to 2019", d],
-                ["2020 to March 2026", v],
-              ].map(([per, r], i) => {
-                const x = (r as typeof d)[k];
-                return (
-                  <tr key={`${name}-${per}`}>
-                    <td>{i === 0 ? name : ""}</td>
-                    <td>{per as string}</td>
-                    <td className="num">{x.trades}</td>
-                    <td className="num">{bps(x.futures)}</td>
-                    <td className="num">{bps(x.cash)}</td>
-                  </tr>
-                );
-              }),
-            )}
-          </tbody>
-        </table>
-      </div>
-      <p className="note">
-        The spread strategy was found by searching the history:{" "}
-        {dv.specifications_searched} rule settings were tried on data to March
-        2026 (different cutoffs, windows, entry levels, exits, a sector-hedged
-        spread and forecast-based filters), and this one did best. Its figures
-        are therefore flattering. Cutoffs from −2.4 to −3.34 made{" "}
-        {num(Math.min(...Object.values(dv.by_cutoff)), 0)} to{" "}
-        {num(Math.max(...Object.values(dv.by_cutoff)), 0)} bps a trade, so it is
-        not a lone lucky number. The median trade made {num(dv.median_bps, 0)}{" "}
-        bps, {pct(dv.win, 0)} of trades made money, and without its three best
-        trades the average is still {num(dv.drop_top3_bps, 0)} bps. A trade
-        lasts about {num(dv.mean_days, 0)} sessions. Allowing for the search,
-        cross-validation gives about 44 bps a trade, and that is roughly what to
-        expect live at the closing price it is scored on. The switching
-        strategy and the copula signal were designed on 2010 to 2019; 2020 to
-        March 2026 had already been seen when the switch was designed.
-      </p>
-      <h3 className="serif">What the backtest leaves out</h3>
-      <p className="note">
-        The backtest buys and sells at the closing price that triggers each
-        trade, which no one can actually get. Filled at the next day’s close,
-        the {num(dv.futures_bps, 0)} bps a trade falls to about 49. A version
-        that decides on the 16:00 price and fills in the closing auction kept
-        about 83 over the same years. Allowing for how the rule was chosen,
-        roughly 30 to 55 bps a trade is what to expect from it live. Its 16:00
-        prices are saved each weekday, and it is scored on trades from 1 April
-        2026.
-      </p>
-      <p className="note">
-        The share prices also carry almost none of the dividends they should,
-        so each ex-dividend drop looks like a price move. On corrected prices
-        the same rule earns about 59 bps a trade, and only about 9 since 2020.
-        A version on corrected prices is scored from 1 April 2026 as well. Both
-        versions are in the table above.
-      </p>
-      <p className="note">
-        Costs are institutional. Single stock futures carry commission, the
-        exchange fee and VAT, a half-spread, funding and a roll at each expiry.
-        Shares carry brokerage and VAT, securities transfer tax of 0.25% on
-        purchases, Strate, the levy, a half-spread and borrow on the short side.
-        The half-spreads and borrow are assumptions.
-      </p>
-    </section>
+    </div>
   );
 }
 
-const BOOKS: {
-  key: keyof Pnl["strategies"];
-  label: string;
-  color: string;
-  width: number;
-}[] = [
-  {
-    key: "spread_gate",
-    label: "Spread strategy",
-    color: "var(--foreground)",
-    width: 2.2,
-  },
-  { key: "switch", label: "Switching strategy", color: "#7a7a7a", width: 1.3 },
-  { key: "copula_alone", label: "Copula signal", color: "#b0b0b0", width: 1.3 },
-];
-const SCHEDULE_LABEL: Record<Schedule, string> = {
-  futures: "Single-stock futures",
-  cash: "Shares",
-};
-const WINDOWS = [
-  { id: "all", label: "2010 to today", from: null },
-  { id: "since_april", label: "Since 1 April 2026", from: "2026-04-01" },
-] as const;
-
-function StrategyPnl({ p }: { p: Pnl }) {
-  const [sched, setSched] = useState<Schedule>("futures");
-  const [win, setWin] = useState<(typeof WINDOWS)[number]["id"]>("all");
-  const from = WINDOWS.find((w) => w.id === win)!.from;
-  const i0 = from
-    ? Math.max(
-        p.date.findIndex((d) => d >= from),
-        0,
-      )
-    : 0;
-  const dates = p.date.slice(i0);
-  const lines = BOOKS.map((b) => {
-    const cum = p.strategies[b.key].cum[sched];
-    const base = i0 > 0 ? cum[i0 - 1] : 0;
-    return { ...b, values: cum.slice(i0).map((v) => v - base) };
-  });
-  const figures = (key: keyof Pnl["strategies"]) => {
-    const done = p.strategies[key].trades.filter(
-      (t) => t.closed && t.opened >= dates[0],
-    );
-    const v = done.map((t) =>
-      sched === "futures" ? t.net_futures_bps : t.net_cash_bps,
-    );
-    const mean = v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
-    return {
-      n: v.length,
-      mean,
-      win: v.length ? v.filter((x) => x > 0).length / v.length : null,
-      total: lines.find((l) => l.key === key)!.values.at(-1) ?? 0,
-    };
-  };
-  const sp = figures("spread_gate");
-  const others = BOOKS.slice(1).map((b) => ({ ...b, ...figures(b.key) }));
-  const pctCap = (v: number) => `${signed(v, 1)}%`;
+function How() {
   return (
     <section className="panel">
-      <div className="panel-head">
-        <h2 className="serif">
-          4. What each strategy <em>has made, net of costs</em>
-        </h2>
-        <div className="legend">
-          {BOOKS.map((b) => (
-            <span
-              key={b.key}
-              style={{
-                color: b.color,
-                fontWeight: b.key === "spread_gate" ? 600 : undefined,
-              }}
-            >
-              <i style={{ height: b.width }} />
-              {b.label}
-            </span>
-          ))}
-        </div>
-      </div>
-      <p className="note" style={{ marginTop: 0 }}>
-        Each line is one strategy run as a book on the same capital: the daily
-        net return added up since 2010, after the JSE costs of every trade. The
-        rules use only data to 31 March 2026; everything from 1 April 2026 is
-        unseen. The shaded history is backtest, and the rules were chosen on it,
-        so it shows what they were built on, not how they will do.
-      </p>
-      <div className="tabs" role="tablist">
-        {WINDOWS.map((w) => (
-          <button
-            key={w.id}
-            role="tab"
-            aria-selected={win === w.id}
-            onClick={() => setWin(w.id)}
-          >
-            {w.label}
-          </button>
-        ))}
-      </div>
-      <section className="controls" aria-label="Instrument">
-        <div className="control">
-          <span className="label">Traded with</span>
-          <div className="segmented">
-            {(Object.keys(SCHEDULE_LABEL) as Schedule[]).map((k) => (
-              <button
-                key={k}
-                aria-pressed={sched === k}
-                onClick={() => setSched(k)}
-              >
-                {SCHEDULE_LABEL[k]}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-      <PnlChart
-        dates={dates}
-        lines={lines}
-        shadeTo={p.development_end >= dates[0] ? p.development_end : undefined}
-        shadeLabel="BACKTEST · RULES CHOSEN ON THIS DATA"
-        liveFrom={p.score_from}
-      />
-      <section className="metrics" aria-label="Spread strategy">
-        <Metric
-          value={pctCap(sp.total)}
-          label="Spread strategy, net, % of capital"
-          negative={sp.total < 0}
-          sub={`${fmtDate(dates[0])} to ${fmtDate(p.as_of)}, summed, not compounded`}
-        />
-        <Metric
-          value={bps(sp.mean)}
-          label="Net per trade"
-          negative={(sp.mean ?? 0) < 0}
-          sub={`${sp.n} completed trades`}
-        />
-        <Metric
-          value={sp.win == null ? "n/a" : pct(sp.win, 0)}
-          label="Winning trades"
-        />
-        {others.map((o) => (
-          <Metric
-            key={o.key}
-            value={pctCap(o.total)}
-            label={`${o.label}, net, % of capital`}
-            negative={o.total < 0}
-            sub={`${o.n} trades, ${bps(o.mean)} each`}
-          />
-        ))}
-      </section>
-      <p className="note">
-        Since 1 April the spread strategy has made no trades: the two prices
-        have not been tied together closely enough. The switching strategy has
-        traded only through the copula signal, so their two lines match. Looser
-        cutoffs would have traded since April and lost, so the months since then
-        flatter the spread strategy's cutoff slightly. Costs are the JSE
-        institutional schedule for{" "}
-        {sched === "futures"
-          ? "single-stock futures"
-          : "shares, with securities transfer tax on purchases"}
-        .
-      </p>
-    </section>
-  );
-}
-
-function Instrument({
-  model,
-  research,
-}: {
-  model: PairModel;
-  research: Research | null;
-}) {
-  const latest = model.latest;
-  const dep = model.dependence;
-  const ins = research?.instrument;
-  return (
-    <section className="panel split">
-      <div>
-        <div className="panel-head">
-          <h2 className="serif">
-            The instrument, <em>checked on unseen days</em>
-          </h2>
-          <div className="legend">
-            <span style={{ color: "var(--border-strong)" }}>
-              ● Walk-forward days
-            </span>
-            <span style={{ color: "var(--primary)" }}>● Unseen days</span>
-          </div>
-        </div>
-        <PitScatter
-          history={model.pit.walkforward}
-          live={model.pit.live}
-          yLabel="Nedbank v → 1"
-        />
-        <p className="note">
-          Each day’s returns, turned into probabilities by that year’s
-          volatility models. If the models are right these fill the square
-          evenly.
-          {ins?.margin_oos
-            ? ` Tested year by year on the days each fit had not seen, Standard Bank's probabilities ${ins.margin_oos.sbk_fail_years.length ? `fail in ${ins.margin_oos.sbk_fail_years.join(", ")}` : `pass in all ${ins.margin_oos.years} years`} and Nedbank's ${ins.margin_oos.ned_fail_years.length ? `fail in ${ins.margin_oos.ned_fail_years.length} (${ins.margin_oos.ned_fail_years.join(", ")})` : `pass in all ${ins.margin_oos.years}`}, so Nedbank is the weaker margin (KS at 5%).`
-            : ""}{" "}
-          The signal is P(Nedbank ≤ today | Standard Bank = today) from the
-          copula; it fires beyond 0.05 and 0.95.
-          {ins && dep.model === "gas_t"
-            ? ` The copula’s correlation moves with the data (a score-driven update), chosen over a fixed correlation by a forecast test on 2020 to March 2026 whose pass mark was set before it was run: ${num(ins.validation_gain_per_day * 1000, 0)} thousandths of a log point a day better, t = ${num(ins.dm_t)}, and the signal is calibrated out of sample (KS p ${num(ins.h_ks_p)} against ${num(ins.static_h_ks_p, 3)} for the fixed correlation).`
-            : ""}
-        </p>
-      </div>
-      <div>
-        <p className="eyebrow">Final fit, frozen {fmtDate(latest.train_end)}</p>
-        <table style={{ marginTop: 14 }}>
-          <tbody>
-            <tr>
-              <td>Standard Bank</td>
-              <td>{specLabel(latest.sbk)}</td>
-            </tr>
-            <tr>
-              <td>Nedbank</td>
-              <td>{specLabel(latest.ned)}</td>
-            </tr>
-            <tr>
-              <td>Copula</td>
-              <td>
-                {dep.model === "gas_t"
-                  ? `Student t, score-driven: ρ ${(dep.rho_live ?? dep.rho_train_end).toFixed(3)} today, ν ${dep.nu.toFixed(1)}`
-                  : `Student t, ρ ${latest.copula.par.toFixed(3)}, ν ${latest.copula.par2.toFixed(1)}`}
-              </td>
-            </tr>
-            {dep.model === "gas_t" && (
-              <tr>
-                <td>Correlation dynamics</td>
-                <td>
-                  β {dep.beta.toFixed(3)}, α {dep.alpha.toFixed(3)}
-                </td>
-              </tr>
-            )}
-            <tr>
-              <td>Kendall’s τ, static fit</td>
-              <td>{latest.copula.tau.toFixed(3)}</td>
-            </tr>
-            <tr>
-              <td>Tail dependence</td>
-              <td>{latest.copula.taildep.lower.toFixed(3)} in each tail</td>
-            </tr>
-            <tr>
-              <td>PIT uniformity, KS p, in sample</td>
-              <td>
-                SBK {latest.pit_ks.sbk.toFixed(2)} · NED{" "}
-                {latest.pit_ks.ned.toFixed(2)}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <p className="note">
-          Specifications come from 36 ARMA-GARCH candidates by BIC each
-          December, fitted on data to that year end and used only for the
-          following year. The final fit was frozen on 31 March 2026, and every
-          session since is filtered forward from it. Over the whole record
-          Standard Bank and Nedbank are not cointegrated, which is why
-          dependence is modelled day to day rather than through a long-run
-          spread.
-        </p>
-      </div>
+      <ul className="method">
+        <li>
+          <strong>The pair</strong>
+          Standard Bank and Nedbank, daily since 2005, from Yahoo Finance; the
+          16:00 prices from Yahoo&apos;s hourly bars. Prices are fetched when
+          the page is used and not stored.
+        </li>
+        <li>
+          <strong>Tied together</strong>
+          Each session, log Nedbank is regressed on log Standard Bank over the
+          previous 126 sessions, and the Engle-Granger statistic tests whether
+          the gap from that line keeps returning to zero. Below −2.8 the two
+          count as tied.
+        </li>
+        <li>
+          <strong>The trade</strong>
+          While tied: open when the gap passes 1.5 standard deviations, betting
+          it closes; shut it when the gap is back to zero, passes 4, or after 60
+          sessions. The two legs are sized by the regression slope at entry.
+        </li>
+        <li>
+          <strong>Costs</strong>
+          Institutional single-stock futures: commission and the exchange fee
+          with VAT, a half-spread, funding on each leg and the cost of rolling
+          at expiry. Shares are shown beside them, with the 0.25% securities
+          transfer tax on purchases.
+        </li>
+        <li>
+          <strong>The search</strong>
+          The rule was chosen from a search on data to March 2026, so its
+          backtest is flattered. The rule lab shows by how much, and what the
+          same rule does on 18 other JSE pairs.
+        </li>
+      </ul>
     </section>
   );
 }
 
 export function App({ embedded }: { embedded: boolean }) {
-  const [period, setPeriod] = useState<Period>("live");
-  const [tier, setTier] = useState<CostTier>("institutional");
-  const params: RuleParams = { ...RULE_DEFAULTS, costs: tier };
-  const { bt, error } = useBacktest(period, params);
-  const [model, setModel] = useState<PairModel | null>(null);
-  const [research, setResearch] = useState<Research | null>(null);
+  const [tab, setTab] = useState<Tab>(
+    () => (new URLSearchParams(location.search).get("tab") as Tab) || "lab",
+  );
   const [sw, setSw] = useState<Switch | null>(null);
-  const [swError, setSwError] = useState<string | null>(null);
-  const [pnl, setPnl] = useState<Pnl | null>(null);
   useEffect(() => {
-    getPnl()
-      .then(setPnl)
-      .catch(() => undefined);
-    getSwitch()
-      .then(setSw)
-      .catch((e) => setSwError(String(e.message ?? e)));
-    getPairModel()
-      .then(setModel)
-      .catch(() => undefined);
-    getResearch()
-      .then(setResearch)
-      .catch(() => undefined);
+    const load = () => getSwitch().then(setSw, () => setTimeout(load, 15000));
+    load();
   }, []);
-  const status = model?.status;
-  const ins = research?.instrument;
-  const h = bt && bt.latest.date === sw?.as_of ? bt.latest.h : null;
-
   return (
     <main className="preview">
       <header className="head">
         <div>
-          <p className="eyebrow">
-            Live paper record · Standard Bank and Nedbank · three strategies
-          </p>
+          <p className="eyebrow">Standard Bank against Nedbank</p>
           {!embedded && (
             <h1 className="serif">
-              Standard Bank against Nedbank:
-              <br />
-              <em>
-                trade the gap only while the two prices are tied together.
-              </em>
+              Trade the gap, <em>only while the two are tied</em>
             </h1>
           )}
         </div>
-        {status && (
-          <div className="status">
-            <span>
-              <i className={`dot${status.source === "live" ? "" : " stale"}`} />
-              {status.source === "live"
-                ? "Live prices"
-                : "Stored prices (live feed unavailable)"}{" "}
-              to {fmtDate(status.as_of)}
-            </span>
-            <span>Refreshed after each JSE close</span>
-          </div>
-        )}
-      </header>
-
-      {!sw && (
-        <p className="loading">
-          {swError
-            ? `Could not load the relationship test: ${swError}`
-            : "Testing the relationship on the latest prices…"}
-        </p>
-      )}
-      {sw && <Relationship s={sw} />}
-      {sw && <Strategies s={sw} h={h} />}
-      {sw && <Records s={sw} />}
-
-      {pnl && <StrategyPnl p={pnl} />}
-
-      <details className="more">
-        <summary>
-          The copula signal on its own, since its models were fixed on 31 March
-          2026
-        </summary>
-        <section className="panel">
-          <div className="panel-head">
-            <h2 className="serif">
-              The copula signal, <em>since 1 April 2026</em>
-            </h2>
-            {ins && (
-              <span className="legend">
-                Sharpe {num(ins.rule.validation.before)} before costs and{" "}
-                {num(ins.rule.validation.after)} after, 2020 to March 2026
-              </span>
-            )}
-          </div>
-          <p className="note" style={{ marginTop: 0 }}>
-            The copula signal has the longest live record of the three: every
-            session since 1 April 2026. The reversal it bets on was real before
-            2020, but it has gone since 2021, so the signal has no edge left to
-            trade, on its own or as a timer for the spread trade.
-          </p>
-          <div className="tabs" role="tablist">
-            {PERIODS.map((p) => (
-              <button
-                key={p.id}
-                role="tab"
-                aria-selected={period === p.id}
-                onClick={() => setPeriod(p.id)}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-          <section className="controls" aria-label="Cost schedule">
-            <div className="control">
-              <span className="label">Costs</span>
-              <div className="segmented">
-                {(Object.keys(TIER_LABEL) as CostTier[]).map((t) => (
-                  <button
-                    key={t}
-                    aria-pressed={tier === t}
-                    onClick={() => setTier(t)}
-                  >
-                    {TIER_LABEL[t]}
-                    {research?.costs ? (
-                      <span>
-                        {" · "}
-                        {num(research.costs.tiers[t].round_trip_bps, 0)} bps a
-                        round trip
-                      </span>
-                    ) : null}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </section>
-          {research?.costs && tier !== "protocol" && (
-            <p className="note">
-              A round trip is four executions at half of capital each, two of
-              them purchases. Securities transfer tax of 0.25% on the purchases
-              is {num(research.costs.components_institutional.stt, 0)} bps of
-              capital on its own; brokerage with VAT{" "}
-              {num(
-                research.costs.components_institutional.brokerage_incl_vat,
-                0,
-              )}{" "}
-              at institutional rates, half-spreads{" "}
-              {num(research.costs.components_institutional.spread, 0)}, Strate
-              and the levy under 1, borrow about 1 over a five-day hold. The
-              half-spread and borrow are assumptions.
-            </p>
-          )}
-          {!bt &&
-            (error ? (
-              <p className="loading">Could not load the record: {error}</p>
-            ) : (
-              <p className="loading">Filtering the latest prices…</p>
-            ))}
-          {bt && (
-            <LiveRecord
-              bt={bt}
-              tier={tier}
-              roundTrip={bt.params.round_trip_bps}
-              period={period}
-            />
-          )}
-        </section>
-      </details>
-
-      <details className="more">
-        <summary>
-          How the copula signal is built, and what a signal was worth by year
-        </summary>
-        {research && <EdgePanel r={research} tier={tier} />}
-        {model && <Instrument model={model} research={research} />}
-      </details>
-
-      <section className="panel" style={{ borderBottom: 0 }}>
-        <div className="panel-head">
-          <h2 className="serif">
-            How it is <em>tested</em>
-          </h2>
+        <div className="status">
+          <span>
+            <i className={`dot${sw ? "" : " stale"}`} />
+            {sw ? `Live prices to ${fmtDate(sw.as_of)}` : "Loading live prices"}
+          </span>
+          <span>Rules fixed on data to 31 Mar 2026</span>
         </div>
-        <ul className="method">
-          <li>
-            <strong>Data</strong>
-            Daily adjusted closes for Standard Bank and Nedbank from Yahoo
-            Finance since 2005, VIX from FRED. Single-day bad prints that
-            reverse are removed.
-          </li>
-          <li>
-            <strong>No look-ahead</strong>
-            Every test, fit and position uses only data to that day’s close, and
-            a position set at the close earns the next session’s return.
-          </li>
-          <li>
-            <strong>Fixed, then scored</strong>
-            The rules use only data to 31 March 2026; everything from 1 April
-            2026 is unseen. The history figures are not tests. The live record
-            is the test, and the deadlines and pass marks were set in advance.
-          </li>
-          <li>
-            <strong>Refits</strong>
-            The models refit at the end of March, August and December, each time
-            using only the data to that date; each refit is used only from the
-            session after it is made.
-            {pnl?.last_refit
-              ? ` Last refit on ${fmtDate(pnl.last_refit, { day: "numeric", month: "long", year: "numeric" })}.`
-              : ""}
-          </li>
-          <li>
-            <strong>What did not work</strong>
-            Many other rules were tried on the pair and failed: a five-day hold,
-            news filters, an intraday rule, volatility gauges, a forecast of
-            whether the gap closes built on currencies, dividends, rates and
-            news, and a spread hedged against FirstRand and Absa. They are
-            recorded in the repository with the rest of the research.
-          </li>
-        </ul>
-        <p className="footer-note">
-          Backtest and live paper record, not investment advice. The
-          half-spreads and borrow in the costs are assumptions. Extended from a
-          group project with Matlhatse Makgopa.
-        </p>
-      </section>
+      </header>
+      <nav className="tabs" role="tablist">
+        {(
+          [
+            ["lab", "Find a rule"],
+            ["watch", "Watch it trade"],
+            ["live", "Live record"],
+            ["how", "How it works"],
+          ] as [Tab, string][]
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            role="tab"
+            aria-selected={tab === id}
+            onClick={() => setTab(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+      {tab === "lab" && <RuleLab />}
+      {tab === "watch" && <WatchItTrade live={sw} />}
+      {tab === "live" && <LiveRecord s={sw} />}
+      {tab === "how" && <How />}
+      <p className="footer-note">
+        Backtests and a live paper record, not investment advice. The
+        half-spreads and funding in the costs are assumptions.
+        {embedded
+          ? ""
+          : " Source: github.com/Sbusiso-Mdingi/jse-statistical-arbitrage."}
+      </p>
     </main>
   );
 }

@@ -473,3 +473,207 @@ details.more > summary {
 details.more[open] > summary {
   margin-bottom: 8px;
 }
+
+/* ------------------------------------------------------------------ rule lab, timeline, live */
+.tabs {
+  display: flex;
+  gap: 26px;
+  margin: 22px 0 6px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+.tabs button {
+  background: none;
+  border: 0;
+  padding: 10px 0 12px;
+  font: inherit;
+  color: var(--muted-foreground);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tabs button[aria-selected="true"] {
+  color: var(--foreground);
+  border-bottom-color: var(--foreground);
+}
+.lab-intro {
+  margin: 26px 0 22px;
+  max-width: 820px;
+}
+.lab-intro h2.serif {
+  font-size: clamp(26px, 3.2vw, 36px);
+  line-height: 1.1;
+  margin: 0;
+}
+.lede {
+  margin: 12px 0 0;
+  color: var(--muted-foreground);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.small {
+  font-size: 13px;
+}
+.neg {
+  color: var(--negative);
+}
+.big {
+  font-size: 34px;
+  line-height: 1.05;
+  margin: 4px 0 4px;
+}
+.run {
+  background: var(--foreground);
+  color: var(--background);
+  border: 0;
+  padding: 12px 18px;
+  font: inherit;
+  cursor: pointer;
+}
+.lab-grid {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+.lab-controls {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  background: var(--surface);
+  border-top: 2px solid var(--foreground);
+}
+.lab-choice {
+  display: grid;
+  gap: 6px;
+}
+.lab-choice .segmented {
+  display: flex;
+  flex-wrap: wrap;
+}
+.lab-choice .segmented button {
+  flex: 1 1 auto;
+}
+.lab-choice .segmented button:not([aria-pressed="true"]) {
+  background: #fff;
+}
+.lab-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.lab-metrics {
+  margin-top: 0;
+}
+.lab-luck {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 300px;
+  gap: 28px;
+  align-items: start;
+  margin-top: 28px;
+  padding: 22px 0 6px;
+  border-top: 2px solid var(--foreground);
+}
+.luck-track {
+  position: relative;
+  height: 34px;
+  margin: 10px 0 10px;
+  background: var(--surface);
+}
+.luck-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(135deg, #e3e5e8 0 6px, #f1f2f4 6px 12px);
+}
+.luck-mark {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--border-strong);
+}
+.luck-mark.p95 {
+  background: var(--foreground);
+}
+.luck-you {
+  position: absolute;
+  top: 7px;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  border-radius: 50%;
+  background: var(--foreground);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px var(--foreground);
+  transition: left 0.3s;
+}
+.pairs-reveal .run {
+  width: 100%;
+}
+.watch-state {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  padding: 16px 0;
+  border-top: 2px solid var(--foreground);
+  border-bottom: 1px solid var(--border);
+}
+.watch-state .big {
+  font-size: 28px;
+}
+.watch-charts {
+  margin-top: 14px;
+}
+.chart text.lbl {
+  fill: var(--foreground);
+  font-size: 12px;
+}
+.watch-slider {
+  width: 100%;
+  margin: 6px 0 0;
+  accent-color: var(--foreground);
+}
+.watch-today {
+  margin-top: 22px;
+  padding: 16px 18px;
+  background: var(--surface);
+}
+.watch-today p {
+  margin: 4px 0 0;
+}
+.live .metrics {
+  margin-bottom: 18px;
+}
+.value.muted {
+  color: var(--muted-foreground);
+}
+@media (max-width: 860px) {
+  .lab-grid,
+  .lab-luck {
+    grid-template-columns: 1fr;
+  }
+  .watch-state {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.luck-legend {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 8px;
+}
+.luck-legend .sw {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+.luck-legend .sw.zone {
+  background: repeating-linear-gradient(135deg, #d5d8dc 0 3px, #f1f2f4 3px 6px);
+}
+.luck-legend .sw.dot {
+  width: 10px;
+  border-radius: 50%;
+  background: var(--foreground);
+}

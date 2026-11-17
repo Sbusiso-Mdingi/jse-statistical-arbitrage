@@ -320,6 +320,18 @@ def api_pnl():
                                 "last_refit_from": last["applies_from"] if len(PAIR.refits) > 1 else None}))
 
 
+@app.get("/api/lab")
+def api_lab():
+    """The rule lab: 216 versions of the spread rule, written by research/lab_export.py (derived results, no prices)."""
+    return FileResponse(DATA / "lab.json", media_type="application/json")
+
+
+@app.get("/api/timeline")
+def api_timeline():
+    """The statistic and gap each session, and the realistic rule's development trades (research/lab_export.py)."""
+    return FileResponse(DATA / "timeline.json", media_type="application/json")
+
+
 @app.get("/api/research")
 def api_research():
     """Decay study and every pre-registered test, written by research/export_research.py."""
