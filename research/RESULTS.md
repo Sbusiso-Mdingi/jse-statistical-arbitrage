@@ -489,6 +489,11 @@ The engine check: the same code and data on Standard Bank and Nedbank give 76 tr
 
 **Reading.** At the same-close fill, which no one can trade, the cross-pairs earn **40.1 bps a trade (t 1.68)**, against −13.8 for H20's 18 sector pairs. So pairs tied by the same economics do revert after a wide gap, far more than pairs that only share a sector, but the reversion sits in the first session after the signal and a next-close fill gives it away. For Standard Bank and Nedbank a 16:00 decision keeps most of that first session (section on H18); no 16:00 history exists for the other banks (Yahoo keeps about two years of hourly bars), so that version cannot be tested on them yet. Saving their 16:00 prices from now would allow a live test.
 
+
+## H22: scoring (built 17 November 2026, before any trade could be scored)
+
+`research/h22_score.py`, `research/results/h22.json`. Scored from 18 November 2026; nothing scored yet. The capture job saves all four banks' 16:00 prices to `1600-banks/` from 17 November 2026, and the back-save holds 723 sessions from 2023-12-13. For reference only, not scored and not a test: on the back-saved prices the rule opened 15 completed trades across the four pairs before 18 November, at -143.2 bps a trade (median 1.1); two Nedbank–Absa trades ran to the 60-session limit at −852 and −1,039 bps. Run the script with each year's figures and at the verdict.
+
 ## Run order
 
 ```sh
@@ -539,6 +544,7 @@ service/.venv/bin/python research/snapshot.py           # a dated local copy of 
 service/.venv/bin/python research/yahoo_check.py        # has Yahoo changed its adjustment? (the refit job runs it)
 service/.venv/bin/python research/h20_other_pairs.py   # H20, run once; needs the jse-risk-management download and its venv
 service/.venv/bin/python research/h21_big_four.py     # H21, run once
+service/.venv/bin/python research/h22_score.py       # H22's live score from the saved 16:00 prices (needs gcloud and the jse-risk venv)
 service/.venv/bin/python research/realistic.py          # reporting: H18 with dividends (needs the hourly bars)
 service/.venv/bin/python research/export_research.py
 ```

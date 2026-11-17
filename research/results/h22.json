@@ -1,0 +1,122 @@
+{
+ "protocol": "research/PROTOCOL.md, H22",
+ "score_from": "2026-11-18",
+ "verdict_at": "40 completed trades pooled across the four pairs or 31 December 2036; pass if mean > 0 and one-sided t > 1.65 (clustered by month of entry)",
+ "saved_1600_sessions": 723,
+ "first_1600": "2023-12-13",
+ "last_1600": "2026-11-16",
+ "pairs": [
+  {
+   "pair": "SBK/FSR",
+   "today": {
+    "date": "2026-11-17",
+    "eg_1600": null,
+    "z_1600": null,
+    "gate_open": false
+   },
+   "live": {
+    "completed": 0,
+    "open": 0,
+    "futures": {
+     "trades": 0
+    }
+   },
+   "reference_before_score_start": {
+    "trades": 2,
+    "mean_bps": -96.5,
+    "median_bps": -96.5,
+    "t": null,
+    "win": 0.5
+   }
+  },
+  {
+   "pair": "SBK/ABG",
+   "today": {
+    "date": "2026-11-17",
+    "eg_1600": null,
+    "z_1600": null,
+    "gate_open": false
+   },
+   "live": {
+    "completed": 0,
+    "open": 0,
+    "futures": {
+     "trades": 0
+    }
+   },
+   "reference_before_score_start": {
+    "trades": 8,
+    "mean_bps": 111.5,
+    "median_bps": 183.6,
+    "t": 1.18,
+    "win": 0.62
+   }
+  },
+  {
+   "pair": "NED/FSR",
+   "today": {
+    "date": "2026-11-17",
+    "eg_1600": null,
+    "z_1600": null,
+    "gate_open": false
+   },
+   "live": {
+    "completed": 0,
+    "open": 0,
+    "futures": {
+     "trades": 0
+    }
+   },
+   "reference_before_score_start": {
+    "trades": 3,
+    "mean_bps": -318.9,
+    "median_bps": 25.1,
+    "t": -0.77,
+    "win": 0.67
+   }
+  },
+  {
+   "pair": "NED/ABG",
+   "today": {
+    "date": "2026-11-17",
+    "eg_1600": null,
+    "z_1600": null,
+    "gate_open": false
+   },
+   "live": {
+    "completed": 0,
+    "open": 0,
+    "futures": {
+     "trades": 0
+    }
+   },
+   "reference_before_score_start": {
+    "trades": 2,
+    "mean_bps": -945.4,
+    "median_bps": -945.4,
+    "t": null,
+    "win": 0.0
+   }
+  }
+ ],
+ "live": {
+  "completed": 0,
+  "futures": {
+   "trades": 0
+  },
+  "cash": {
+   "trades": 0
+  },
+  "t_clustered": null,
+  "verdict_reached": false
+ },
+ "reference_before_score_start": {
+  "note": "back-saved 16:00 prices, not scored",
+  "trades": 15,
+  "mean_bps": -143.2,
+  "median_bps": 1.1,
+  "t": -1.12,
+  "win": 0.53
+ },
+ "trades": []
+}
