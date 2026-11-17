@@ -677,3 +677,10 @@ details.more[open] > summary {
   border-radius: 50%;
   background: var(--foreground);
 }
+.pair-groups {
+  display: grid;
+  gap: 12px;
+}
+.pair-groups .big {
+  font-size: 28px;
+}

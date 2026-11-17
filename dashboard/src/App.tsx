@@ -163,7 +163,8 @@ function How() {
           <strong>The search</strong>
           The rule was chosen from a search on data to March 2026, so its
           backtest is flattered. The rule lab shows by how much, and what the
-          same rule does on 18 other JSE pairs.
+          same rule does on 22 other JSE pairs: the four other Big Four bank
+          pairs and 18 that share a sector.
         </li>
       </ul>
     </section>

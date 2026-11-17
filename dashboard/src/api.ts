@@ -347,6 +347,13 @@ export type LabStats = {
   t?: number;
   win?: number;
 };
+export type PairGroup = {
+  n: number;
+  mean: number | null;
+  t: number | null;
+  positive: number;
+  of: number;
+};
 export type LabSpec = {
   window: number;
   gate: number | null;
@@ -356,13 +363,7 @@ export type LabSpec = {
   dev: LabStats & { sharpe: number; eras: (number | null)[] };
   unseen: LabStats;
   curve: number[];
-  pairs: {
-    n: number;
-    mean: number | null;
-    t: number | null;
-    positive: number;
-    of: number;
-  };
+  pairs: PairGroup & { big4: PairGroup };
 };
 export type Lab = {
   dev: { from: string; to: string };

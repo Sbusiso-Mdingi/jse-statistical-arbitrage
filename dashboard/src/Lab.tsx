@@ -395,24 +395,41 @@ export function RuleLab() {
         <div className="pairs-reveal">
           {!showPairs ? (
             <button className="run" onClick={() => setShowPairs(true)}>
-              Try this rule on 18 pairs it never saw
+              Try this rule on 22 pairs it never saw
             </button>
           ) : (
             <>
               <p className="eyebrow">
-                The same rule on 18 other JSE pairs, with dividends
+                The same rule on pairs it never saw, with dividends
               </p>
-              <p
-                className={`big serif${(spec.pairs.mean ?? 0) < 0 ? " neg" : ""}`}
-              >
-                {bps(spec.pairs.mean)} a trade
-              </p>
-              <p className="muted small">
-                {spec.pairs.n} trades from 2006, t {num(spec.pairs.t, 1)};{" "}
-                {spec.pairs.positive} of {spec.pairs.of} pairs made money.
-                Banks, insurers, gold, platinum, telecoms, food and clothing
-                retail, hospitals.
-              </p>
+              <div className="pair-groups">
+                <div>
+                  <p
+                    className={`big serif${(spec.pairs.big4.mean ?? 0) < 0 ? " neg" : ""}`}
+                  >
+                    {bps(spec.pairs.big4.mean)}
+                  </p>
+                  <p className="muted small">
+                    a trade on the four other Big Four bank pairs, the closest
+                    match to Standard Bank and Nedbank ({spec.pairs.big4.n}{" "}
+                    trades, t {num(spec.pairs.big4.t, 1)};{" "}
+                    {spec.pairs.big4.positive} of {spec.pairs.big4.of} made
+                    money)
+                  </p>
+                </div>
+                <div>
+                  <p
+                    className={`big serif${(spec.pairs.mean ?? 0) < 0 ? " neg" : ""}`}
+                  >
+                    {bps(spec.pairs.mean)}
+                  </p>
+                  <p className="muted small">
+                    a trade on 18 pairs that share a sector ({spec.pairs.n}{" "}
+                    trades, t {num(spec.pairs.t, 1)}; {spec.pairs.positive} of{" "}
+                    {spec.pairs.of} made money)
+                  </p>
+                </div>
+              </div>
             </>
           )}
         </div>

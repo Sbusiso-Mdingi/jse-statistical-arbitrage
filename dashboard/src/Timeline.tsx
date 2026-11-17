@@ -6,7 +6,7 @@ import { fmtDate, num } from "./format";
  * 126-session Engle-Granger statistic), the lower one the gap in standard deviations; shaded spans are the
  * realistic rule's trades. Today's state comes from the live service. */
 
-function useWidth<T extends Element>(fallback = 900) {
+function useWidth<T extends Element>(fallback = 900, ready: unknown = true) {
   const ref = useRef<T>(null);
   const [w, setW] = useState(fallback);
   useEffect(() => {
@@ -19,7 +19,7 @@ function useWidth<T extends Element>(fallback = 900) {
     );
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [ready]);
   return [ref, w] as const;
 }
 
@@ -30,7 +30,7 @@ export function WatchItTrade({ live }: { live: Switch | null }) {
   const [tl, setTl] = useState<Timeline | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [i, setI] = useState<number | null>(null);
-  const [ref, W] = useWidth<HTMLDivElement>();
+  const [ref, W] = useWidth<HTMLDivElement>(900, tl);
   useEffect(() => {
     getTimeline().then(
       (t) => {

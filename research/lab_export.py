@@ -78,9 +78,10 @@ def main():
     quarters = sorted({(t.year, (t.month - 1) // 3) for t, k in zip(dates, dev) if k})
     qi = {q: i for i, q in enumerate(quarters)}
 
-    # The 18 pairs once per window, total returns.
+    # The 18 pairs of H20 and the four Big Four cross-pairs of H21, total returns.
+    BIG4 = [("Banks", "SBK", "FSR"), ("Banks", "SBK", "ABG"), ("Banks", "NED", "FSR"), ("Banks", "NED", "ABG")]
     pairs = {}
-    for _, a, b in h20.PAIRS:
+    for _, a, b in h20.PAIRS + BIG4:
         sa, sb = h20.series(a), h20.series(b)
         idx = sa.index.intersection(sb.index)
         pd_dates = [t.date() for t in idx]
@@ -103,24 +104,29 @@ def main():
         sharpe = float(m.mean() / m.std(ddof=1) * math.sqrt(12)) if m.std() > 0 else 0.0
         key = (L, g, e, fill)
         if key not in other_cache:
-            pooled = []
-            per = {}
+            big = {f"{x}/{y}" for _, x, y in BIG4}
+            groups = {"sector": [], "big4": []}
+            per = {"sector": {}, "big4": {}}
             for name, (px, py, prx, pry, pdates) in pairs.items():
                 _, prow = run(px, py, prx, pry, pdates, L, g, e, fill)
-                per[name] = [r["net"] for r in prow]
-                pooled += [{"open": pdates[r["open"]], "net": r["net"]} for r in prow]
-            mm, tt = h20.clustered_t(pooled) if len(pooled) > 2 else (None, None)
-            other_cache[key] = {"n": len(pooled), "mean": None if mm is None else round(mm * 1e4, 1),
-                                "t": None if tt is None else round(tt, 2),
-                                "positive": sum(1 for v in per.values() if v and np.mean(v) > 0),
-                                "of": sum(1 for v in per.values() if v)}
+                gk = "big4" if name in big else "sector"
+                per[gk][name] = [r["net"] for r in prow]
+                groups[gk] += [{"open": pdates[r["open"]], "net": r["net"]} for r in prow]
+            res = {}
+            for gk, pooled in groups.items():
+                mm, tt = h20.clustered_t(pooled) if len(pooled) > 2 else (None, None)
+                res[gk] = {"n": len(pooled), "mean": None if mm is None else round(mm * 1e4, 1),
+                           "t": None if tt is None else round(tt, 2),
+                           "positive": sum(1 for v in per[gk].values() if v and np.mean(v) > 0),
+                           "of": sum(1 for v in per[gk].values() if v)}
+            other_cache[key] = {**res["sector"], "big4": res["big4"]}
         specs.append({"window": L, "gate": g, "entry": e, "fill": fill, "div": dv,
                       "dev": {**stats([r["net"] for r in devrows]), "sharpe": round(sharpe, 2),
                               "eras": [stats([r["net"] for r in devrows if a <= dates[r["open"]].isoformat() < c]).get("mean") for a, c in ERAS]},
                       "unseen": stats([r["net"] for r in unseen]),
                       "curve": [round(float(v) * 100, 2) for v in np.cumsum(q)],
                       "pairs": other_cache[key]})
-        print(L, g, e, fill, dv, specs[-1]["dev"]["n"], specs[-1]["dev"].get("mean"), specs[-1]["dev"]["sharpe"], other_cache[key]["mean"])
+        print(L, g, e, fill, dv, specs[-1]["dev"]["n"], specs[-1]["dev"].get("mean"), specs[-1]["dev"]["sharpe"], other_cache[key]["mean"], other_cache[key]["big4"]["mean"])
 
     # Luck: the best Sharpe among N versions when none has an edge.
     M = np.array(monthly)  # versions x months
