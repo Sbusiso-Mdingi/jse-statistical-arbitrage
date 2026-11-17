@@ -71,10 +71,10 @@ def clustered_t(rows):
     return m, m / math.sqrt(var)
 
 
-def main():
-    out = {"protocol": "research/PROTOCOL.md, H20", "pairs": []}
+def main(pairs=PAIRS, path="research/results/h20.json", protocol="H20"):
+    out = {"protocol": f"research/PROTOCOL.md, {protocol}", "pairs": []}
     pooled = {"primary": [], "same_close": [], "cash": []}
-    for sector, a, b in PAIRS:
+    for sector, a, b in pairs:
         trs, dates, rx, ry, eg = pair_trades(a, b)
         n = len(dates)
         prim = scored(shifted(trs, 1, n), dates, rx, ry, "futures")
@@ -105,7 +105,7 @@ def main():
     out["pooled"] = res
     out["trades"] = [{"pair": r["pair"], "open": r["open"].isoformat(), "close": r["close"].isoformat(), "net_bps": round(r["net"] * 1e4, 1)}
                      for r in pooled["primary"]]
-    Path("research/results/h20.json").write_text(json.dumps(out, indent=1))
+    Path(path).write_text(json.dumps(out, indent=1))
     for p in out["pairs"]:
         print(f"{p['pair']:9s} {p['sector']:15s} trades {p['primary']['trades']:3d}  primary {p['primary'].get('mean_bps')!s:>7}  "
               f"same-close {p['same_close'].get('mean_bps')!s:>7}  gate {p['gate_share']:.0%}")

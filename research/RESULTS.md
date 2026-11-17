@@ -474,6 +474,21 @@ The engine check: the same code and data on Standard Bank and Nedbank give 76 tr
 
 `research/realistic.py`, `research/results/realistic.json`. H18's trades (decided at 16:00, filled in the closing auction) with P&L on dividend-correct returns, 2009-09-14 to 31 March 2026: 57 trades, **85.2 bps a trade at futures (t 2.64)**, 78.3 at cash, 69.8 if filled one close later still. By era: -18.3 (2009–12, 13 trades), 88.6 (2013–19, 23), 145.6 (2020–March 2026, 21). This is the version the write-up leads with, because it is the one a person could trade; it inherits H16's selection, so the out-of-sample expectation from the review (about +44 bps) still applies.
 
+
+## H21: the rule on the Big Four bank cross-pairs (run once, 17 November 2026)
+
+`research/h21_big_four.py` (H20's engine), `research/results/h21.json`. Registered before any figure (PROTOCOL.md, H21), on the user's reasoning that pairs should be chosen because the economics should tie them. **Failed.** Pooled over Standard Bank–FirstRand, Standard Bank–Absa, Nedbank–FirstRand and Nedbank–Absa, 282 trades, next-close fill with dividends at institutional futures: **-3.7 bps a trade (t -0.17)**; 2 of 4 pairs positive. Cash -11.3. Since 1 April 2026: 1 trades, 18.7 bps.
+
+| Pair | Trades | Net per trade, bps | t | Same-close fill, bps | Gate open |
+|---|---|---|---|---|---|
+| SBK/FSR | 79 | 19.1 | 0.58 | 58.5 | 38% |
+| SBK/ABG | 65 | -56.6 | -1.25 | -8.6 | 32% |
+| NED/FSR | 67 | 32.4 | 0.86 | 61.4 | 31% |
+| NED/ABG | 71 | -14.7 | -0.41 | 44.0 | 31% |
+| FirstRand–Absa (H20, not counted) | 66 | −33.2 | −0.70 | | |
+
+**Reading.** At the same-close fill, which no one can trade, the cross-pairs earn **40.1 bps a trade (t 1.68)**, against −13.8 for H20's 18 sector pairs. So pairs tied by the same economics do revert after a wide gap, far more than pairs that only share a sector, but the reversion sits in the first session after the signal and a next-close fill gives it away. For Standard Bank and Nedbank a 16:00 decision keeps most of that first session (section on H18); no 16:00 history exists for the other banks (Yahoo keeps about two years of hourly bars), so that version cannot be tested on them yet. Saving their 16:00 prices from now would allow a live test.
+
 ## Run order
 
 ```sh
@@ -523,6 +538,7 @@ service/.venv/bin/python research/verdict_episodes.py   # about 15 seconds; the 
 service/.venv/bin/python research/snapshot.py           # a dated local copy of the data the frozen rules read
 service/.venv/bin/python research/yahoo_check.py        # has Yahoo changed its adjustment? (the refit job runs it)
 service/.venv/bin/python research/h20_other_pairs.py   # H20, run once; needs the jse-risk-management download and its venv
+service/.venv/bin/python research/h21_big_four.py     # H21, run once
 service/.venv/bin/python research/realistic.py          # reporting: H18 with dividends (needs the hourly bars)
 service/.venv/bin/python research/export_research.py
 ```

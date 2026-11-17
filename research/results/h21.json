@@ -1,0 +1,2020 @@
+{
+ "protocol": "research/PROTOCOL.md, H21",
+ "pairs": [
+  {
+   "sector": "Banks",
+   "pair": "SBK/FSR",
+   "sessions": 5463,
+   "first": "2005-01-03",
+   "last": "2026-11-10",
+   "gate_share": 0.379,
+   "primary": {
+    "trades": 79,
+    "mean_bps": 19.1,
+    "median_bps": 88.3,
+    "t": 0.58,
+    "win": 0.67
+   },
+   "same_close": {
+    "trades": 79,
+    "mean_bps": 58.5,
+    "median_bps": 135.8,
+    "t": 1.72,
+    "win": 0.78
+   },
+   "cash": {
+    "trades": 79,
+    "mean_bps": 15.5,
+    "median_bps": 70.4,
+    "t": 0.51,
+    "win": 0.66
+   },
+   "eras": [
+    {
+     "from": "2006-01-01",
+     "to": "2013-01-01",
+     "trades": 38,
+     "mean_bps": -1.2,
+     "median_bps": 61.5,
+     "t": -0.02,
+     "win": 0.68
+    },
+    {
+     "from": "2013-01-01",
+     "to": "2020-01-01",
+     "trades": 16,
+     "mean_bps": 26.3,
+     "median_bps": 108.8,
+     "t": 0.33,
+     "win": 0.75
+    },
+    {
+     "from": "2020-01-01",
+     "to": "2100-01-01",
+     "trades": 25,
+     "mean_bps": 45.2,
+     "median_bps": 87.8,
+     "t": 1.16,
+     "win": 0.6
+    }
+   ],
+   "since_1_april": {
+    "trades": 0
+   }
+  },
+  {
+   "sector": "Banks",
+   "pair": "SBK/ABG",
+   "sessions": 5452,
+   "first": "2005-01-03",
+   "last": "2026-11-10",
+   "gate_share": 0.324,
+   "primary": {
+    "trades": 65,
+    "mean_bps": -56.6,
+    "median_bps": 39.4,
+    "t": -1.25,
+    "win": 0.58
+   },
+   "same_close": {
+    "trades": 65,
+    "mean_bps": -8.6,
+    "median_bps": 142.3,
+    "t": -0.18,
+    "win": 0.62
+   },
+   "cash": {
+    "trades": 65,
+    "mean_bps": -61.7,
+    "median_bps": 26.4,
+    "t": -1.4,
+    "win": 0.58
+   },
+   "eras": [
+    {
+     "from": "2006-01-01",
+     "to": "2013-01-01",
+     "trades": 31,
+     "mean_bps": 9.6,
+     "median_bps": 40.6,
+     "t": 0.22,
+     "win": 0.61
+    },
+    {
+     "from": "2013-01-01",
+     "to": "2020-01-01",
+     "trades": 17,
+     "mean_bps": -191.5,
+     "median_bps": 27.6,
+     "t": -1.49,
+     "win": 0.59
+    },
+    {
+     "from": "2020-01-01",
+     "to": "2100-01-01",
+     "trades": 17,
+     "mean_bps": -42.3,
+     "median_bps": 11.7,
+     "t": -0.52,
+     "win": 0.53
+    }
+   ],
+   "since_1_april": {
+    "trades": 0
+   }
+  },
+  {
+   "sector": "Banks",
+   "pair": "NED/FSR",
+   "sessions": 5464,
+   "first": "2005-01-03",
+   "last": "2026-11-10",
+   "gate_share": 0.314,
+   "primary": {
+    "trades": 67,
+    "mean_bps": 32.4,
+    "median_bps": 116.2,
+    "t": 0.86,
+    "win": 0.69
+   },
+   "same_close": {
+    "trades": 67,
+    "mean_bps": 61.4,
+    "median_bps": 144.1,
+    "t": 1.49,
+    "win": 0.7
+   },
+   "cash": {
+    "trades": 67,
+    "mean_bps": 22.2,
+    "median_bps": 92.3,
+    "t": 0.61,
+    "win": 0.7
+   },
+   "eras": [
+    {
+     "from": "2006-01-01",
+     "to": "2013-01-01",
+     "trades": 32,
+     "mean_bps": 59.7,
+     "median_bps": 123.8,
+     "t": 1.58,
+     "win": 0.69
+    },
+    {
+     "from": "2013-01-01",
+     "to": "2020-01-01",
+     "trades": 19,
+     "mean_bps": -15.1,
+     "median_bps": 104.7,
+     "t": -0.22,
+     "win": 0.63
+    },
+    {
+     "from": "2020-01-01",
+     "to": "2100-01-01",
+     "trades": 16,
+     "mean_bps": 34.3,
+     "median_bps": 118.5,
+     "t": 0.3,
+     "win": 0.75
+    }
+   ],
+   "since_1_april": {
+    "trades": 1,
+    "mean_bps": 18.7,
+    "median_bps": 18.7,
+    "t": null,
+    "win": 1.0
+   }
+  },
+  {
+   "sector": "Banks",
+   "pair": "NED/ABG",
+   "sessions": 5454,
+   "first": "2005-01-03",
+   "last": "2026-11-10",
+   "gate_share": 0.312,
+   "primary": {
+    "trades": 71,
+    "mean_bps": -14.7,
+    "median_bps": 64.3,
+    "t": -0.41,
+    "win": 0.59
+   },
+   "same_close": {
+    "trades": 71,
+    "mean_bps": 44.0,
+    "median_bps": 160.9,
+    "t": 1.14,
+    "win": 0.76
+   },
+   "cash": {
+    "trades": 71,
+    "mean_bps": -26.7,
+    "median_bps": 38.5,
+    "t": -0.77,
+    "win": 0.56
+   },
+   "eras": [
+    {
+     "from": "2006-01-01",
+     "to": "2013-01-01",
+     "trades": 30,
+     "mean_bps": -25.2,
+     "median_bps": 23.7,
+     "t": -0.53,
+     "win": 0.53
+    },
+    {
+     "from": "2013-01-01",
+     "to": "2020-01-01",
+     "trades": 30,
+     "mean_bps": 57.2,
+     "median_bps": 93.0,
+     "t": 1.41,
+     "win": 0.73
+    },
+    {
+     "from": "2020-01-01",
+     "to": "2100-01-01",
+     "trades": 11,
+     "mean_bps": -182.0,
+     "median_bps": -53.0,
+     "t": -1.19,
+     "win": 0.36
+    }
+   ],
+   "since_1_april": {
+    "trades": 0
+   }
+  }
+ ],
+ "pooled": {
+  "primary": {
+   "trades": 282,
+   "mean_bps": -3.7,
+   "median_bps": 79.6,
+   "t": -0.2,
+   "win": 0.63,
+   "t_clustered": -0.17
+  },
+  "same_close": {
+   "trades": 282,
+   "mean_bps": 40.1,
+   "median_bps": 144.3,
+   "t": 1.99,
+   "win": 0.72,
+   "t_clustered": 1.68
+  },
+  "cash": {
+   "trades": 282,
+   "mean_bps": -11.3,
+   "median_bps": 61.1,
+   "t": -0.63,
+   "win": 0.63,
+   "t_clustered": -0.54
+  },
+  "pairs_positive": {
+   "positive": 2,
+   "of": 4,
+   "sign_test_p": 0.688
+  },
+  "eras": [
+   {
+    "from": "2006-01-01",
+    "to": "2013-01-01",
+    "trades": 131,
+    "mean_bps": 10.8,
+    "median_bps": 52.3,
+    "t": 0.46,
+    "win": 0.63
+   },
+   {
+    "from": "2013-01-01",
+    "to": "2020-01-01",
+    "trades": 82,
+    "mean_bps": -17.2,
+    "median_bps": 93.4,
+    "t": -0.45,
+    "win": 0.68
+   },
+   {
+    "from": "2020-01-01",
+    "to": "2100-01-01",
+    "trades": 69,
+    "mean_bps": -15.1,
+    "median_bps": 76.5,
+    "t": -0.35,
+    "win": 0.58
+   }
+  ],
+  "since_1_april": {
+   "trades": 1,
+   "mean_bps": 18.7,
+   "median_bps": 18.7,
+   "t": null,
+   "win": 1.0
+  },
+  "verdict": {
+   "passed": false,
+   "mean_bps": -3.7,
+   "t_clustered": -0.17,
+   "bar": "mean > 0 and one-sided t > 1.65"
+  }
+ },
+ "trades": [
+  {
+   "pair": "SBK/FSR",
+   "open": "2006-03-28",
+   "close": "2006-04-04",
+   "net_bps": 126.2
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2006-04-19",
+   "close": "2006-07-17",
+   "net_bps": -64.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2006-08-11",
+   "close": "2006-08-25",
+   "net_bps": 175.0
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2006-09-20",
+   "close": "2006-09-26",
+   "net_bps": 248.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2006-10-04",
+   "close": "2006-11-01",
+   "net_bps": -45.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2006-11-07",
+   "close": "2006-11-20",
+   "net_bps": 39.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2006-12-14",
+   "close": "2007-01-19",
+   "net_bps": -38.9
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-02-20",
+   "close": "2007-02-23",
+   "net_bps": 165.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-03-14",
+   "close": "2007-03-20",
+   "net_bps": -72.9
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-03-27",
+   "close": "2007-04-02",
+   "net_bps": 12.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-04-10",
+   "close": "2007-07-02",
+   "net_bps": -36.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-08-20",
+   "close": "2007-08-21",
+   "net_bps": 110.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-08-23",
+   "close": "2007-08-31",
+   "net_bps": 50.6
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-09-06",
+   "close": "2007-09-17",
+   "net_bps": 101.5
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-09-26",
+   "close": "2007-10-11",
+   "net_bps": 205.2
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-10-30",
+   "close": "2007-11-02",
+   "net_bps": 25.6
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-11-07",
+   "close": "2007-11-29",
+   "net_bps": 148.6
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-12-05",
+   "close": "2007-12-21",
+   "net_bps": -69.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2007-12-28",
+   "close": "2008-02-28",
+   "net_bps": -192.2
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-03-06",
+   "close": "2008-03-26",
+   "net_bps": 127.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-06-24",
+   "close": "2008-07-21",
+   "net_bps": 24.0
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-07-23",
+   "close": "2008-07-25",
+   "net_bps": 204.9
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-08-04",
+   "close": "2008-08-12",
+   "net_bps": 400.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-08-13",
+   "close": "2008-08-18",
+   "net_bps": 337.7
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-09-11",
+   "close": "2008-10-01",
+   "net_bps": 121.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-10-08",
+   "close": "2008-10-21",
+   "net_bps": 293.8
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-10-27",
+   "close": "2008-11-03",
+   "net_bps": 293.0
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-11-06",
+   "close": "2008-12-23",
+   "net_bps": 27.9
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2008-12-30",
+   "close": "2009-01-16",
+   "net_bps": 48.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2009-02-10",
+   "close": "2009-02-19",
+   "net_bps": 294.7
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2009-09-25",
+   "close": "2009-12-21",
+   "net_bps": -611.6
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2010-09-02",
+   "close": "2010-11-26",
+   "net_bps": -637.5
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2011-08-17",
+   "close": "2011-11-09",
+   "net_bps": -420.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2012-02-14",
+   "close": "2012-02-24",
+   "net_bps": 336.5
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2012-02-27",
+   "close": "2012-03-19",
+   "net_bps": 75.6
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2012-04-03",
+   "close": "2012-04-23",
+   "net_bps": 72.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2012-05-03",
+   "close": "2012-07-26",
+   "net_bps": -540.7
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2012-10-25",
+   "close": "2013-01-23",
+   "net_bps": -1380.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2013-11-11",
+   "close": "2013-11-28",
+   "net_bps": 127.9
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2013-12-23",
+   "close": "2014-01-30",
+   "net_bps": 125.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2014-06-03",
+   "close": "2014-06-06",
+   "net_bps": 88.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2014-07-15",
+   "close": "2014-10-08",
+   "net_bps": -834.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2015-03-25",
+   "close": "2015-04-08",
+   "net_bps": 92.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2015-05-07",
+   "close": "2015-06-11",
+   "net_bps": 102.2
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2016-01-05",
+   "close": "2016-01-12",
+   "net_bps": 115.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2016-01-14",
+   "close": "2016-03-09",
+   "net_bps": 516.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2016-03-10",
+   "close": "2016-03-18",
+   "net_bps": 262.6
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2016-05-17",
+   "close": "2016-06-13",
+   "net_bps": 219.5
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2016-08-31",
+   "close": "2016-10-25",
+   "net_bps": 184.0
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2017-08-17",
+   "close": "2017-09-08",
+   "net_bps": 42.2
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2018-03-08",
+   "close": "2018-03-12",
+   "net_bps": -246.7
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2019-08-12",
+   "close": "2019-08-22",
+   "net_bps": 160.7
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2019-09-06",
+   "close": "2019-09-17",
+   "net_bps": -19.8
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2019-09-20",
+   "close": "2019-12-17",
+   "net_bps": -516.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2020-03-20",
+   "close": "2020-03-23",
+   "net_bps": 146.0
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2020-03-24",
+   "close": "2020-04-08",
+   "net_bps": 353.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2020-04-08",
+   "close": "2020-04-15",
+   "net_bps": -133.9
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2020-04-16",
+   "close": "2020-04-17",
+   "net_bps": -68.7
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2020-04-22",
+   "close": "2020-05-18",
+   "net_bps": 94.9
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2020-06-02",
+   "close": "2020-06-05",
+   "net_bps": 192.8
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2020-06-23",
+   "close": "2020-09-16",
+   "net_bps": -283.2
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2020-12-07",
+   "close": "2021-01-22",
+   "net_bps": -33.6
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2021-05-11",
+   "close": "2021-08-04",
+   "net_bps": -104.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2021-09-29",
+   "close": "2021-10-21",
+   "net_bps": 177.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2021-12-20",
+   "close": "2022-01-05",
+   "net_bps": 96.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2022-01-12",
+   "close": "2022-01-28",
+   "net_bps": 178.5
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2022-02-03",
+   "close": "2022-02-10",
+   "net_bps": 72.7
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2022-03-14",
+   "close": "2022-04-13",
+   "net_bps": 215.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2022-04-26",
+   "close": "2022-05-06",
+   "net_bps": 87.8
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2022-05-12",
+   "close": "2022-06-06",
+   "net_bps": 157.6
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2022-06-20",
+   "close": "2022-07-22",
+   "net_bps": -23.9
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2022-08-08",
+   "close": "2022-08-23",
+   "net_bps": 259.1
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2022-08-25",
+   "close": "2022-09-26",
+   "net_bps": 76.5
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2022-10-10",
+   "close": "2023-01-06",
+   "net_bps": -395.8
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2023-03-10",
+   "close": "2023-03-16",
+   "net_bps": 358.4
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2023-03-27",
+   "close": "2023-04-13",
+   "net_bps": 216.3
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2023-05-03",
+   "close": "2023-07-27",
+   "net_bps": -229.8
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2024-09-16",
+   "close": "2024-12-06",
+   "net_bps": -148.2
+  },
+  {
+   "pair": "SBK/FSR",
+   "open": "2026-03-09",
+   "close": "2026-05-08",
+   "net_bps": -132.3
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2006-02-17",
+   "close": "2006-03-22",
+   "net_bps": 24.0
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2006-05-22",
+   "close": "2006-06-02",
+   "net_bps": 259.7
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2006-06-29",
+   "close": "2006-07-17",
+   "net_bps": 324.0
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2006-07-21",
+   "close": "2006-07-28",
+   "net_bps": 52.3
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2006-08-07",
+   "close": "2006-11-01",
+   "net_bps": -248.9
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2007-04-04",
+   "close": "2007-04-25",
+   "net_bps": 26.5
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2007-05-10",
+   "close": "2007-06-12",
+   "net_bps": 108.1
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2007-06-28",
+   "close": "2007-07-02",
+   "net_bps": -46.4
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2007-07-16",
+   "close": "2007-07-30",
+   "net_bps": 116.8
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2007-08-17",
+   "close": "2007-11-06",
+   "net_bps": -187.0
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2007-11-26",
+   "close": "2008-02-21",
+   "net_bps": -674.6
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2008-05-05",
+   "close": "2008-06-20",
+   "net_bps": 236.2
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-01-15",
+   "close": "2009-01-26",
+   "net_bps": 88.8
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-01-30",
+   "close": "2009-03-09",
+   "net_bps": 192.2
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-03-10",
+   "close": "2009-04-07",
+   "net_bps": 517.1
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-04-23",
+   "close": "2009-05-20",
+   "net_bps": 272.1
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-07-08",
+   "close": "2009-09-16",
+   "net_bps": -489.5
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-09-18",
+   "close": "2009-10-09",
+   "net_bps": 40.6
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-10-14",
+   "close": "2009-10-19",
+   "net_bps": 95.2
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-10-22",
+   "close": "2009-10-26",
+   "net_bps": 39.4
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-11-09",
+   "close": "2009-12-10",
+   "net_bps": 258.0
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2009-12-11",
+   "close": "2009-12-30",
+   "net_bps": -1.2
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2010-03-30",
+   "close": "2010-04-09",
+   "net_bps": 166.6
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2010-05-07",
+   "close": "2010-05-12",
+   "net_bps": 83.8
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2010-05-18",
+   "close": "2010-07-16",
+   "net_bps": -24.3
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2010-08-13",
+   "close": "2010-08-16",
+   "net_bps": -138.1
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2010-10-13",
+   "close": "2011-01-07",
+   "net_bps": -375.7
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2011-03-30",
+   "close": "2011-06-30",
+   "net_bps": -130.7
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2011-08-30",
+   "close": "2011-09-09",
+   "net_bps": -231.4
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2012-01-24",
+   "close": "2012-02-24",
+   "net_bps": 59.2
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2012-02-27",
+   "close": "2012-03-27",
+   "net_bps": -114.6
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2013-02-07",
+   "close": "2013-02-15",
+   "net_bps": 27.6
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2013-03-22",
+   "close": "2013-04-11",
+   "net_bps": 202.8
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2013-04-24",
+   "close": "2013-06-18",
+   "net_bps": 21.7
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2013-08-02",
+   "close": "2013-09-20",
+   "net_bps": -334.5
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2014-07-15",
+   "close": "2014-10-08",
+   "net_bps": -524.9
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2016-01-05",
+   "close": "2016-01-14",
+   "net_bps": 86.9
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2016-01-22",
+   "close": "2016-01-29",
+   "net_bps": 182.5
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2016-02-04",
+   "close": "2016-03-01",
+   "net_bps": 195.3
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2016-03-04",
+   "close": "2016-03-08",
+   "net_bps": -225.1
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2016-12-08",
+   "close": "2017-01-30",
+   "net_bps": 46.3
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2017-09-14",
+   "close": "2017-10-09",
+   "net_bps": 243.4
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2017-10-17",
+   "close": "2017-10-23",
+   "net_bps": 124.2
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2017-10-27",
+   "close": "2017-11-08",
+   "net_bps": 212.5
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2017-11-20",
+   "close": "2017-12-20",
+   "net_bps": -1736.0
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2018-03-13",
+   "close": "2018-06-12",
+   "net_bps": -545.0
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2018-10-31",
+   "close": "2019-01-29",
+   "net_bps": -1039.3
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2019-03-14",
+   "close": "2019-05-20",
+   "net_bps": -194.0
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2020-03-13",
+   "close": "2020-03-20",
+   "net_bps": 11.7
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2020-03-20",
+   "close": "2020-03-26",
+   "net_bps": -811.9
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2020-04-02",
+   "close": "2020-04-09",
+   "net_bps": 277.0
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2020-04-15",
+   "close": "2020-05-28",
+   "net_bps": 182.1
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2021-03-16",
+   "close": "2021-06-14",
+   "net_bps": -235.3
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2022-06-24",
+   "close": "2022-07-21",
+   "net_bps": 343.9
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2022-08-16",
+   "close": "2022-11-08",
+   "net_bps": -427.8
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2023-02-13",
+   "close": "2023-03-14",
+   "net_bps": -423.9
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2023-10-23",
+   "close": "2023-11-03",
+   "net_bps": 148.6
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2024-01-09",
+   "close": "2024-02-19",
+   "net_bps": 327.7
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2024-03-13",
+   "close": "2024-05-13",
+   "net_bps": 250.6
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2024-06-13",
+   "close": "2024-06-28",
+   "net_bps": 348.6
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2024-06-28",
+   "close": "2024-08-22",
+   "net_bps": -282.6
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2025-03-18",
+   "close": "2025-04-03",
+   "net_bps": 96.5
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2025-04-04",
+   "close": "2025-04-07",
+   "net_bps": -71.8
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2025-04-08",
+   "close": "2025-04-10",
+   "net_bps": -88.9
+  },
+  {
+   "pair": "SBK/ABG",
+   "open": "2025-11-24",
+   "close": "2025-12-10",
+   "net_bps": -363.5
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2006-06-07",
+   "close": "2006-08-18",
+   "net_bps": 249.7
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2006-08-23",
+   "close": "2006-09-13",
+   "net_bps": 198.5
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2006-10-19",
+   "close": "2006-11-16",
+   "net_bps": 59.4
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-01-10",
+   "close": "2007-01-26",
+   "net_bps": 265.9
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-02-13",
+   "close": "2007-02-20",
+   "net_bps": 268.1
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-02-28",
+   "close": "2007-03-27",
+   "net_bps": 151.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-04-17",
+   "close": "2007-06-15",
+   "net_bps": -171.5
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-07-12",
+   "close": "2007-07-23",
+   "net_bps": -50.6
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-07-25",
+   "close": "2007-08-06",
+   "net_bps": 239.7
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-08-17",
+   "close": "2007-08-30",
+   "net_bps": 246.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-09-18",
+   "close": "2007-09-26",
+   "net_bps": 165.0
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-10-04",
+   "close": "2007-11-30",
+   "net_bps": 127.3
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-12-10",
+   "close": "2007-12-20",
+   "net_bps": 246.3
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2007-12-24",
+   "close": "2008-01-17",
+   "net_bps": 176.5
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2008-01-31",
+   "close": "2008-02-05",
+   "net_bps": 171.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2008-03-07",
+   "close": "2008-05-22",
+   "net_bps": -161.4
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2008-08-29",
+   "close": "2008-10-14",
+   "net_bps": 287.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2008-11-11",
+   "close": "2009-01-16",
+   "net_bps": 13.2
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2009-05-12",
+   "close": "2009-07-21",
+   "net_bps": -521.2
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2009-09-15",
+   "close": "2009-09-21",
+   "net_bps": 34.7
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2009-10-21",
+   "close": "2009-10-30",
+   "net_bps": -349.6
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2010-05-18",
+   "close": "2010-06-03",
+   "net_bps": 120.4
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2010-08-13",
+   "close": "2010-09-14",
+   "net_bps": -11.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2011-06-23",
+   "close": "2011-07-06",
+   "net_bps": 348.1
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2011-08-05",
+   "close": "2011-08-23",
+   "net_bps": -34.2
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2011-09-02",
+   "close": "2011-10-03",
+   "net_bps": 35.3
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2012-02-23",
+   "close": "2012-02-24",
+   "net_bps": 170.7
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2012-02-27",
+   "close": "2012-03-08",
+   "net_bps": 84.3
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2012-03-19",
+   "close": "2012-04-05",
+   "net_bps": -134.1
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2012-04-10",
+   "close": "2012-04-25",
+   "net_bps": 171.4
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2012-05-03",
+   "close": "2012-07-09",
+   "net_bps": -16.4
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2012-10-24",
+   "close": "2012-11-07",
+   "net_bps": -470.1
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2013-05-09",
+   "close": "2013-05-27",
+   "net_bps": 244.9
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2013-06-04",
+   "close": "2013-06-26",
+   "net_bps": 162.3
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2014-04-24",
+   "close": "2014-05-05",
+   "net_bps": 124.0
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2014-06-02",
+   "close": "2014-06-19",
+   "net_bps": 84.5
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2014-06-26",
+   "close": "2014-07-09",
+   "net_bps": 116.2
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2014-08-01",
+   "close": "2014-10-27",
+   "net_bps": -312.1
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2015-03-03",
+   "close": "2015-03-16",
+   "net_bps": -268.9
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2015-10-15",
+   "close": "2015-10-28",
+   "net_bps": 207.4
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2015-11-03",
+   "close": "2015-11-17",
+   "net_bps": 104.7
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2015-11-23",
+   "close": "2015-11-27",
+   "net_bps": 94.5
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2015-12-11",
+   "close": "2015-12-14",
+   "net_bps": 472.7
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2016-01-07",
+   "close": "2016-01-13",
+   "net_bps": 330.9
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2016-01-22",
+   "close": "2016-04-20",
+   "net_bps": -687.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2016-07-05",
+   "close": "2016-07-28",
+   "net_bps": 114.1
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2016-08-05",
+   "close": "2016-10-31",
+   "net_bps": -342.6
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2018-02-16",
+   "close": "2018-03-05",
+   "net_bps": -3.4
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2018-03-07",
+   "close": "2018-03-09",
+   "net_bps": -446.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2018-03-14",
+   "close": "2018-06-13",
+   "net_bps": -427.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2018-12-20",
+   "close": "2019-01-11",
+   "net_bps": 146.0
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-03-17",
+   "close": "2020-03-19",
+   "net_bps": -389.7
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-03-20",
+   "close": "2020-03-23",
+   "net_bps": 56.3
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-03-23",
+   "close": "2020-03-25",
+   "net_bps": -760.6
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-03-25",
+   "close": "2020-03-26",
+   "net_bps": -127.6
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-03-26",
+   "close": "2020-03-27",
+   "net_bps": 186.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-03-27",
+   "close": "2020-04-08",
+   "net_bps": 829.8
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-04-09",
+   "close": "2020-04-28",
+   "net_bps": 70.1
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-05-18",
+   "close": "2020-05-25",
+   "net_bps": 355.1
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-06-22",
+   "close": "2020-08-28",
+   "net_bps": 350.6
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2020-09-29",
+   "close": "2020-10-12",
+   "net_bps": 430.3
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2021-05-26",
+   "close": "2021-06-01",
+   "net_bps": 118.6
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2021-06-18",
+   "close": "2021-07-09",
+   "net_bps": 202.6
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2023-04-17",
+   "close": "2023-05-12",
+   "net_bps": 127.1
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2024-08-07",
+   "close": "2024-09-11",
+   "net_bps": 118.4
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2025-10-07",
+   "close": "2026-01-05",
+   "net_bps": -1038.2
+  },
+  {
+   "pair": "NED/FSR",
+   "open": "2026-05-29",
+   "close": "2026-08-13",
+   "net_bps": 18.7
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2006-02-28",
+   "close": "2006-04-12",
+   "net_bps": -88.4
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2006-06-12",
+   "close": "2006-08-17",
+   "net_bps": -195.2
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2006-09-27",
+   "close": "2006-10-18",
+   "net_bps": 307.7
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2006-11-03",
+   "close": "2006-11-13",
+   "net_bps": 128.2
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2006-11-22",
+   "close": "2006-12-01",
+   "net_bps": 91.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-01-23",
+   "close": "2007-04-03",
+   "net_bps": -115.8
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-07-11",
+   "close": "2007-07-17",
+   "net_bps": 189.9
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-07-20",
+   "close": "2007-07-25",
+   "net_bps": 220.3
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-08-01",
+   "close": "2007-08-03",
+   "net_bps": 65.6
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-08-10",
+   "close": "2007-08-13",
+   "net_bps": -219.4
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-08-17",
+   "close": "2007-08-23",
+   "net_bps": 336.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-09-13",
+   "close": "2007-09-19",
+   "net_bps": 159.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-09-25",
+   "close": "2007-10-01",
+   "net_bps": 83.2
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-10-04",
+   "close": "2007-10-12",
+   "net_bps": 442.5
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-10-15",
+   "close": "2007-11-07",
+   "net_bps": -29.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2007-11-21",
+   "close": "2008-02-05",
+   "net_bps": -747.9
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2009-07-29",
+   "close": "2009-07-30",
+   "net_bps": -137.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2009-08-12",
+   "close": "2009-09-07",
+   "net_bps": -90.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2009-09-23",
+   "close": "2009-11-02",
+   "net_bps": 125.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2010-01-15",
+   "close": "2010-03-29",
+   "net_bps": -309.6
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2011-07-21",
+   "close": "2011-08-03",
+   "net_bps": 15.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2011-08-10",
+   "close": "2011-08-12",
+   "net_bps": 211.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2011-08-15",
+   "close": "2011-08-19",
+   "net_bps": -64.2
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2011-08-22",
+   "close": "2011-09-09",
+   "net_bps": -448.7
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2012-01-31",
+   "close": "2012-02-14",
+   "net_bps": 47.5
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2012-02-27",
+   "close": "2012-03-20",
+   "net_bps": 82.8
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2012-03-23",
+   "close": "2012-03-28",
+   "net_bps": 32.3
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2012-04-05",
+   "close": "2012-04-10",
+   "net_bps": -57.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2012-05-15",
+   "close": "2012-06-28",
+   "net_bps": -572.7
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2012-09-18",
+   "close": "2012-09-25",
+   "net_bps": -216.9
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2013-01-31",
+   "close": "2013-02-12",
+   "net_bps": -4.4
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2013-03-12",
+   "close": "2013-05-09",
+   "net_bps": 155.8
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2013-08-02",
+   "close": "2013-09-20",
+   "net_bps": -542.6
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2014-06-06",
+   "close": "2014-06-19",
+   "net_bps": -15.8
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2014-06-26",
+   "close": "2014-07-09",
+   "net_bps": 91.5
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2014-08-04",
+   "close": "2014-08-14",
+   "net_bps": 54.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2014-09-01",
+   "close": "2014-11-25",
+   "net_bps": -85.9
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-01-15",
+   "close": "2015-02-03",
+   "net_bps": 94.5
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-02-05",
+   "close": "2015-02-19",
+   "net_bps": 87.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-03-09",
+   "close": "2015-03-20",
+   "net_bps": 195.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-03-31",
+   "close": "2015-04-16",
+   "net_bps": 180.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-05-15",
+   "close": "2015-05-28",
+   "net_bps": -70.3
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-06-11",
+   "close": "2015-06-30",
+   "net_bps": 41.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-09-21",
+   "close": "2015-09-29",
+   "net_bps": 22.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-10-07",
+   "close": "2015-10-15",
+   "net_bps": 154.2
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-10-29",
+   "close": "2015-11-16",
+   "net_bps": 136.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2015-11-23",
+   "close": "2015-11-25",
+   "net_bps": 190.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2016-02-17",
+   "close": "2016-03-01",
+   "net_bps": 166.9
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2016-03-04",
+   "close": "2016-03-14",
+   "net_bps": 236.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2016-03-18",
+   "close": "2016-03-29",
+   "net_bps": 271.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2016-04-19",
+   "close": "2016-06-30",
+   "net_bps": -96.2
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2016-09-14",
+   "close": "2016-10-07",
+   "net_bps": 168.5
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2017-08-24",
+   "close": "2017-09-13",
+   "net_bps": 417.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2017-10-12",
+   "close": "2017-10-23",
+   "net_bps": 154.6
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2017-10-27",
+   "close": "2017-11-07",
+   "net_bps": 161.5
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2017-11-20",
+   "close": "2017-12-27",
+   "net_bps": -727.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2018-01-08",
+   "close": "2018-01-12",
+   "net_bps": 70.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2018-01-26",
+   "close": "2018-02-02",
+   "net_bps": 225.5
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2018-03-13",
+   "close": "2018-03-19",
+   "net_bps": 64.3
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2018-04-04",
+   "close": "2018-06-29",
+   "net_bps": -79.9
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2020-01-08",
+   "close": "2020-01-10",
+   "net_bps": -53.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2020-01-16",
+   "close": "2020-01-22",
+   "net_bps": 104.7
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2020-02-03",
+   "close": "2020-03-18",
+   "net_bps": -830.0
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2020-03-19",
+   "close": "2020-03-23",
+   "net_bps": 434.5
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2020-03-26",
+   "close": "2020-03-31",
+   "net_bps": -19.8
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2020-04-06",
+   "close": "2020-04-07",
+   "net_bps": -98.1
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2020-06-01",
+   "close": "2020-06-04",
+   "net_bps": 443.2
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2020-07-02",
+   "close": "2020-09-07",
+   "net_bps": 115.9
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2025-03-14",
+   "close": "2025-05-07",
+   "net_bps": -230.7
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2025-06-10",
+   "close": "2025-09-03",
+   "net_bps": -841.9
+  },
+  {
+   "pair": "NED/ABG",
+   "open": "2025-10-06",
+   "close": "2026-01-02",
+   "net_bps": -1026.3
+  }
+ ]
+}
