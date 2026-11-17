@@ -440,6 +440,40 @@ Four independent reviews, each with every series truncated at 31 March 2026: ove
 - **The copula signal.** The day-to-day reversal it traded has gone from the pair: the lag-1 autocorrelation of the daily relative return was −0.18 in 2010–14 and is −0.02 to −0.03 since 2021 (five-day variance ratio 0.62 then, about 1.0 now). Before 2015 its h was serially correlated and under-dispersed, because the margins have no cross-bank term; the rule traded that misspecification, and as h became calibrated (KS p 0.31 from 2020) the edge went. About half of its 2010–19 edge is the closing print reversing (+23 bps from the close, +11.5 from the last hourly bar). No slice of 18 examined clears the 33.8 bps futures round trip on a tradeable fill in both eras. Inside the spread strategy it agrees with the entry 91% of the time and adds nothing as a timer, and as a veto it would cut trades that went on to earn +36 bps. The code has no look-ahead. It is not worth trading on its own or as a timer or veto; its live records stand as frozen.
 - **Expectation for H16's live record.** About +45 bps a trade as scored (range 25 to 60, 10 to 15% chance of zero or less), and about 0 to 20 bps on a fill one session late.
 
+
+## H20: the rule on 18 pairs it never saw (run once, 17 November 2026)
+
+`research/h20_other_pairs.py`, `research/results/h20.json`. Registered before any pair figure (PROTOCOL.md, H20). **Failed.** Pooled over 18 pairs, 818 completed trades from 2006 to 11 November 2026, decided on the close and filled at the next close, institutional futures: **-33.9 bps a trade (t -1.77, clustered by month of entry)**, against a bar of a positive mean with t above 1.65. 4 of 18 pairs have a positive mean (sign test p 0.996). Filled at the same close, which no one can trade, the pooled mean is still -13.8 bps (t -0.75); at cash -37.0. By era: -28.3 (2006–12), -84.1 (2013–19), -1.2 (2020 on). Trades opened from 1 April 2026: 20, 5.9 bps.
+
+| Sector | Pair | Trades | Net per trade, bps | t | Same-close fill, bps | Gate open |
+|---|---|---|---|---|---|---|
+| Banks | FSR/ABG | 66 | -33.2 | -0.7 | -24.6 | 34% |
+| Banks | FSR/CPI | 55 | 54.3 | 0.85 | 64.9 | 31% |
+| Banks | ABG/CPI | 38 | -138.6 | -1.45 | -80.7 | 22% |
+| Insurers | SLM/MTM | 48 | 11.0 | 0.26 | 72.9 | 28% |
+| Insurers | SLM/DSY | 53 | -2.9 | -0.05 | 52.6 | 24% |
+| Gold | GFI/ANG | 49 | 3.9 | 0.05 | 20.8 | 26% |
+| Gold | GFI/HAR | 27 | 222.7 | 2.12 | 162.8 | 13% |
+| Gold | ANG/HAR | 29 | -9.0 | -0.07 | -17.3 | 16% |
+| Gold | HAR/DRD | 18 | -258.3 | -1.01 | -194.1 | 12% |
+| Platinum | IMP/VAL | 42 | -167.8 | -1.75 | -136.9 | 21% |
+| Telecoms | MTN/VOD | 52 | -85.2 | -1.15 | -62.6 | 29% |
+| Telecoms | VOD/TKG | 87 | -20.7 | -0.41 | -63.9 | 25% |
+| Food retail | SHP/PIK | 39 | -81.6 | -1.05 | -77.1 | 19% |
+| Food retail | SHP/SPP | 40 | -13.9 | -0.2 | 9.9 | 25% |
+| Clothing retail | MRP/TFG | 41 | -32.6 | -0.46 | -26.2 | 22% |
+| Clothing retail | MRP/TRU | 60 | -2.7 | -0.05 | 58.1 | 32% |
+| Clothing retail | TFG/TRU | 41 | -54.1 | -0.94 | -7.6 | 24% |
+| Hospitals | NTC/LHC | 33 | -126.9 | -1.46 | -82.2 | 26% |
+
+The engine check: the same code and data on Standard Bank and Nedbank give 76 trades to 31 March 2026, +53.2 bps same-close and +9.4 next-close, against H19's 81 trades, +58.8 and +7.8 (the jse-risk download drops no-trade days that the pair's own series keeps).
+
+**Reading.** The expectation was −20 to +30; the result is below it. The rule's idea does not carry to other JSE pairs, including the three other bank pairs. Whatever H16 earned on development data belongs to Standard Bank and Nedbank, or to the search that chose it, which agrees with the review's probability of backtest overfitting of 0.53.
+
+## The realistic version on development data (reporting only)
+
+`research/realistic.py`, `research/results/realistic.json`. H18's trades (decided at 16:00, filled in the closing auction) with P&L on dividend-correct returns, 2009-09-14 to 31 March 2026: 57 trades, **85.2 bps a trade at futures (t 2.64)**, 78.3 at cash, 69.8 if filled one close later still. By era: -18.3 (2009–12, 13 trades), 88.6 (2013–19, 23), 145.6 (2020–March 2026, 21). This is the version the write-up leads with, because it is the one a person could trade; it inherits H16's selection, so the out-of-sample expectation from the review (about +44 bps) still applies.
+
 ## Run order
 
 ```sh
@@ -488,5 +522,7 @@ service/.venv/bin/python research/h18_auction.py        # seconds; H18's develop
 service/.venv/bin/python research/verdict_episodes.py   # about 15 seconds; the episode-grouped critical values for H18 and H19
 service/.venv/bin/python research/snapshot.py           # a dated local copy of the data the frozen rules read
 service/.venv/bin/python research/yahoo_check.py        # has Yahoo changed its adjustment? (the refit job runs it)
+service/.venv/bin/python research/h20_other_pairs.py   # H20, run once; needs the jse-risk-management download and its venv
+service/.venv/bin/python research/realistic.py          # reporting: H18 with dividends (needs the hourly bars)
 service/.venv/bin/python research/export_research.py
 ```
