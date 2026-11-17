@@ -15,3 +15,6 @@ research/reference/
 data/rv_daily.csv
 # Dated copies of third-party data (research/snapshot.py); not redistributed.
 data/snapshots/
+
+# Saved 16:00 prices copied from the private bucket (Yahoo data, not redistributed)
+data/raw/1600-banks/
