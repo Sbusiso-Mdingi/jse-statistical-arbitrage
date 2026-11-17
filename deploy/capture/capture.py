@@ -17,6 +17,10 @@ import urllib.request
 
 BUCKET = os.environ["BUCKET"]
 SYMBOLS = {"sbk": "SBK.JO", "ned": "NED.JO"}
+# H22 (research/PROTOCOL.md): the Big Four cross-pairs' 16:00 prices, kept under their own prefix so the H18 record
+# above is untouched. A day is saved when all four banks have a 16:00 bar.
+BANKS = {"sbk": "SBK.JO", "ned": "NED.JO", "fsr": "FSR.JO", "abg": "ABG.JO"}
+BANKS_PREFIX = "1600-banks"
 SAST = dt.timezone(dt.timedelta(hours=2))
 RANGE = os.environ.get("RANGE", "10d")   # a back-save sets a longer range (Yahoo keeps about 730 days of hourly bars)
 FROM = os.environ.get("FROM", "")        # and the first session to save
@@ -59,22 +63,27 @@ def put_if_absent(tok, name, body):
         raise
 
 
-def main():
-    now = dt.datetime.now(SAST)
-    b = {k: bars(s) for k, s in SYMBOLS.items()}
-    tok = token()
+def capture(tok, b, symbols, prefix, now):
     written, skipped, missing = [], [], []
-    for day in sorted(set(b["sbk"]) & set(b["ned"])):
+    for day in sorted(set.intersection(*(set(b[k]) for k in symbols))):
         if day < FROM or (day == now.date().isoformat() and (now.hour, now.minute) < (17, 15)):
             continue  # today's bars are not final yet
-        p = {k: (b[k][day].get("15:00") or {}).get("close") for k in SYMBOLS}
+        p = {k: (b[k][day].get("15:00") or {}).get("close") for k in symbols}
         if any(v is None for v in p.values()):
             missing.append(day)
             continue
         body = {"date": day, "price_1600": p, "bar": "15:00-16:00 SAST, last trade", "units": "cents", "source": "Yahoo Finance chart API, 60m",
-                "captured_at": now.isoformat(), "bars": {k: b[k][day] for k in SYMBOLS}}
-        (written if put_if_absent(tok, f"1600/{day}.json", body) else skipped).append(day)
-    print(json.dumps({"written": written, "already_captured": skipped, "no_1600_bar": missing}), flush=True)
+                "captured_at": now.isoformat(), "bars": {k: b[k][day] for k in symbols}}
+        (written if put_if_absent(tok, f"{prefix}/{day}.json", body) else skipped).append(day)
+    return {"written": written, "already_captured": skipped, "no_1600_bar": missing}
+
+
+def main():
+    now = dt.datetime.now(SAST)
+    b = {k: bars(s) for k, s in BANKS.items()}
+    tok = token()
+    out = {"1600": capture(tok, b, SYMBOLS, "1600", now), BANKS_PREFIX: capture(tok, b, BANKS, BANKS_PREFIX, now)}
+    print(json.dumps(out), flush=True)
 
 
 if __name__ == "__main__":
