@@ -20,11 +20,12 @@ def _spy(*a, **k):
     t = _orig(*a, **k); captured.setdefault("first", t); return t
 sw.trades = _spy
 _dump = json.dump
-json.dump = lambda *a, **k: None  # h18's own output is not rewritten
+H18 = "research/results/h18.json"
+kept = open(H18).read()  # h18's own output must not change
 try:
     h18.main()
 finally:
-    json.dump = _dump
+    open(H18, "w").write(kept)
     sw.trades = _orig
 trs = captured["first"]
 
